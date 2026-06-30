@@ -148,11 +148,18 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
-    background: var(--color-primary-800);
+    overflow: hidden;
+    color: transparent;
+    background-color: #fff;
+    background-image: url("../assets/novaris-logo.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 82%;
     border-radius: var(--radius-md);
+    font-size: 0;
     font-weight: 800;
     letter-spacing: 0;
+    box-shadow: var(--shadow-sm);
 }
 
 .badge {
