@@ -6,6 +6,21 @@ function commerceFormatMoney(value) {
     return `$${new Intl.NumberFormat("es-PE", { maximumFractionDigits: 0 }).format(Number(value || 0))}`;
 }
 
+function commerceMedian(values) {
+    const numbers = values.map(Number).filter((value) => Number.isFinite(value) && value > 0).sort((a, b) => a - b);
+    if (!numbers.length) return 0;
+    const middle = Math.floor(numbers.length / 2);
+    return numbers.length % 2 ? numbers[middle] : (numbers[middle - 1] + numbers[middle]) / 2;
+}
+
+function commerceNormalizeText(value) {
+    return String(value || "")
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+}
+
 function commerceSetText(id, value) {
     const element = document.getElementById(id);
     if (element) element.textContent = value;
@@ -56,6 +71,28 @@ function commerceNumber(row, aliases, fragments = []) {
     return Number.isFinite(number) ? number : null;
 }
 
+function commerceUnitCostFromRow(raw, normalized = {}) {
+    const costValue = commerceNumber(raw, ["costo", "cost", "costo_unitario", "unit_cost", "purchase_cost", "supplier_cost", "wholesale_cost"], ["cost", "costo"]);
+    if (costValue !== null && costValue > 0) return costValue;
+
+    const normalizedCost = Number(normalized.cost);
+    if (Number.isFinite(normalizedCost) && normalizedCost > 0) return normalizedCost;
+
+    const priceValue = commerceNumber(raw, ["precio", "price", "precio_unitario", "unit_price", "selling_price", "unit_price_usd", "retail_price", "sales_price", "item_price", "purchase_price", "supplier_price", "wholesale_price", "revenue_per_unit"], ["price", "precio"]);
+    if (priceValue !== null && priceValue > 0) return priceValue;
+
+    const normalizedPrice = Number(normalized.price);
+    if (Number.isFinite(normalizedPrice) && normalizedPrice > 0) return normalizedPrice;
+
+    const revenueValue = commerceNumber(raw, ["revenue", "total_revenue", "sales_amount", "total_sales", "venta_total", "ventas_total", "importe", "monto", "subtotal", "gross_sales", "net_sales", "ingresos", "income"], ["revenue", "amount", "importe", "monto", "ingres"]);
+    const quantityValue = commerceNumber(raw, ["sales_volume", "units_sold", "ventas", "salidas", "egresos", "cantidad", "quantity", "qty", "transaction_qty", "quantity_sold", "qty_sold", "sold_quantity", "order_quantity", "ordered_quantity", "items_sold", "total_quantity", "count", "demanda"], ["transaction_qty", "quantity", "qty", "sold", "ventas", "sales", "cantidad"]);
+    if (revenueValue !== null && revenueValue > 0 && quantityValue !== null && quantityValue > 0) {
+        return revenueValue / quantityValue;
+    }
+
+    return 0;
+}
+
 function commerceProductRows(dataset) {
     const rawRows = dataset?.raw_rows || [];
     const normalizedRows = rawRows.length && typeof normalizeErpRows === "function"
@@ -76,8 +113,8 @@ function commerceProductRows(dataset) {
         const stockValue = commerceNumber(raw, ["stock_quantity", "stock", "inventory_level", "inventory", "inventario", "stock_total", "stock_actual", "current_stock", "available_stock", "existencias", "disponible", "current_inventory", "inventory_quantity", "on_hand", "onhand"], ["stock", "inventory", "on_hand"]);
         const minimumValue = commerceNumber(raw, ["reorder_level", "reorder_point", "stock_minimo", "minimum_stock", "minimo", "punto_reorden"]);
         const salesValue = commerceNumber(raw, ["sales_volume", "units_sold", "demand_forecast", "ventas", "salidas", "egresos", "cantidad", "quantity", "qty", "transaction_qty", "quantity_sold", "qty_sold", "sold_quantity", "order_quantity", "ordered_quantity", "items_sold", "total_quantity", "count", "demanda"], ["transaction_qty", "quantity", "qty", "sold", "ventas", "sales", "cantidad"]);
-        const priceValue = commerceNumber(raw, ["precio", "price", "precio_unitario", "unit_price", "selling_price", "unit_price_usd", "retail_price", "sales_price", "item_price", "revenue_per_unit"], ["price", "precio"]);
-        const costValue = commerceNumber(raw, ["costo", "cost", "costo_unitario", "unit_cost"]);
+        const priceValue = commerceNumber(raw, ["precio", "price", "precio_unitario", "unit_price", "selling_price", "unit_price_usd", "retail_price", "sales_price", "item_price", "purchase_price", "supplier_price", "wholesale_price", "revenue_per_unit"], ["price", "precio"]);
+        const costValue = commerceNumber(raw, ["costo", "cost", "costo_unitario", "unit_cost", "purchase_cost", "supplier_cost", "wholesale_cost"], ["cost", "costo"]);
         const revenueValue = commerceNumber(raw, ["revenue", "total_revenue", "sales_amount", "total_sales", "venta_total", "ventas_total", "importe", "monto", "subtotal", "gross_sales", "net_sales", "ingresos", "income"], ["revenue", "amount", "importe", "monto", "ingres"]);
         const current = grouped.get(name) || {
             producto: name,
@@ -95,6 +132,7 @@ function commerceProductRows(dataset) {
             historialVentas: [],
             historialStock: [],
             historialEntradas: [],
+            costosUnitarios: [],
         };
 
         const normalizedStock = Number(row.stock);
@@ -130,6 +168,8 @@ function commerceProductRows(dataset) {
         if (revenueValue !== null) current.ingresoEstimado += revenueValue;
         if (costValue !== null) current.costo = costValue;
         else if (Number.isFinite(normalizedCost) && normalizedCost > 0) current.costo = normalizedCost;
+        const resolvedUnitCost = commerceUnitCostFromRow(raw, row);
+        if (resolvedUnitCost > 0) current.costosUnitarios.push(resolvedUnitCost);
         current.categoria = current.categoria === "Sin categoria" ? category : current.categoria;
         current.registros += 1;
         grouped.set(name, current);
@@ -141,14 +181,16 @@ function commerceProductRows(dataset) {
         const faltante = Math.max(0, minimo - item.stock);
         const ingresoEstimado = item.ingresoEstimado || item.ventas * (item.precio || 0);
         const precio = item.precio || (item.ventas > 0 && ingresoEstimado > 0 ? ingresoEstimado / item.ventas : 0);
+        const costoUnitario = item.costo || commerceMedian(item.costosUnitarios) || precio;
         return {
             ...item,
             precio: Math.round(precio * 100) / 100,
+            costoUnitario: Math.round(costoUnitario * 100) / 100,
             minimo,
             ventas: Math.round(item.ventas * 100) / 100,
             promedioVentas: Math.round(promedioVentas * 100) / 100,
             faltante,
-            costoReposicion: faltante * (item.costo || item.precio || 0),
+            costoReposicion: faltante * costoUnitario,
             ingresoEstimado: Math.round(ingresoEstimado * 100) / 100,
         };
     });
@@ -425,23 +467,79 @@ function commerceDemoProducts() {
     }));
 }
 
+function commerceDefaultUnitCost(row) {
+    const text = commerceNormalizeText(`${row.producto} ${row.categoria}`);
+    if (/(cola|soda|juice|jugo|drink|bebida|agua|tea|cafe)/.test(text)) return 2;
+    if (/(snack|galleta|pan|postre|dulce)/.test(text)) return 3;
+    if (/(comida|menu|plato|food|meal|pollo|carne|pizza|burger)/.test(text)) return 8;
+    if (/(ropa|shirt|camisa|polo|zapato|shoe|textil)/.test(text)) return 15;
+    if (/(accesorio|mouse|teclado|cable|funda)/.test(text)) return 18;
+    if (/(monitor|periferico|electron|computo|ssd|disco)/.test(text)) return 95;
+    if (/(laptop|notebook|tablet|telefono|phone|celular)/.test(text)) return 420;
+    return 10;
+}
+
+function commerceBuildCostEstimator(dataset) {
+    const productRows = commerceProductRows(dataset);
+    const productCosts = new Map();
+    const categoryCosts = new Map();
+    const allCosts = [];
+
+    productRows.forEach((row) => {
+        const unitCost = Number(row.costoUnitario || row.costo || row.precio || 0);
+        if (!Number.isFinite(unitCost) || unitCost <= 0) return;
+
+        productCosts.set(commerceNormalizeText(row.producto), unitCost);
+        allCosts.push(unitCost);
+
+        const categoryKey = commerceNormalizeText(row.categoria);
+        if (!categoryCosts.has(categoryKey)) categoryCosts.set(categoryKey, []);
+        categoryCosts.get(categoryKey).push(unitCost);
+    });
+
+    const categoryMedians = new Map(
+        [...categoryCosts.entries()].map(([category, costs]) => [category, commerceMedian(costs)])
+    );
+    const globalMedian = commerceMedian(allCosts);
+
+    return (row) => {
+        const direct = Number(row.costoUnitario || row.costo || row.precio || 0);
+        if (Number.isFinite(direct) && direct > 0) return direct;
+
+        const productCost = productCosts.get(commerceNormalizeText(row.producto));
+        if (productCost) return productCost;
+
+        const categoryCost = categoryMedians.get(commerceNormalizeText(row.categoria));
+        if (categoryCost) return categoryCost;
+
+        return globalMedian || commerceDefaultUnitCost(row);
+    };
+}
+
 async function loadPurchasesByLowStock() {
     if (!document.getElementById("purchase-products-table")) return;
     setupAuthUI();
 
     const dataset = await commerceDataset();
     const importedRecommendations = await commerceImportedSupplierRecommendations(dataset);
+    const estimateUnitCost = commerceBuildCostEstimator(dataset);
     const rows = importedRecommendations && !importedRecommendations.error
         ? importedRecommendations.rows
         : commerceProductRows(dataset);
     const lowStock = rows
         .filter((row) => row.faltante > 0 || row.comprarSugerido > 0 || row.stock <= 0)
-        .map((row) => ({
-            ...row,
-            faltante: Number(row.faltante || row.comprarSugerido || 0),
-            promedioVentas: Number(row.promedioVentas || row.predictedDemand || row.ventas || 0),
-            costoReposicion: Number(row.costoReposicion || 0),
-        }))
+        .map((row) => {
+            const faltante = Number(row.faltante || row.comprarSugerido || 0);
+            const unitCost = estimateUnitCost(row);
+            const currentCost = Number(row.costoReposicion || 0);
+            return {
+                ...row,
+                faltante,
+                costoUnitario: unitCost,
+                promedioVentas: Number(row.promedioVentas || row.predictedDemand || row.ventas || 0),
+                costoReposicion: currentCost > 0 ? currentCost : faltante * unitCost,
+            };
+        })
         .sort((a, b) => b.faltante - a.faltante || b.promedioVentas - a.promedioVentas)
         .slice(0, 20);
 
