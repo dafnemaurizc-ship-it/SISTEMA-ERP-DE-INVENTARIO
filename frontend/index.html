@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BiblioApp - Catalogo de Libros</title>
+    <title>Novaris ERP - Catalogo de productos</title>
     <link rel="stylesheet" href="css/styles.css?v=20260620-redesign2">
     <link rel="stylesheet" href="css/components.css?v=20260620-redesign2">
     <link rel="stylesheet" href="css/layout.css?v=20260620-redesign2">
@@ -12,34 +12,38 @@
     <div class="app-shell">
         <aside class="sidebar">
             <div class="sidebar-brand">
-                <span class="brand-mark">BA</span>
+                <span class="brand-mark">N</span>
                 <div>
-                    <strong>BiblioApp</strong>
-                    <span>Sistema de pedidos</span>
+                    <strong>Novaris ERP</strong>
+                    <span>Catalogo y operaciones</span>
                 </div>
             </div>
 
             <ul class="sidebar-nav" id="navbar-menu">
-                <li><a href="dashboard.html"><span class="nav-icon">IN</span>Inicio</a></li>
-                <li><a href="index.html" class="active"><span class="nav-icon">CA</span>Catalogo</a></li>
-                <li><a href="nuevo-pedido.html"><span class="nav-icon">NP</span>Nuevo pedido</a></li>
-                <li><a href="mis-prestamos.html" id="mis-prestamos-link" style="display:none;"><span class="nav-icon">MP</span>Mis pedidos</a></li>
-                <li><a href="admin/libros.html" id="admin-libros-link" style="display:none;"><span class="nav-icon">AD</span>Bibliotecario</a></li>
+                <li><a href="dashboard.html"><span class="nav-icon">DS</span>Dashboard</a></li>
+                <li><a href="index.html" class="active"><span class="nav-icon">PR</span>Productos</a></li>
+                <li><a href="inventario.html"><span class="nav-icon">IV</span>Inventario</a></li>
+                <li><a href="compras.html"><span class="nav-icon">CO</span>Compras</a></li>
+                <li><a href="ventas.html"><span class="nav-icon">VE</span>Ventas</a></li>
+                <li><a href="clientes-proveedores.html"><span class="nav-icon">CP</span>Clientes/Proveedores</a></li>
+                <li><a href="facturacion.html"><span class="nav-icon">FA</span>Facturacion</a></li>
+                <li><a href="importar-datos.html"><span class="nav-icon">ML</span>Prediccion</a></li>
+                <li><a href="reportes.html"><span class="nav-icon">RP</span>Reportes</a></li>
                 <li><a href="login.html" id="login-link"><span class="nav-icon">AC</span>Acceder</a></li>
                 <li><button id="logout-btn" style="display:none;"><span class="nav-icon">SA</span>Cerrar sesion</button></li>
             </ul>
 
-            <div class="sidebar-footer">Universidad / Biblioteca Central<br>Atencion academica y administrativa.</div>
+            <div class="sidebar-footer">ERP para operaciones comerciales<br>Gestion de inventario y ventas.</div>
         </aside>
 
         <div class="main-area">
             <header class="topbar">
                 <div class="topbar-title">
-                    <h1>Catalogo de libros</h1>
-                    <p>Busca materiales, revisa disponibilidad y solicita prestamos.</p>
+                    <h1>Catalogo de productos</h1>
+                    <p>Explora articulos importados, revisa stock y busca por cualquier columna.</p>
                 </div>
                 <div class="topbar-actions">
-                    <a href="nuevo-pedido.html" class="btn btn-primary">Nuevo pedido</a>
+                    <a href="inventario.html" class="btn btn-primary">Revisar inventario</a>
                 </div>
             </header>
 
@@ -47,12 +51,12 @@
                 <section class="filters-panel">
                     <div class="panel-title">
                         <h2>Busqueda y filtros</h2>
-                        <p>Filtra por titulo, autor, codigo, categoria, disponibilidad o tipo de material.</p>
+                        <p>Filtra por producto, codigo, categoria, stock o cualquier valor importado.</p>
                     </div>
                     <div class="search-form">
                         <div class="form-group">
-                            <label for="search-input">Titulo, autor o codigo</label>
-                            <input type="text" id="search-input" placeholder="Ej. Cien anos de soledad">
+                            <label for="search-input">Producto, codigo o dato</label>
+                            <input type="text" id="search-input" placeholder="Ej. Monitor 27 pulgadas">
                         </div>
                         <div class="form-group">
                             <label for="category-select">Categoria</label>
@@ -72,9 +76,9 @@
                             <label for="material-filter">Tipo</label>
                             <select id="material-filter">
                                 <option value="">Todos</option>
-                                <option value="libro">Libro</option>
-                                <option value="tesis">Tesis</option>
-                                <option value="revista">Revista</option>
+                                <option value="producto">Producto</option>
+                                <option value="servicio">Servicio</option>
+                                <option value="paquete">Paquete</option>
                             </select>
                         </div>
                         <button id="search-btn" class="btn btn-primary">Buscar</button>
@@ -85,11 +89,11 @@
                     <div class="page-header">
                         <div>
                             <h2>Resultados del catalogo</h2>
-                            <p>Materiales registrados en biblioteca.</p>
+                            <p id="catalog-source">Productos registrados desde backend o desde la ultima importacion.</p>
                         </div>
                     </div>
                     <div id="books-container" class="books-grid">
-                        <div class="empty-state">Cargando libros...</div>
+                        <div class="empty-state">Cargando productos...</div>
                     </div>
                     <div class="pagination" id="pagination"></div>
                 </section>
@@ -97,9 +101,15 @@
         </div>
     </div>
 
-    <script src="js/api.js?v=20260620-redesign"></script>
-    <script src="js/auth.js?v=20260620-redesign"></script>
+    <script src="js/auth-guard.js?v=20260630-auth"></script>
+    
+    <script src="js/nav.js?v=20260630-stable-nav"></script>
+    <script src="js/api.js?v=20260630-localhost-api-v3"></script>
+    <script src="js/auth.js?v=20260630-login-token-v2"></script>
     <script src="js/dom.js?v=20260620-redesign"></script>
-    <script src="js/libros.js?v=20260620-redesign"></script>
+    <script src="js/import-store.js?v=20260630-import-aliases-v5"></script>
+    <script src="js/libros.js?v=20260630-search-on-click-v3"></script>
 </body>
 </html>
+
+

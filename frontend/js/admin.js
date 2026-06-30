@@ -19,7 +19,7 @@ function displayAdminLibros(libros) {
     clearChildren(container);
 
     if (libros.length === 0) {
-        appendText(container, "div", "No hay libros registrados.", "empty-state");
+        appendText(container, "div", "No hay productos registrados.", "empty-state");
         return;
     }
 
@@ -29,7 +29,7 @@ function displayAdminLibros(libros) {
     const table = document.createElement("table");
     const thead = document.createElement("thead");
     const headRow = document.createElement("tr");
-    ["Titulo", "Autor", "Categoria", "Stock", "Disponibles", "Acciones"].forEach((header) =>
+    ["Producto", "Marca/proveedor", "Categoria", "Stock", "Disponibles", "Acciones"].forEach((header) =>
         appendText(headRow, "th", header)
     );
     thead.appendChild(headRow);
@@ -81,7 +81,7 @@ async function crearLibro(e) {
             body: JSON.stringify(libroData),
         });
 
-        alert("Libro creado exitosamente");
+        alert("Producto creado exitosamente");
         document.getElementById("libro-form").reset();
         loadAdminLibros();
     } catch (error) {
@@ -90,13 +90,13 @@ async function crearLibro(e) {
 }
 
 async function confirmarEliminarLibro(libroId) {
-    if (!confirm("Estas seguro de que deseas eliminar este libro?")) return;
+    if (!confirm("Estas seguro de que deseas eliminar este producto?")) return;
 
     try {
         await apiFetch(`/libros/${libroId}`, {
             method: "DELETE",
         });
-        alert("Libro eliminado correctamente");
+        alert("Producto eliminado correctamente");
         loadAdminLibros();
     } catch (error) {
         alert("Error: " + error.message);
@@ -135,7 +135,7 @@ function displayAdminPrestamos(prestamos) {
     const table = document.createElement("table");
     const thead = document.createElement("thead");
     const headRow = document.createElement("tr");
-    ["Pedido", "Usuario", "Libro", "Fecha", "Estado", "Acciones"].forEach((header) =>
+    ["Orden", "Usuario", "Producto", "Fecha", "Estado", "Acciones"].forEach((header) =>
         appendText(headRow, "th", header)
     );
     thead.appendChild(headRow);

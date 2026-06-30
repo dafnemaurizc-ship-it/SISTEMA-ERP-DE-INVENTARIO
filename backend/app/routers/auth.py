@@ -10,7 +10,16 @@ router = APIRouter()
 
 @router.post("/register", response_model=UsuarioResponse, status_code=201)
 def register(request: RegisterRequest, db: Session = Depends(get_db)):
-    usuario = auth_service.registrar_usuario(db, request.nombre, request.email, request.password)
+    usuario = auth_service.registrar_usuario(
+        db,
+        request.nombre,
+        request.email,
+        request.password,
+        company_name=request.company_name,
+        ruc=request.ruc,
+        contact_name=request.contact_name,
+        phone=request.phone,
+    )
     return usuario
 
 

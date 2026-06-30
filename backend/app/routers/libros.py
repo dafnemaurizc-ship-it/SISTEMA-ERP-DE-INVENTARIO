@@ -9,7 +9,7 @@ from app.schemas.libro import (
     LibrosListResponse,
 )
 from app.services import libro_service
-from app.utils.dependencies import require_admin
+from app.utils.dependencies import require_admin, optional_current_user
 from app.models.usuario import Usuario
 
 router = APIRouter()
@@ -22,8 +22,12 @@ def listar_libros(
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
     db: Session = Depends(get_db),
+    current_user: Usuario | None = Depends(optional_current_user),
 ):
-    total, items = libro_service.buscar_libros(db, q, categoria, limit, offset)
+    client_id = current_user.client_id if current_user else None
+    total, items = libro_service.buscar_libros(
+        db, q, categoria, limit, offset, client_id=client_id
+    )
 
     items_response = []
     for item in items:
@@ -40,8 +44,8 @@ def listar_libros(
 
 
 @router.get("/{id}", response_model=LibroResponse)
-def obtener_libro(id: int, db: Session = Depends(get_db)):
-    libro = libro_service.obtener_libro(db, id)
+def obtener_libro(id: int, db: Session = Depends(get_db), current_user: Usuario | None = Depends(optional_current_user)):
+    libro = libro_service.obtener_libro(db, id, client_id=current_user.client_id if current_user else None)
     disponibles = libro_service.get_disponibles(db, id)
     return LibroResponse(
         **{**libro.__dict__, "disponibles": disponibles}
@@ -54,7 +58,7 @@ def crear_libro(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(require_admin),
 ):
-    libro = libro_service.crear_libro(db, request)
+    libro = libro_service.crear_libro(db, request, client_id=current_user.client_id)
     disponibles = libro_service.get_disponibles(db, libro.id)
     return LibroResponse(
         **{**libro.__dict__, "disponibles": disponibles}
@@ -68,7 +72,7 @@ def actualizar_libro(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(require_admin),
 ):
-    libro = libro_service.actualizar_libro(db, id, request)
+    libro = libro_service.actualizar_libro(db, id, request, client_id=current_user.client_id)
     disponibles = libro_service.get_disponibles(db, id)
     return LibroResponse(
         **{**libro.__dict__, "disponibles": disponibles}
@@ -81,4 +85,4 @@ def eliminar_libro(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(require_admin),
 ):
-    libro_service.eliminar_libro(db, id)
+    libro_service.eliminar_libro(db, id, client_id=current_user.client_id)

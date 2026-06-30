@@ -44,7 +44,7 @@ function displayPrestamos(prestamos) {
     const table = document.createElement("table");
     const thead = document.createElement("thead");
     const headRow = document.createElement("tr");
-    ["Pedido", "Libro solicitado", "Fecha", "Vencimiento", "Estado", "Acciones"].forEach((header) =>
+    ["Orden", "Producto solicitado", "Fecha", "Vencimiento", "Estado", "Acciones"].forEach((header) =>
         appendText(headRow, "th", header)
     );
     thead.appendChild(headRow);

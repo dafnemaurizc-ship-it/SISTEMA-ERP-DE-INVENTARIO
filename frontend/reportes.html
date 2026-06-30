@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Novaris ERP - Reportes</title>
+    <link rel="stylesheet" href="css/styles.css?v=20260630-novaris" />
+    <link rel="stylesheet" href="css/components.css?v=20260630-novaris" />
+    <link rel="stylesheet" href="css/layout.css?v=20260630-novaris" />
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-mark">N</span>
+                <div>
+                    <strong>Novaris ERP</strong>
+                    <span>Analitica y reportes</span>
+                </div>
+            </div>
+            <ul class="sidebar-nav"></ul>
+            <div class="sidebar-footer">Reportes ejecutivos para decisiones<br/>de negocio y operacion.</div>
+        </aside>
+
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-title">
+                    <h1>Reportes</h1>
+                    <p>Alertas por producto usando regresion para estimar demanda y clasificacion para priorizar acciones.</p>
+                </div>
+                <div class="topbar-actions">
+                    <a href="importar-datos.html" class="btn btn-primary">Actualizar prediccion</a>
+                    <a href="dashboard.html" class="btn btn-secondary">Dashboard</a>
+                </div>
+            </header>
+
+            <main class="page-content">
+                <section class="dashboard-grid">
+                    <article class="stat-card">
+                        <span class="stat-label">Filas analizadas</span>
+                        <strong class="stat-value" id="report-rows">0</strong>
+                        <p>Registros usados por el reporte.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Columnas numericas</span>
+                        <strong class="stat-value" id="report-numeric">0</strong>
+                        <p>Campos con resumen y prediccion.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Stock estimado</span>
+                        <strong class="stat-value" id="report-stock">0</strong>
+                        <p>Siguiente valor estimado de inventario.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Demanda estimada</span>
+                        <strong class="stat-value" id="report-demand">0</strong>
+                        <p>Siguiente valor estimado de ventas/salidas.</p>
+                    </article>
+                </section>
+
+                <section class="content-grid">
+                    <article class="panel">
+                        <div class="panel-title">
+                            <h2>Que esta prediciendo</h2>
+                            <p id="report-explanation">Importa un archivo en Prediccion para generar este reporte.</p>
+                        </div>
+                        <div id="report-method" class="empty-state">
+                            <strong>Sin datos cargados</strong>
+                            <span>El reporte se actualiza con la ultima base importada.</span>
+                        </div>
+                    </article>
+                    <aside class="panel">
+                        <div class="panel-title">
+                            <h2>Lectura ejecutiva</h2>
+                            <p>Senales principales para decidir compras, reposicion o revision.</p>
+                        </div>
+                        <div id="report-recommendations" class="empty-state">Sin recomendaciones.</div>
+                    </aside>
+                </section>
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <h2>Productos que requieren accion</h2>
+                            <p>Rojo significa urgente: producto agotado o por debajo del punto de reposicion. Amarillo indica demanda alta y necesidad de prepararse.</p>
+                        </div>
+                    </div>
+                    <div id="report-product-actions" class="empty-state">Sin productos detectados.</div>
+                </section>
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <h2>Detalle tecnico por columnas</h2>
+                            <p>Sirve para revisar los indicadores numericos generales de la base importada.</p>
+                        </div>
+                    </div>
+                    <div id="report-column-predictions" class="empty-state">Sin predicciones por columna.</div>
+                </section>
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <h2>Resumen estadistico</h2>
+                            <p>Promedio, minimo, maximo y total por cada columna numerica.</p>
+                        </div>
+                    </div>
+                    <div id="report-column-summary" class="empty-state">Sin resumen estadistico.</div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/auth-guard.js?v=20260630-auth"></script>
+    <script src="js/nav.js?v=20260630-stable-nav"></script>
+    <script src="js/api.js?v=20260630-timeout-auth"></script>
+    <script src="js/auth.js?v=20260630-timeout-auth"></script>
+    <script src="js/import-store.js?v=20260630-full-db-search"></script>
+    <script src="js/reportes.js?v=20260630-alert-classification"></script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Novaris ERP - Clientes y Proveedores</title>
+    <link rel="stylesheet" href="css/styles.css?v=20260630-novaris" />
+    <link rel="stylesheet" href="css/components.css?v=20260630-novaris" />
+    <link rel="stylesheet" href="css/layout.css?v=20260630-novaris" />
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-mark">N</span>
+                <div>
+                    <strong>Novaris ERP</strong>
+                    <span>Clientes y proveedores</span>
+                </div>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard.html"><span class="nav-icon">DS</span>Dashboard</a></li>
+                <li><a href="index.html"><span class="nav-icon">PR</span>Productos</a></li>
+                <li><a href="inventario.html"><span class="nav-icon">IV</span>Inventario</a></li>
+                <li><a href="importar-datos.html"><span class="nav-icon">ML</span>Prediccion</a></li>
+                <li><a href="compras.html"><span class="nav-icon">CO</span>Compras</a></li>
+                <li><a href="ventas.html"><span class="nav-icon">VE</span>Ventas</a></li>
+                <li><a href="clientes-proveedores.html" class="active"><span class="nav-icon">CP</span>Clientes/Proveedores</a></li>
+                <li><a href="reportes.html"><span class="nav-icon">RP</span>Reportes</a></li>
+                <li><a href="login.html" id="login-link"><span class="nav-icon">AC</span>Acceder</a></li>
+                <li><button id="logout-btn" style="display:none;"><span class="nav-icon">SA</span>Cerrar sesión</button></li>
+            </ul>
+            <div class="sidebar-footer">Módulo de relación comercial<br/>para clientes y proveedores.</div>
+        </aside>
+
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-title">
+                    <h1>Clientes y proveedores</h1>
+                    <p>Administra contactos y encuentra proveedores externos para productos faltantes.</p>
+                </div>
+                <div class="topbar-actions">
+                    <a href="dashboard.html" class="btn btn-secondary">Volver</a>
+                </div>
+            </header>
+
+            <main class="page-content">
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <h2>Alta rápida</h2>
+                            <p>Registra un nuevo cliente o proveedor.</p>
+                        </div>
+                    </div>
+                    <form class="filters-grid">
+                        <div class="form-group">
+                            <label for="tipo-relacion">Tipo</label>
+                            <select id="tipo-relacion">
+                                <option value="cliente">Cliente</option>
+                                <option value="proveedor">Proveedor</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="nombre-relacion">Nombre</label>
+                            <input type="text" id="nombre-relacion" placeholder="Ej. Grupo Sol" />
+                        </div>
+                        <div class="form-group">
+                            <label for="documento-relacion">Documento</label>
+                            <input type="text" id="documento-relacion" placeholder="RUC / DNI" />
+                        </div>
+                        <div class="form-group">
+                            <label for="email-relacion">Correo</label>
+                            <input type="email" id="email-relacion" placeholder="correo@empresa.com" />
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <h2>Proveedores recomendados para compras</h2>
+                            <p>Stock actual y compra sugerida segun la prediccion del ERP.</p>
+                        </div>
+                    </div>
+                    <div id="supplier-recommendations-table" class="empty-state">Cargando recomendaciones de proveedores...</div>
+                </section>
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <h2>Registros recientes</h2>
+                            <p>Vista resumida de clientes y proveedores.</p>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr><th>Tipo</th><th>Nombre</th><th>Documento</th><th>Correo</th><th>Estado</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Cliente</td><td>Grupo Sol</td><td>20500000001</td><td>ventas@gruposol.com</td><td><span class="badge badge-success">Activo</span></td></tr>
+                                <tr><td>Proveedor</td><td>TechSupply</td><td>20411122233</td><td>compras@techsupply.com</td><td><span class="badge badge-warning">Pendiente</span></td></tr>
+                                <tr><td>Cliente</td><td>Sigma Labs</td><td>20622233344</td><td>ops@sigma.com</td><td><span class="badge badge-info">En revisión</span></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/auth-guard.js?v=20260630-auth"></script>
+    
+    <script src="js/nav.js?v=20260630-stable-nav"></script>
+    <script src="js/api.js?v=20260630-localhost-api-v3"></script>
+    <script src="js/auth.js?v=20260620-redesign"></script>
+    <script src="js/import-store.js?v=20260630-import-aliases-v5"></script>
+    <script src="js/compras-ventas.js?v=20260630-random-forest-docker-v6"></script>
+</body>
+</html>
+
+

@@ -25,5 +25,9 @@ def get_db():
 
 
 def create_tables():
-    from app.models import usuario, libro, prestamo  # noqa: F401
+    from app.models import usuario, libro, prestamo, client  # noqa: F401
+    # Import newly added modules so tables are created
+    from app.inventory import models as inventory_models  # noqa: F401
+    from app.products import models as products_models  # noqa: F401
+    from app.predictions import service as predictions_service  # noqa: F401
     Base.metadata.create_all(bind=engine)

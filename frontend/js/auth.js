@@ -9,20 +9,96 @@ function getUserData() {
 
 function isAdmin() {
     const userData = getUserData();
-    return userData && userData.role === "admin";
+    return userData && (userData.role === "admin" || userData.role === "cliente_admin");
+}
+
+function getLocalUsers() {
+    try {
+        return JSON.parse(localStorage.getItem("local_users") || "[]");
+    } catch (error) {
+        return [];
+    }
+}
+
+function saveLocalUsers(users) {
+    localStorage.setItem("local_users", JSON.stringify(users));
+}
+
+function localRegister(nombre, email, password, companyName = "", ruc = "", phone = "") {
+    const users = getLocalUsers();
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (password.length < 8) {
+        throw new Error("La contrasena debe tener minimo 8 caracteres.");
+    }
+
+    if (users.some((user) => user.email === normalizedEmail)) {
+        throw new Error("Email ya esta registrado localmente.");
+    }
+
+    const user = {
+        id: Date.now(),
+        nombre,
+        email: normalizedEmail,
+        password,
+        role: companyName || ruc ? "cliente_admin" : "lector",
+        company_name: companyName,
+        ruc,
+        phone,
+        activo: true,
+        created_at: new Date().toISOString(),
+    };
+    users.push(user);
+    saveLocalUsers(users);
+    return { ...user, local: true };
+}
+
+function localLogin(email, password) {
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = getLocalUsers().find(
+        (item) => item.email === normalizedEmail && item.password === password
+    );
+
+    if (!user) {
+        throw new Error("Credenciales invalidas o backend no disponible.");
+    }
+
+    const token = `local-demo-token-${user.id}`;
+    localStorage.setItem("token", token);
+    localStorage.setItem(
+        "user_data",
+        JSON.stringify({
+            email: user.email,
+            role: user.role,
+            nombre: user.nombre,
+            local: true,
+        })
+    );
+
+    return { access_token: token, token_type: "bearer", role: user.role, local: true };
 }
 
 async function login(email, password) {
-    const response = await apiFetch("/auth/login", {
-        method: "POST",
-        body: JSON.stringify({ email, password }),
-    });
+    let response;
+    try {
+        response = await apiFetch("/auth/login", {
+            method: "POST",
+            body: JSON.stringify({ email, password }),
+        });
+    } catch (error) {
+        if (!error.isNetworkError) throw error;
+        return localLogin(email, password);
+    }
+
+    if (!response || !response.access_token) {
+        throw new Error("El backend no devolvio un token de acceso valido.");
+    }
 
     localStorage.setItem("token", response.access_token);
     localStorage.setItem(
         "user_data",
         JSON.stringify({
-            email: email,
+            email,
             role: response.role,
         })
     );
@@ -30,11 +106,16 @@ async function login(email, password) {
     return response;
 }
 
-async function register(nombre, email, password) {
-    return await apiFetch("/auth/register", {
-        method: "POST",
-        body: JSON.stringify({ nombre, email, password }),
-    });
+async function register(nombre, email, password, companyName = "", ruc = "", phone = "") {
+    try {
+        return await apiFetch("/auth/register", {
+            method: "POST",
+            body: JSON.stringify({ nombre, email, password, company_name: companyName, ruc, phone }),
+        });
+    } catch (error) {
+        if (!error.isNetworkError) throw error;
+        return localRegister(nombre, email, password, companyName, ruc, phone);
+    }
 }
 
 function logout() {
@@ -44,58 +125,61 @@ function logout() {
 }
 
 function setupAuthUI() {
-    const loginLink = document.getElementById("login-link");
     const logoutBtn = document.getElementById("logout-btn");
-    const misPrestamosLink = document.getElementById("mis-prestamos-link");
-    const adminLibrosLink = document.getElementById("admin-libros-link");
-    const adminLink = document.getElementById("admin-link");
-
-    if (isLoggedIn()) {
-        if (loginLink) loginLink.style.display = "none";
-        if (logoutBtn) {
-            logoutBtn.style.display = "flex";
-            logoutBtn.addEventListener("click", logout);
-        }
-        if (misPrestamosLink) misPrestamosLink.style.display = "flex";
-        if (adminLibrosLink && isAdmin()) adminLibrosLink.style.display = "flex";
-        if (adminLink && isAdmin()) adminLink.style.display = "flex";
-    } else {
-        if (loginLink) loginLink.style.display = "flex";
-        if (logoutBtn) logoutBtn.style.display = "none";
-        if (misPrestamosLink) misPrestamosLink.style.display = "none";
-        if (adminLibrosLink) adminLibrosLink.style.display = "none";
-        if (adminLink) adminLink.style.display = "none";
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", logout);
     }
 }
 
 if (document.querySelector("#login-form")) {
-    document.querySelector("#login-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
+    document.querySelector("#login-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const submitButton = event.submitter || event.target.querySelector("button[type='submit']");
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
 
         try {
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.textContent = "Ingresando...";
+            }
             await login(email, password);
             window.location.href = "/dashboard.html";
         } catch (error) {
             alert("Error: " + error.message);
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = "Ingresar";
+            }
         }
     });
 }
 
 if (document.querySelector("#register-form")) {
-    document.querySelector("#register-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
+    document.querySelector("#register-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const submitButton = event.submitter || event.target.querySelector("button[type='submit']");
         const nombre = document.getElementById("nombre").value;
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
+        const companyName = document.getElementById("company_name")?.value || "";
+        const ruc = document.getElementById("ruc")?.value || "";
+        const phone = document.getElementById("phone")?.value || "";
 
         try {
-            await register(nombre, email, password);
-            alert("Cuenta creada exitosamente. Inicia sesion ahora.");
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.textContent = "Creando cuenta...";
+            }
+            const response = await register(nombre, email, password, companyName, ruc, phone);
+            alert(response.local ? "Cuenta creada localmente. Inicia sesion con esos datos." : "Cuenta creada exitosamente. Inicia sesion ahora.");
             window.location.href = "/login.html";
         } catch (error) {
             alert("Error: " + error.message);
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = "Crear cuenta";
+            }
         }
     });
 }

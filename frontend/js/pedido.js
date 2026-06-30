@@ -11,7 +11,7 @@ async function loadPedidoForm() {
         const response = await apiFetch("/libros?limit=100");
         const select = document.getElementById("libro-select");
         clearChildren(select);
-        appendSelectOption(select, "", "Selecciona un libro");
+        appendSelectOption(select, "", "Selecciona un producto");
 
         response.items
             .filter((libro) => libro.disponibles > 0)
@@ -41,7 +41,7 @@ async function submitPedido(event) {
     const libroId = parseInt(document.getElementById("libro-select").value, 10);
 
     if (!libroId) {
-        alert("Selecciona un libro para enviar el pedido.");
+        alert("Selecciona un producto para enviar la orden.");
         return;
     }
 

@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Novaris ERP - FacturaciÃ³n</title>
+    <link rel="stylesheet" href="css/styles.css?v=20260630-novaris" />
+    <link rel="stylesheet" href="css/components.css?v=20260630-novaris" />
+    <link rel="stylesheet" href="css/layout.css?v=20260630-novaris" />
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-mark">N</span>
+                <div>
+                    <strong>Novaris ERP</strong>
+                    <span>FacturaciÃ³n y Ã³rdenes</span>
+                </div>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard.html"><span class="nav-icon">DS</span>Dashboard</a></li>
+                <li><a href="index.html"><span class="nav-icon">PR</span>Productos</a></li>
+                <li><a href="inventario.html"><span class="nav-icon">IV</span>Inventario</a></li>
+                <li><a href="importar-datos.html"><span class="nav-icon">ML</span>Prediccion</a></li>
+                <li><a href="compras.html"><span class="nav-icon">CO</span>Compras</a></li>
+                <li><a href="ventas.html"><span class="nav-icon">VE</span>Ventas</a></li>
+                <li><a href="clientes-proveedores.html"><span class="nav-icon">CP</span>Clientes/Proveedores</a></li>
+                <li><a href="facturacion.html" class="active"><span class="nav-icon">FA</span>FacturaciÃ³n</a></li>
+                <li><a href="reportes.html"><span class="nav-icon">RP</span>Reportes</a></li>
+                <li><a href="login.html" id="login-link"><span class="nav-icon">AC</span>Acceder</a></li>
+                <li><button id="logout-btn" style="display:none;"><span class="nav-icon">SA</span>Cerrar sesiÃ³n</button></li>
+            </ul>
+            <div class="sidebar-footer">MÃ³dulo de facturaciÃ³n y Ã³rdenes<br/>para operar el negocio.</div>
+        </aside>
+
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-title">
+                    <h1>FacturaciÃ³n</h1>
+                    <p>Gestiona Ã³rdenes, documentos y seguimiento de pagos.</p>
+                </div>
+                <div class="topbar-actions">
+                    <a href="dashboard.html" class="btn btn-secondary">Volver</a>
+                </div>
+            </header>
+
+            <main class="page-content">
+                <section class="dashboard-grid">
+                    <article class="stat-card">
+                        <span class="stat-label">Ã“rdenes vigentes</span>
+                        <strong class="stat-value">18</strong>
+                        <p>Pedidos en proceso de cobro o despacho.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Facturas emitidas</span>
+                        <strong class="stat-value">142</strong>
+                        <p>Documentos emitidos este trimestre.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Por cobrar</span>
+                        <strong class="stat-value">$24.6k</strong>
+                        <p>Saldo pendiente de cobro.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Vencidas</span>
+                        <strong class="stat-value">4</strong>
+                        <p>Facturas con atraso de pago.</p>
+                    </article>
+                </section>
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <h2>Ãšltimas Ã³rdenes</h2>
+                            <p>Vista resumida de documentos comerciales.</p>
+                        </div>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr><th>Cliente</th><th>Documento</th><th>Fecha</th><th>Total</th><th>Estado</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Grupo Sol</td><td>F001-0021</td><td>2026-06-29</td><td>$3,240</td><td><span class="badge badge-success">Pagada</span></td></tr>
+                                <tr><td>Sigma Labs</td><td>F001-0022</td><td>2026-06-28</td><td>$1,980</td><td><span class="badge badge-warning">Pendiente</span></td></tr>
+                                <tr><td>Innova S.A.</td><td>F001-0023</td><td>2026-06-27</td><td>$2,460</td><td><span class="badge badge-info">Procesando</span></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/auth-guard.js?v=20260630-auth"></script>
+    
+    <script src="js/nav.js?v=20260630-stable-nav"></script>
+    <script src="js/api.js?v=20260620-redesign"></script>
+    <script src="js/auth.js?v=20260620-redesign"></script>
+</body>
+</html>
+
+

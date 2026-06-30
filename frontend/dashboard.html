@@ -1,105 +1,199 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BiblioApp - Dashboard</title>
-    <link rel="stylesheet" href="css/styles.css?v=20260620-redesign2">
-    <link rel="stylesheet" href="css/components.css?v=20260620-redesign2">
-    <link rel="stylesheet" href="css/layout.css?v=20260620-redesign2">
+    <title>Novaris ERP - Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css?v=20260630-novaris">
+    <link rel="stylesheet" href="css/components.css?v=20260630-novaris">
+    <link rel="stylesheet" href="css/layout.css?v=20260630-novaris">
 </head>
 <body>
     <div class="app-shell">
         <aside class="sidebar">
             <div class="sidebar-brand">
-                <span class="brand-mark">BA</span>
-                <div><strong>BiblioApp</strong><span>Sistema de pedidos</span></div>
+                <span class="brand-mark">N</span>
+                <div><strong>Novaris ERP</strong><span>Operaciones inteligentes</span></div>
             </div>
             <ul class="sidebar-nav">
-                <li><a href="dashboard.html" class="active"><span class="nav-icon">IN</span>Inicio</a></li>
-                <li><a href="index.html"><span class="nav-icon">CA</span>Catalogo</a></li>
-                <li><a href="nuevo-pedido.html"><span class="nav-icon">NP</span>Nuevo pedido</a></li>
-                <li><a href="mis-prestamos.html" id="mis-prestamos-link" style="display:none;"><span class="nav-icon">MP</span>Mis pedidos</a></li>
-                <li><a href="admin/libros.html" id="admin-libros-link" style="display:none;"><span class="nav-icon">AD</span>Bibliotecario</a></li>
+                <li><a href="dashboard.html" class="active"><span class="nav-icon">DS</span>Dashboard</a></li>
+                <li><a href="index.html"><span class="nav-icon">PR</span>Productos</a></li>
+                <li><a href="inventario.html"><span class="nav-icon">IV</span>Inventario</a></li>
+                <li><a href="compras.html"><span class="nav-icon">CO</span>Compras</a></li>
+                <li><a href="ventas.html"><span class="nav-icon">VE</span>Ventas</a></li>
+                <li><a href="clientes-proveedores.html"><span class="nav-icon">CP</span>Clientes/Proveedores</a></li>
+                <li><a href="facturacion.html"><span class="nav-icon">FA</span>Facturacion</a></li>
+                <li><a href="importar-datos.html"><span class="nav-icon">ML</span>Prediccion</a></li>
+                <li><a href="reportes.html"><span class="nav-icon">RP</span>Reportes</a></li>
                 <li><a href="login.html" id="login-link"><span class="nav-icon">AC</span>Acceder</a></li>
                 <li><button id="logout-btn" style="display:none;"><span class="nav-icon">SA</span>Cerrar sesion</button></li>
             </ul>
-            <div class="sidebar-footer">Panel academico para gestion de solicitudes.</div>
+            <div class="sidebar-footer">ERP para empresas modernas<br>Inventarios, ventas y prediccion.</div>
         </aside>
 
         <div class="main-area">
             <header class="topbar">
                 <div class="topbar-title">
-                    <h1>Dashboard principal</h1>
-                    <p>Resumen operativo de pedidos y accesos frecuentes.</p>
+                    <h1>Dashboard Novaris</h1>
+                    <p>Vision operativa actualizada con la ultima base importada.</p>
                 </div>
                 <div class="topbar-actions">
-                    <a href="nuevo-pedido.html" class="btn btn-primary">Nuevo pedido</a>
-                    <a href="index.html" class="btn btn-secondary">Ver catalogo</a>
+                    <a href="importar-datos.html" class="btn btn-primary">Importar y predecir</a>
                 </div>
             </header>
 
             <main class="page-content">
                 <section class="dashboard-grid">
                     <article class="stat-card">
-                        <span class="stat-label">Pendientes</span>
-                        <strong class="stat-value" id="stat-pendientes">0</strong>
-                        <p>Solicitudes en revision.</p>
+                        <span class="stat-label">Total productos</span>
+                        <strong class="stat-value" id="dash-products">0</strong>
+                        <p>Productos detectados en la ultima importacion.</p>
                     </article>
                     <article class="stat-card">
-                        <span class="stat-label">Aprobados</span>
-                        <strong class="stat-value" id="stat-aprobados">0</strong>
-                        <p>Pedidos disponibles para atencion.</p>
+                        <span class="stat-label">Stock disponible</span>
+                        <strong class="stat-value" id="dash-stock">0</strong>
+                        <p>Unidades disponibles para abastecer ventas.</p>
                     </article>
                     <article class="stat-card">
-                        <span class="stat-label">Rechazados</span>
-                        <strong class="stat-value" id="stat-rechazados">0</strong>
-                        <p>Solicitudes no aprobadas.</p>
+                        <span class="stat-label">Bajo stock</span>
+                        <strong class="stat-value" id="dash-low-stock">0</strong>
+                        <p>Revision prioritaria para evitar desabastecimientos.</p>
                     </article>
                     <article class="stat-card">
-                        <span class="stat-label">Entregados</span>
-                        <strong class="stat-value" id="stat-entregados">0</strong>
-                        <p>Prestamos o devoluciones registradas.</p>
+                        <span class="stat-label">Prediccion demanda</span>
+                        <strong class="stat-value" id="dash-demand">0</strong>
+                        <p>Demanda estimada por el modelo.</p>
                     </article>
                 </section>
 
                 <section class="quick-actions-grid">
-                    <a href="nuevo-pedido.html" class="quick-action"><strong>Nuevo pedido</strong><span class="muted">Solicita un material.</span></a>
-                    <a href="mis-prestamos.html" class="quick-action"><strong>Mis pedidos</strong><span class="muted">Consulta tu historial.</span></a>
-                    <a href="index.html" class="quick-action"><strong>Catalogo</strong><span class="muted">Explora libros disponibles.</span></a>
-                    <a href="admin/prestamos.html" class="quick-action"><strong>Reportes</strong><span class="muted">Vista operativa para biblioteca.</span></a>
+                    <a href="index.html" class="quick-action"><strong>Productos</strong><span class="muted">Gestiona catalogo y stock.</span></a>
+                    <a href="inventario.html" class="quick-action"><strong>Inventario</strong><span class="muted">Controla entradas y salidas.</span></a>
+                    <a href="compras.html" class="quick-action"><strong>Compras</strong><span class="muted">Administra proveedores y ordenes.</span></a>
+                    <a href="ventas.html" class="quick-action"><strong>Ventas</strong><span class="muted">Monitorea pedidos y clientes.</span></a>
+                    <a href="clientes-proveedores.html" class="quick-action"><strong>Clientes/Proveedores</strong><span class="muted">Gestiona relaciones comerciales.</span></a>
+                    <a href="facturacion.html" class="quick-action"><strong>Facturacion</strong><span class="muted">Controla ordenes y cobros.</span></a>
+                    <a href="importar-datos.html" class="quick-action"><strong>Prediccion</strong><span class="muted">Sube CSV/Excel y actualiza todo.</span></a>
                 </section>
 
                 <section class="content-grid">
                     <div class="panel">
                         <div class="panel-header">
                             <div class="panel-title">
-                                <h2>Pedidos recientes</h2>
-                                <p>Ultimas solicitudes asociadas a tu cuenta.</p>
+                                <h2>Datos importados</h2>
+                                <p>Columnas y filas reales de la ultima base cargada.</p>
                             </div>
                         </div>
-                        <div id="dashboard-pedidos" class="table-wrap">
-                            <div class="empty-state">Inicia sesion para ver tus pedidos recientes.</div>
-                        </div>
+                        <div id="dashboard-import-table" class="empty-state">Importa un CSV o Excel para actualizar este tablero.</div>
                     </div>
                     <aside class="panel">
                         <div class="panel-title">
-                            <h2>Estado del servicio</h2>
-                            <p>Atencion regular de solicitudes academicas.</p>
+                            <h2>Prediccion</h2>
+                            <p>Resultado del modelo aplicado a los datos importados.</p>
                         </div>
-                        <div class="empty-state">
-                            <strong>Biblioteca Central</strong>
-                            <span>Horario referencial: lunes a viernes.</span>
+                        <div class="empty-state" id="dashboard-prediction">
+                            <strong>Sin prediccion cargada</strong>
+                            <span>Importa datos para ver demanda, stock estimado y clasificacion.</span>
                         </div>
                     </aside>
+                </section>
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <h2>Alertas urgentes</h2>
+                            <p>Productos agotados o que necesitan reposicion inmediata.</p>
+                        </div>
+                        <a href="reportes.html" class="btn btn-secondary">Ver reporte completo</a>
+                    </div>
+                    <div id="dashboard-alerts" class="empty-state">Sin alertas urgentes.</div>
+                </section>
+
+                <section class="content-grid">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <h2>Stock por producto</h2>
+                                <p>Productos con menor inventario para revisar reposicion.</p>
+                            </div>
+                        </div>
+                        <div id="dashboard-stock-chart" class="empty-state">Importa datos para ver el grafico.</div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <h2>Ventas o demanda</h2>
+                                <p>Productos con mayor movimiento en la base importada.</p>
+                            </div>
+                        </div>
+                        <div id="dashboard-sales-chart" class="empty-state">Importa datos para ver el grafico.</div>
+                    </div>
+                </section>
+
+                <section class="content-grid">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <h2>Demanda vs stock</h2>
+                                <p>Comparacion directa para ver que productos se venden mas rapido que el inventario disponible.</p>
+                            </div>
+                        </div>
+                        <div id="dashboard-demand-stock-chart" class="empty-state">Importa datos para ver demanda contra stock.</div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <h2>Compra sugerida</h2>
+                                <p>Unidades estimadas para cubrir demanda o punto de reposicion.</p>
+                            </div>
+                        </div>
+                        <div id="dashboard-purchase-chart" class="empty-state">Importa datos para ver compras sugeridas.</div>
+                    </div>
+                </section>
+
+                <section class="content-grid">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <h2>Entradas vs salidas</h2>
+                                <p>Balance operativo detectado en la base importada.</p>
+                            </div>
+                        </div>
+                        <div id="dashboard-flow-chart" class="empty-state">Importa datos para ver movimientos.</div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <h2>Modelo predictivo</h2>
+                                <p>Resumen visual de demanda predicha, stock predicho y clasificacion.</p>
+                            </div>
+                        </div>
+                        <div id="dashboard-model-chart" class="empty-state">Importa datos para ver el modelo.</div>
+                    </div>
+                </section>
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <h2>Resumen de columnas</h2>
+                            <p>Metricas numericas detectadas automaticamente segun los encabezados importados.</p>
+                        </div>
+                    </div>
+                    <div id="dashboard-columns" class="empty-state">Sin columnas importadas.</div>
                 </section>
             </main>
         </div>
     </div>
 
+    <script src="js/auth-guard.js?v=20260630-auth"></script>
+    
+    <script src="js/nav.js?v=20260630-stable-nav"></script>
     <script src="js/api.js?v=20260620-redesign"></script>
     <script src="js/auth.js?v=20260620-redesign"></script>
     <script src="js/dom.js?v=20260620-redesign"></script>
-    <script src="js/dashboard.js?v=20260620-redesign"></script>
+    <script src="js/import-store.js?v=20260630-expanded-aliases"></script>
+    <script src="js/dashboard.js?v=20260630-complete-charts"></script>
 </body>
 </html>
+
+

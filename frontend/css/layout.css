@@ -47,6 +47,10 @@
     list-style: none;
 }
 
+.sidebar-nav li:has(#login-link) {
+    order: -10;
+}
+
 .sidebar-nav a,
 .sidebar-nav button {
     width: 100%;
@@ -291,6 +295,90 @@
 .timeline li {
     padding-left: 1rem;
     border-left: 3px solid var(--color-border);
+}
+
+.bar-chart {
+    display: grid;
+    gap: 0.85rem;
+}
+
+.bar-row {
+    display: grid;
+    grid-template-columns: minmax(120px, 0.9fr) minmax(160px, 2fr) auto;
+    gap: 0.75rem;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.bar-label {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--color-primary-900);
+    font-weight: 650;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bar-track {
+    height: 12px;
+    overflow: hidden;
+    background: var(--color-surface-muted);
+    border-radius: 999px;
+}
+
+.bar-fill {
+    height: 100%;
+    min-width: 3px;
+    background: var(--color-primary-800);
+    border-radius: inherit;
+}
+
+.bar-value {
+    color: var(--color-text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.comparison-chart {
+    display: grid;
+    gap: 0.95rem;
+}
+
+.comparison-row {
+    display: grid;
+    grid-template-columns: minmax(120px, 0.75fr) minmax(180px, 1.6fr);
+    gap: 0.85rem;
+    align-items: center;
+}
+
+.comparison-bars {
+    display: grid;
+    gap: 0.38rem;
+}
+
+.comparison-line {
+    display: grid;
+    grid-template-columns: 72px minmax(100px, 1fr) 48px;
+    gap: 0.5rem;
+    align-items: center;
+    color: var(--color-text-muted);
+    font-size: 0.82rem;
+}
+
+.comparison-line i {
+    height: 9px;
+    display: block;
+    background: var(--color-primary-800);
+    border-radius: 999px;
+}
+
+.comparison-line.demand i {
+    background: var(--color-accent);
+}
+
+.comparison-line b,
+.comparison-line em {
+    font-style: normal;
+    font-weight: 650;
 }
 
 @media (max-width: 1040px) {

@@ -28,9 +28,13 @@ def solicitar_prestamo(db: Session, usuario_id: int, libro_id: int) -> Prestamo:
 
 
 def registrar_devolucion(
-    db: Session, prestamo_id: int, usuario_id: int, usuario_role: str
+    db: Session, prestamo_id: int, usuario_id: int, usuario_role: str, client_id: int | None = None
 ) -> Prestamo:
-    prestamo = prestamo_repo.get_prestamo_by_id(db, prestamo_id)
+    prestamo = (
+        prestamo_repo.get_prestamo_by_id(db, prestamo_id)
+        if client_id is None
+        else prestamo_repo.get_prestamo_by_id_client(db, prestamo_id, client_id)
+    )
     if not prestamo:
         raise HTTPException(status_code=404, detail="Préstamo no encontrado")
 
@@ -46,8 +50,10 @@ def registrar_devolucion(
 
 
 def obtener_prestamos_usuario(
-    db: Session, usuario_id: int, estado: str | None = None, limit: int = 20, offset: int = 0
+    db: Session, usuario_id: int, estado: str | None = None, limit: int = 20, offset: int = 0, client_id: int | None = None
 ):
+    if client_id:
+        return prestamo_repo.get_prestamos_by_usuario_client(db, usuario_id, client_id, estado, limit, offset)
     return prestamo_repo.get_prestamos_by_usuario(db, usuario_id, estado, limit, offset)
 
 
@@ -58,10 +64,11 @@ def obtener_todos_prestamos(
     libro_id: int | None = None,
     limit: int = 20,
     offset: int = 0,
+    client_id: int | None = None,
 ):
-    return prestamo_repo.get_all_prestamos(
-        db, estado, usuario_id, libro_id, limit, offset
-    )
+    if client_id:
+        return prestamo_repo.get_all_prestamos_client(db, client_id, estado, usuario_id, libro_id, limit, offset)
+    return prestamo_repo.get_all_prestamos(db, estado, usuario_id, libro_id, limit, offset)
 
 
 def es_prestamo_vencido(prestamo: Prestamo) -> bool:

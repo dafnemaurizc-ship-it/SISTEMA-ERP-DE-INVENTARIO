@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -17,5 +17,9 @@ class Libro(Base):
     stock_total = Column(Integer, nullable=False, default=1)
     descripcion = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Multi-tenant: cada libro pertenece a un client
+    client_id = Column(Integer, ForeignKey("clients.id"), nullable=True)
+    client = relationship("Client")
 
     prestamos = relationship("Prestamo", back_populates="libro", lazy="dynamic")

@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BiblioApp - Nuevo pedido</title>
+    <title>Novaris ERP - Nueva orden</title>
     <link rel="stylesheet" href="css/styles.css?v=20260620-redesign2">
     <link rel="stylesheet" href="css/components.css?v=20260620-redesign2">
     <link rel="stylesheet" href="css/layout.css?v=20260620-redesign2">
@@ -12,15 +12,17 @@
     <div class="app-shell">
         <aside class="sidebar">
             <div class="sidebar-brand">
-                <span class="brand-mark">BA</span>
-                <div><strong>BiblioApp</strong><span>Sistema de pedidos</span></div>
+                <span class="brand-mark">N</span>
+                <div><strong>Novaris ERP</strong><span>Ordenes de inventario</span></div>
             </div>
             <ul class="sidebar-nav">
-                <li><a href="dashboard.html"><span class="nav-icon">IN</span>Inicio</a></li>
-                <li><a href="index.html"><span class="nav-icon">CA</span>Catalogo</a></li>
-                <li><a href="nuevo-pedido.html" class="active"><span class="nav-icon">NP</span>Nuevo pedido</a></li>
-                <li><a href="mis-prestamos.html" id="mis-prestamos-link" style="display:none;"><span class="nav-icon">MP</span>Mis pedidos</a></li>
-                <li><a href="admin/libros.html" id="admin-libros-link" style="display:none;"><span class="nav-icon">AD</span>Bibliotecario</a></li>
+                <li><a href="dashboard.html"><span class="nav-icon">DS</span>Dashboard</a></li>
+                <li><a href="index.html"><span class="nav-icon">PR</span>Productos</a></li>
+                <li><a href="inventario.html"><span class="nav-icon">IV</span>Inventario</a></li>
+                <li><a href="importar-datos.html"><span class="nav-icon">ML</span>Prediccion</a></li>
+                <li><a href="nuevo-pedido.html" class="active"><span class="nav-icon">NO</span>Nueva orden</a></li>
+                <li><a href="mis-prestamos.html" id="mis-prestamos-link" style="display:none;"><span class="nav-icon">OR</span>Ordenes</a></li>
+                <li><a href="admin/libros.html" id="admin-libros-link" style="display:none;"><span class="nav-icon">AD</span>Admin ERP</a></li>
                 <li><a href="login.html" id="login-link"><span class="nav-icon">AC</span>Acceder</a></li>
                 <li><button id="logout-btn" style="display:none;"><span class="nav-icon">SA</span>Cerrar sesion</button></li>
             </ul>
@@ -30,8 +32,8 @@
         <div class="main-area">
             <header class="topbar">
                 <div class="topbar-title">
-                    <h1>Formulario de pedido</h1>
-                    <p>Selecciona un libro y registra la solicitud para biblioteca.</p>
+                    <h1>Formulario de orden</h1>
+                    <p>Selecciona un producto y registra la solicitud interna.</p>
                 </div>
                 <a href="index.html" class="btn btn-secondary">Volver al catalogo</a>
             </header>
@@ -47,7 +49,7 @@
                     <form id="pedido-form">
                         <div class="filters-grid">
                             <div class="form-group">
-                                <label for="libro-select">Libro solicitado</label>
+                                <label for="libro-select">Producto solicitado</label>
                                 <select id="libro-select" required>
                                     <option value="">Cargando catalogo...</option>
                                 </select>
@@ -67,8 +69,8 @@
                         </div>
                         <div class="form-group">
                             <label for="motivo">Motivo o comentario</label>
-                            <textarea id="motivo" placeholder="Indica brevemente el uso academico del material."></textarea>
-                            <span class="form-hint">El sistema registrara el prestamo con el libro seleccionado.</span>
+                                <textarea id="motivo" placeholder="Indica brevemente el motivo operativo."></textarea>
+                            <span class="form-hint">El sistema registrara la orden con el producto seleccionado.</span>
                         </div>
                         <div class="form-actions">
                             <a href="index.html" class="btn btn-secondary">Cancelar</a>
@@ -80,9 +82,14 @@
         </div>
     </div>
 
+    <script src="js/auth-guard.js?v=20260630-auth"></script>
+    
+    <script src="js/nav.js?v=20260630-stable-nav"></script>
     <script src="js/api.js?v=20260620-redesign"></script>
     <script src="js/auth.js?v=20260620-redesign"></script>
     <script src="js/dom.js?v=20260620-redesign"></script>
     <script src="js/pedido.js?v=20260620-redesign"></script>
 </body>
 </html>
+
+

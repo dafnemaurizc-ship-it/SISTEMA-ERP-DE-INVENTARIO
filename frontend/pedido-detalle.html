@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BiblioApp - Detalle del pedido</title>
+    <title>Novaris ERP - Detalle de orden</title>
     <link rel="stylesheet" href="css/styles.css?v=20260620-redesign2">
     <link rel="stylesheet" href="css/components.css?v=20260620-redesign2">
     <link rel="stylesheet" href="css/layout.css?v=20260620-redesign2">
@@ -12,15 +12,17 @@
     <div class="app-shell">
         <aside class="sidebar">
             <div class="sidebar-brand">
-                <span class="brand-mark">BA</span>
-                <div><strong>BiblioApp</strong><span>Ficha administrativa</span></div>
+                <span class="brand-mark">N</span>
+                <div><strong>Novaris ERP</strong><span>Ficha operativa</span></div>
             </div>
             <ul class="sidebar-nav">
-                <li><a href="dashboard.html"><span class="nav-icon">IN</span>Inicio</a></li>
-                <li><a href="index.html"><span class="nav-icon">CA</span>Catalogo</a></li>
-                <li><a href="nuevo-pedido.html"><span class="nav-icon">NP</span>Nuevo pedido</a></li>
-                <li><a href="mis-prestamos.html" class="active" id="mis-prestamos-link" style="display:none;"><span class="nav-icon">MP</span>Mis pedidos</a></li>
-                <li><a href="admin/libros.html" id="admin-libros-link" style="display:none;"><span class="nav-icon">AD</span>Bibliotecario</a></li>
+                <li><a href="dashboard.html"><span class="nav-icon">DS</span>Dashboard</a></li>
+                <li><a href="index.html"><span class="nav-icon">PR</span>Productos</a></li>
+                <li><a href="inventario.html"><span class="nav-icon">IV</span>Inventario</a></li>
+                <li><a href="importar-datos.html"><span class="nav-icon">ML</span>Prediccion</a></li>
+                <li><a href="nuevo-pedido.html"><span class="nav-icon">NO</span>Nueva orden</a></li>
+                <li><a href="mis-prestamos.html" class="active" id="mis-prestamos-link" style="display:none;"><span class="nav-icon">OR</span>Mis ordenes</a></li>
+                <li><a href="admin/libros.html" id="admin-libros-link" style="display:none;"><span class="nav-icon">AD</span>Admin ERP</a></li>
                 <li><a href="login.html" id="login-link"><span class="nav-icon">AC</span>Acceder</a></li>
                 <li><button id="logout-btn" style="display:none;"><span class="nav-icon">SA</span>Cerrar sesion</button></li>
             </ul>
@@ -30,24 +32,24 @@
         <div class="main-area">
             <header class="topbar">
                 <div class="topbar-title">
-                    <h1>Detalle del pedido</h1>
-                    <p>Ficha administrativa con datos del material, solicitante y seguimiento.</p>
+                    <h1>Detalle de orden</h1>
+                    <p>Ficha administrativa con datos del producto, solicitante y seguimiento.</p>
                 </div>
-                <a href="mis-prestamos.html" class="btn btn-secondary">Volver a mis pedidos</a>
+                <a href="mis-prestamos.html" class="btn btn-secondary">Volver a mis ordenes</a>
             </header>
 
             <main class="page-content">
                 <section class="detail-layout">
                     <article class="panel">
                         <div class="panel-title">
-                            <h2>Informacion del pedido</h2>
-                            <p>Selecciona una solicitud desde Mis pedidos para enlazar datos reales.</p>
+                            <h2>Informacion de la orden</h2>
+                            <p>Selecciona una solicitud desde Mis ordenes para enlazar datos reales.</p>
                         </div>
                         <div class="table-wrap">
                             <table>
                                 <tbody>
-                                    <tr><th>Numero de pedido</th><td>PED-0000</td></tr>
-                                    <tr><th>Libro solicitado</th><td>Material academico seleccionado</td></tr>
+                                    <tr><th>Numero de orden</th><td>ORD-0000</td></tr>
+                                    <tr><th>Producto solicitado</th><td>Producto de inventario seleccionado</td></tr>
                                     <tr><th>Solicitante</th><td>Usuario autenticado</td></tr>
                                     <tr><th>Fecha requerida</th><td>Segun formulario</td></tr>
                                     <tr><th>Estado</th><td><span class="badge badge-pendiente">Pendiente</span></td></tr>
@@ -58,11 +60,11 @@
                     <aside class="panel">
                         <div class="panel-title">
                             <h2>Historial</h2>
-                            <p>Cambios de estado y comentarios del bibliotecario.</p>
+                            <p>Cambios de estado y comentarios administrativos.</p>
                         </div>
                         <ul class="timeline">
                             <li><strong>Solicitud registrada</strong><br><span class="muted">Pendiente de revision.</span></li>
-                            <li><strong>Comentario bibliotecario</strong><br><span class="muted">Sin comentarios registrados.</span></li>
+                            <li><strong>Comentario administrativo</strong><br><span class="muted">Sin comentarios registrados.</span></li>
                         </ul>
                     </aside>
                 </section>
@@ -70,7 +72,12 @@
         </div>
     </div>
 
+    <script src="js/auth-guard.js?v=20260630-auth"></script>
+    
+    <script src="js/nav.js?v=20260630-stable-nav"></script>
     <script src="js/api.js?v=20260620-redesign"></script>
     <script src="js/auth.js?v=20260620-redesign"></script>
 </body>
 </html>
+
+

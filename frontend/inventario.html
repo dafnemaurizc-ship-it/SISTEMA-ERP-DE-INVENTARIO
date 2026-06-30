@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Novaris ERP - Inventario</title>
+    <link rel="stylesheet" href="css/styles.css?v=20260630-novaris" />
+    <link rel="stylesheet" href="css/components.css?v=20260630-novaris" />
+    <link rel="stylesheet" href="css/layout.css?v=20260630-novaris" />
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-mark">N</span>
+                <div>
+                    <strong>Novaris ERP</strong>
+                    <span>Inventario y stock</span>
+                </div>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard.html"><span class="nav-icon">DS</span>Dashboard</a></li>
+                <li><a href="index.html"><span class="nav-icon">PR</span>Productos</a></li>
+                <li><a href="inventario.html" class="active"><span class="nav-icon">IV</span>Inventario</a></li>
+                <li><a href="importar-datos.html"><span class="nav-icon">ML</span>Prediccion</a></li>
+                <li><a href="reportes.html"><span class="nav-icon">RP</span>Reportes</a></li>
+                <li><a href="login.html" id="login-link"><span class="nav-icon">AC</span>Acceder</a></li>
+                <li><button id="logout-btn" style="display:none;"><span class="nav-icon">SA</span>Cerrar sesion</button></li>
+            </ul>
+            <div class="sidebar-footer">Control operativo del inventario<br/>y movimientos de stock.</div>
+        </aside>
+
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-title">
+                    <h1>Inventario</h1>
+                    <p>Monitorea entradas, salidas y niveles de stock desde la ultima importacion.</p>
+                </div>
+                <div class="topbar-actions">
+                    <a href="index.html" class="btn btn-primary">Gestionar productos</a>
+                    <a href="importar-datos.html" class="btn btn-secondary">Predecir demanda</a>
+                </div>
+            </header>
+
+            <main class="page-content">
+                <section class="dashboard-grid">
+                    <article class="stat-card">
+                        <span class="stat-label">Stock total</span>
+                        <strong class="stat-value" id="inventory-stock">0</strong>
+                        <p>Unidades disponibles en almacen.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Entradas</span>
+                        <strong class="stat-value" id="inventory-incoming">0</strong>
+                        <p>Movimientos de abastecimiento detectados.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Salidas</span>
+                        <strong class="stat-value" id="inventory-outgoing">0</strong>
+                        <p>Ventas o movimientos de despacho detectados.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Alertas</span>
+                        <strong class="stat-value" id="inventory-alerts">0</strong>
+                        <p>Productos en revision por stock bajo.</p>
+                    </article>
+                </section>
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <h2>Resumen de inventario por producto</h2>
+                            <p>Vista agrupada desde la ultima importacion para evitar filas repetidas por mes.</p>
+                        </div>
+                    </div>
+                    <div id="inventory-table" class="empty-state">Importa datos para actualizar inventario.</div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/auth-guard.js?v=20260630-auth"></script>
+    
+    <script src="js/nav.js?v=20260630-stable-nav"></script>
+    <script src="js/api.js?v=20260630-localhost-api-v3"></script>
+    <script src="js/auth.js?v=20260630-login-token-v2"></script>
+    <script src="js/import-store.js?v=20260630-import-aliases-v5"></script>
+    <script>
+        function inventoryValue(row, aliases, fragments = []) {
+            const normalize = typeof normalizeColumnName === "function"
+                ? normalizeColumnName
+                : (value) => String(value || "").trim().toLowerCase().replace(/\s+/g, "_").replace(/[-.]/g, "_");
+            const normalized = Object.entries(row || {}).reduce((acc, [key, value]) => {
+                acc[normalize(key)] = value;
+                return acc;
+            }, {});
+            for (const alias of aliases) {
+                const value = normalized[normalize(alias)];
+                if (value !== undefined && value !== null && value !== "") return value;
+            }
+            for (const fragment of fragments) {
+                const normalizedFragment = normalize(fragment);
+                const match = Object.entries(normalized).find(([key, value]) =>
+                    key.includes(normalizedFragment) && value !== undefined && value !== null && value !== ""
+                );
+                if (match) return match[1];
+            }
+            return null;
+        }
+
+        function inventoryNumber(value) {
+            if (value === null || value === undefined || value === "") return 0;
+            const number = Number(String(value).trim().replace(",", "."));
+            return Number.isFinite(number) ? number : 0;
+        }
+
+        function buildInventorySummary(snapshot) {
+            const rawRows = snapshot?.raw_rows || [];
+            const normalizedRows = rawRows.length && typeof normalizeErpRows === "function"
+                ? normalizeErpRows(rawRows)
+                : snapshot?.rows || [];
+            const grouped = new Map();
+
+            normalizedRows.forEach((row, index) => {
+                const raw = rawRows[index] || {};
+                const product = row.product || inventoryValue(raw, ["product_name", "product", "producto", "product_detail", "item_name", "menu_item", "item"], ["product_detail", "product", "item_name"]) || `Producto ${index + 1}`;
+                const productId = inventoryValue(raw, ["product_id", "item_id", "sku", "codigo", "code"]) || product;
+                const current = grouped.get(product) || {
+                    Producto: product,
+                    Codigo: productId,
+                    Categoria: row.category || inventoryValue(raw, ["category", "categoria", "product_category", "item_category", "product_type"], ["category", "type"]) || "Sin categoria",
+                    "Stock actual": 0,
+                    "Ventas totales": 0,
+                    "Ultimo mes": "",
+                    "Registros importados": 0,
+                };
+                const stock = Number(row.stock || 0) || inventoryNumber(inventoryValue(raw, ["quantity_on_hand", "stock", "inventory", "inventory_level", "current_inventory", "on_hand"], ["quantity_on_hand", "stock", "inventory"]));
+                const sales = Number(row.quantity || 0) || inventoryNumber(inventoryValue(raw, ["unit_sales", "transaction_qty", "quantity", "qty", "sales", "ventas"], ["sales", "qty", "quantity"]));
+                const month = inventoryValue(raw, ["month", "mes", "period", "periodo"]);
+                current["Stock actual"] = stock;
+                current["Ventas totales"] += sales;
+                current["Ultimo mes"] = month || current["Ultimo mes"];
+                current["Registros importados"] += 1;
+                grouped.set(product, current);
+            });
+
+            return [...grouped.values()].sort((a, b) => b["Ventas totales"] - a["Ventas totales"]);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const snapshot = getImportSnapshot();
+            const totals = snapshot?.profile?.totals || {};
+            const format = (value) => new Intl.NumberFormat("es-PE", { maximumFractionDigits: 0 }).format(Number(value || 0));
+            document.getElementById("inventory-stock").textContent = format(totals.stock);
+            document.getElementById("inventory-incoming").textContent = format(totals.incoming);
+            document.getElementById("inventory-outgoing").textContent = format(totals.outgoing);
+            document.getElementById("inventory-alerts").textContent = format(totals.low_stock);
+            const summaryRows = buildInventorySummary(snapshot);
+            renderDynamicTable(
+                document.getElementById("inventory-table"),
+                summaryRows,
+                ["Producto", "Codigo", "Categoria", "Stock actual", "Ventas totales", "Ultimo mes", "Registros importados"],
+                "Importa datos para actualizar inventario."
+            );
+        });
+    </script>
+</body>
+</html>
+
+

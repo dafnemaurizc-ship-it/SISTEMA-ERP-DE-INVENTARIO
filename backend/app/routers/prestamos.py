@@ -48,7 +48,7 @@ def registrar_devolucion(
     current_user: Usuario = Depends(get_current_user),
 ):
     prestamo = prestamo_service.registrar_devolucion(
-        db, id, current_user.id, current_user.role
+        db, id, current_user.id, current_user.role, client_id=current_user.client_id
     )
     return build_prestamo_response(prestamo)
 
@@ -62,7 +62,7 @@ def obtener_mis_prestamos(
     current_user: Usuario = Depends(get_current_user),
 ):
     total, items = prestamo_service.obtener_prestamos_usuario(
-        db, current_user.id, estado, limit, offset
+        db, current_user.id, estado, limit, offset, client_id=current_user.client_id
     )
 
     items_response = []
@@ -84,9 +84,16 @@ def obtener_prestamos(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(require_admin),
 ):
-    total, items = prestamo_service.obtener_todos_prestamos(
-        db, estado, usuario_id, libro_id, limit, offset
-    )
+    # require_admin allows both platform admin and cliente_admin; if cliente_admin, limit to their client
+    client_id = current_user.client_id
+    if current_user.role == 'cliente_admin':
+        total, items = prestamo_service.obtener_todos_prestamos(
+            db, estado, usuario_id, libro_id, limit, offset, client_id=client_id
+        )
+    else:
+        total, items = prestamo_service.obtener_todos_prestamos(
+            db, estado, usuario_id, libro_id, limit, offset
+        )
 
     items_response = []
     for item in items:

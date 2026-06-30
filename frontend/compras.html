@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Novaris ERP - Compras</title>
+    <link rel="stylesheet" href="css/styles.css?v=20260630-novaris" />
+    <link rel="stylesheet" href="css/components.css?v=20260630-novaris" />
+    <link rel="stylesheet" href="css/layout.css?v=20260630-novaris" />
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-mark">N</span>
+                <div>
+                    <strong>Novaris ERP</strong>
+                    <span>Compras y proveedores</span>
+                </div>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard.html"><span class="nav-icon">DS</span>Dashboard</a></li>
+                <li><a href="index.html"><span class="nav-icon">PR</span>Productos</a></li>
+                <li><a href="inventario.html"><span class="nav-icon">IV</span>Inventario</a></li>
+                <li><a href="importar-datos.html"><span class="nav-icon">ML</span>Prediccion</a></li>
+                <li><a href="compras.html" class="active"><span class="nav-icon">CO</span>Compras</a></li>
+                <li><a href="ventas.html"><span class="nav-icon">VE</span>Ventas</a></li>
+                <li><a href="reportes.html"><span class="nav-icon">RP</span>Reportes</a></li>
+                <li><a href="login.html" id="login-link"><span class="nav-icon">AC</span>Acceder</a></li>
+                <li><button id="logout-btn" style="display:none;"><span class="nav-icon">SA</span>Cerrar sesión</button></li>
+            </ul>
+            <div class="sidebar-footer">Gestión de compras y proveedores<br/>para abastecimiento inteligente.</div>
+        </aside>
+
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-title">
+                    <h1>Compras</h1>
+                    <p>Prioriza compras segun los productos que tienen bajo stock.</p>
+                </div>
+                <div class="topbar-actions">
+                    <a href="dashboard.html" class="btn btn-secondary">Volver</a>
+                </div>
+            </header>
+
+            <main class="page-content">
+                <section class="dashboard-grid">
+                    <article class="stat-card">
+                        <span class="stat-label">Productos por reponer</span>
+                        <strong class="stat-value" id="purchase-low-stock">0</strong>
+                        <p>Articulos por debajo del minimo o punto de reposicion.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Stock faltante</span>
+                        <strong class="stat-value" id="purchase-missing-stock">0</strong>
+                        <p>Unidades sugeridas para completar el minimo.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Compra estimada</span>
+                        <strong class="stat-value" id="purchase-estimated-cost">$0</strong>
+                        <p>Costo aproximado segun precio o costo importado.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Demanda afectada</span>
+                        <strong class="stat-value" id="purchase-affected-demand">0</strong>
+                        <p>Ventas estimadas en productos con alerta.</p>
+                    </article>
+                </section>
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <h2>Productos que faltan en stock</h2>
+                            <p>Lista generada desde la ultima importacion de datos.</p>
+                        </div>
+                    </div>
+                    <div id="purchase-products-table" class="empty-state">Importa datos para ver productos con bajo stock.</div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/auth-guard.js?v=20260630-auth"></script>
+    
+    <script src="js/nav.js?v=20260630-stable-nav"></script>
+    <script src="js/api.js?v=20260630-localhost-api-v3"></script>
+    <script src="js/auth.js?v=20260620-redesign"></script>
+    <script src="js/import-store.js?v=20260630-import-aliases-v5"></script>
+    <script src="js/compras-ventas.js?v=20260630-random-forest-docker-v6"></script>
+</body>
+</html>
+
+

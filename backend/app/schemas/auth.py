@@ -1,15 +1,20 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 from datetime import datetime
 
 
 class RegisterRequest(BaseModel):
     nombre: str = Field(..., min_length=2, max_length=100)
-    email: EmailStr
+    email: str
     password: str = Field(..., min_length=8)
+    # Optional company (client) fields for multi-tenant registration
+    company_name: str | None = Field(None, min_length=2, max_length=200)
+    ruc: str | None = None
+    contact_name: str | None = None
+    phone: str | None = None
 
 
 class LoginRequest(BaseModel):
-    email: EmailStr
+    email: str
     password: str
 
 
@@ -20,6 +25,7 @@ class UsuarioResponse(BaseModel):
     role: str
     activo: bool
     created_at: datetime
+    client_id: int | None = None
 
     class Config:
         from_attributes = True

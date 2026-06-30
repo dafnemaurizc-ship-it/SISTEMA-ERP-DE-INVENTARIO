@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BiblioApp - Mis pedidos</title>
+    <title>Novaris ERP - Mis ordenes</title>
     <link rel="stylesheet" href="css/styles.css?v=20260620-redesign2">
     <link rel="stylesheet" href="css/components.css?v=20260620-redesign2">
     <link rel="stylesheet" href="css/layout.css?v=20260620-redesign2">
@@ -12,15 +12,17 @@
     <div class="app-shell">
         <aside class="sidebar">
             <div class="sidebar-brand">
-                <span class="brand-mark">BA</span>
-                <div><strong>BiblioApp</strong><span>Sistema de pedidos</span></div>
+                <span class="brand-mark">N</span>
+                <div><strong>Novaris ERP</strong><span>Ordenes internas</span></div>
             </div>
             <ul class="sidebar-nav">
-                <li><a href="dashboard.html"><span class="nav-icon">IN</span>Inicio</a></li>
-                <li><a href="index.html"><span class="nav-icon">CA</span>Catalogo</a></li>
-                <li><a href="nuevo-pedido.html"><span class="nav-icon">NP</span>Nuevo pedido</a></li>
-                <li><a href="mis-prestamos.html" class="active" id="mis-prestamos-link" style="display:none;"><span class="nav-icon">MP</span>Mis pedidos</a></li>
-                <li><a href="admin/libros.html" id="admin-link" style="display:none;"><span class="nav-icon">AD</span>Bibliotecario</a></li>
+                <li><a href="dashboard.html"><span class="nav-icon">DS</span>Dashboard</a></li>
+                <li><a href="index.html"><span class="nav-icon">PR</span>Productos</a></li>
+                <li><a href="inventario.html"><span class="nav-icon">IV</span>Inventario</a></li>
+                <li><a href="importar-datos.html"><span class="nav-icon">ML</span>Prediccion</a></li>
+                <li><a href="nuevo-pedido.html"><span class="nav-icon">NO</span>Nueva orden</a></li>
+                <li><a href="mis-prestamos.html" class="active" id="mis-prestamos-link" style="display:none;"><span class="nav-icon">OR</span>Mis ordenes</a></li>
+                <li><a href="admin/libros.html" id="admin-link" style="display:none;"><span class="nav-icon">AD</span>Admin ERP</a></li>
                 <li><button id="logout-btn" class="active"><span class="nav-icon">SA</span>Cerrar sesion</button></li>
             </ul>
             <div class="sidebar-footer">Consulta el avance de tus solicitudes.</div>
@@ -29,17 +31,17 @@
         <div class="main-area">
             <header class="topbar">
                 <div class="topbar-title">
-                    <h1>Mis pedidos</h1>
-                    <p>Seguimiento de solicitudes, prestamos activos y devoluciones.</p>
+                    <h1>Mis ordenes</h1>
+                    <p>Seguimiento de solicitudes internas, entregas y devoluciones.</p>
                 </div>
-                <a href="nuevo-pedido.html" class="btn btn-primary">Nuevo pedido</a>
+                <a href="nuevo-pedido.html" class="btn btn-primary">Nueva orden</a>
             </header>
 
             <main class="page-content">
                 <section class="panel">
                     <div class="panel-header">
                         <div class="panel-title">
-                            <h2>Historial de pedidos</h2>
+                            <h2>Historial de ordenes</h2>
                             <p>Estados diferenciados para facilitar el seguimiento.</p>
                         </div>
                     </div>
@@ -51,9 +53,14 @@
         </div>
     </div>
 
+    <script src="js/auth-guard.js?v=20260630-auth"></script>
+    
+    <script src="js/nav.js?v=20260630-stable-nav"></script>
     <script src="js/api.js?v=20260620-redesign"></script>
     <script src="js/auth.js?v=20260620-redesign"></script>
     <script src="js/dom.js?v=20260620-redesign"></script>
     <script src="js/prestamos.js?v=20260620-redesign"></script>
 </body>
 </html>
+
+

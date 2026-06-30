@@ -61,6 +61,19 @@
     border: 0;
 }
 
+.btn-link-external {
+    min-height: 32px;
+    padding: 0.45rem 0.65rem;
+    font-size: 0.82rem;
+}
+
+.external-links {
+    min-width: 360px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
 .btn:disabled {
     opacity: 0.58;
     cursor: not-allowed;

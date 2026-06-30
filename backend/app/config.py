@@ -17,7 +17,8 @@ class Settings(BaseSettings):
     jwt_expire_hours: int = 24
     debug: bool = False
     allowed_origins_value: str = Field(
-        "http://localhost:3000", validation_alias="ALLOWED_ORIGINS"
+        "http://localhost:3000,http://127.0.0.1:3000,http://127.0.0.1:5173,http://localhost:5173,http://127.0.0.1:5500,http://localhost:5500",
+        validation_alias="ALLOWED_ORIGINS"
     )
 
     @field_validator("debug", mode="before")

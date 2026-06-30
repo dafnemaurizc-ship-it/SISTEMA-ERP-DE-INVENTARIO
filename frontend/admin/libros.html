@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BiblioApp - Gestion de libros</title>
+    <title>Novaris ERP - Gestion de productos</title>
     <link rel="stylesheet" href="../css/styles.css?v=20260620-redesign2">
     <link rel="stylesheet" href="../css/components.css?v=20260620-redesign2">
     <link rel="stylesheet" href="../css/layout.css?v=20260620-redesign2">
@@ -12,25 +12,27 @@
     <div class="app-shell">
         <aside class="sidebar">
             <div class="sidebar-brand">
-                <span class="brand-mark">BA</span>
-                <div><strong>BiblioApp</strong><span>Panel bibliotecario</span></div>
+                <span class="brand-mark">N</span>
+                <div><strong>Novaris ERP</strong><span>Administracion ERP</span></div>
             </div>
             <ul class="sidebar-nav">
-                <li><a href="../dashboard.html"><span class="nav-icon">IN</span>Inicio</a></li>
-                <li><a href="../index.html"><span class="nav-icon">CA</span>Catalogo</a></li>
-                <li><a href="libros.html" class="active"><span class="nav-icon">LB</span>Libros</a></li>
-                <li><a href="prestamos.html"><span class="nav-icon">PE</span>Pedidos</a></li>
+                <li><a href="../dashboard.html"><span class="nav-icon">DS</span>Dashboard</a></li>
+                <li><a href="../index.html"><span class="nav-icon">PR</span>Productos</a></li>
+                <li><a href="../inventario.html"><span class="nav-icon">IV</span>Inventario</a></li>
+                <li><a href="../importar-datos.html"><span class="nav-icon">ML</span>Prediccion</a></li>
+                <li><a href="libros.html" class="active"><span class="nav-icon">GP</span>Gestion</a></li>
+                <li><a href="prestamos.html"><span class="nav-icon">OP</span>Ordenes</a></li>
                 <li><a href="usuarios.html"><span class="nav-icon">US</span>Usuarios</a></li>
                 <li><button id="logout-btn"><span class="nav-icon">SA</span>Cerrar sesion</button></li>
             </ul>
-            <div class="sidebar-footer">Gestion administrativa de biblioteca.</div>
+            <div class="sidebar-footer">Gestion administrativa de inventario.</div>
         </aside>
 
         <div class="main-area">
             <header class="topbar">
                 <div class="topbar-title">
-                    <h1>Gestion de libros</h1>
-                    <p>Registra, revisa y administra materiales disponibles.</p>
+                    <h1>Gestion de productos</h1>
+                    <p>Registra, revisa y administra productos disponibles.</p>
                 </div>
                 <a href="prestamos.html" class="btn btn-secondary">Ver pedidos</a>
             </header>
@@ -39,20 +41,20 @@
                 <section class="content-grid">
                     <div class="panel">
                         <div class="panel-title">
-                            <h2>Agregar nuevo libro</h2>
-                            <p>Completa los datos bibliograficos principales.</p>
+                            <h2>Agregar nuevo producto</h2>
+                            <p>Completa los datos principales del inventario.</p>
                         </div>
                         <form id="libro-form">
                             <div class="form-group">
-                                <label for="titulo">Titulo</label>
+                                <label for="titulo">Producto</label>
                                 <input type="text" id="titulo" required>
                             </div>
                             <div class="form-group">
-                                <label for="autor">Autor</label>
+                                <label for="autor">Marca o proveedor</label>
                                 <input type="text" id="autor" required>
                             </div>
                             <div class="form-group">
-                                <label for="isbn">Codigo ISBN</label>
+                                <label for="isbn">SKU o codigo</label>
                                 <input type="text" id="isbn">
                             </div>
                             <div class="form-group">
@@ -61,7 +63,7 @@
                             </div>
                             <div class="filters-grid">
                                 <div class="form-group">
-                                    <label for="anio_publicacion">Ano</label>
+                                    <label for="anio_publicacion">Ano de registro</label>
                                     <input type="number" id="anio_publicacion">
                                 </div>
                                 <div class="form-group">
@@ -74,7 +76,7 @@
                                 <textarea id="descripcion"></textarea>
                             </div>
                             <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">Agregar libro</button>
+                                <button type="submit" class="btn btn-primary">Agregar producto</button>
                             </div>
                         </form>
                     </div>
@@ -82,12 +84,12 @@
                     <div class="panel">
                         <div class="panel-header">
                             <div class="panel-title">
-                                <h2>Libros registrados</h2>
+                                <h2>Productos registrados</h2>
                                 <p>Inventario actual con disponibilidad.</p>
                             </div>
                         </div>
                         <div id="libros-container" class="libros-table">
-                            <div class="empty-state">Cargando libros...</div>
+                            <div class="empty-state">Cargando productos...</div>
                         </div>
                     </div>
                 </section>
@@ -95,9 +97,14 @@
         </div>
     </div>
 
+    <script src="../js/auth-guard.js?v=20260630-auth"></script>
+    
+    <script src="../js/nav.js?v=20260630-stable-nav"></script>
     <script src="../js/api.js?v=20260620-redesign"></script>
     <script src="../js/auth.js?v=20260620-redesign"></script>
     <script src="../js/dom.js?v=20260620-redesign"></script>
     <script src="../js/admin.js?v=20260620-redesign"></script>
 </body>
 </html>
+
+

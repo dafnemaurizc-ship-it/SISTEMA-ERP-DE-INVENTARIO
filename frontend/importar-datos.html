@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Novaris ERP - Prediccion de inventario</title>
+    <link rel="stylesheet" href="css/styles.css?v=20260630-novaris" />
+    <link rel="stylesheet" href="css/components.css?v=20260630-novaris" />
+    <link rel="stylesheet" href="css/layout.css?v=20260630-novaris" />
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-mark">N</span>
+                <div>
+                    <strong>Novaris ERP</strong>
+                    <span>Inventario predictivo</span>
+                </div>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="dashboard.html"><span class="nav-icon">DS</span>Dashboard</a></li>
+                <li><a href="index.html"><span class="nav-icon">PR</span>Productos</a></li>
+                <li><a href="inventario.html"><span class="nav-icon">IV</span>Inventario</a></li>
+                <li><a href="compras.html"><span class="nav-icon">CO</span>Compras</a></li>
+                <li><a href="ventas.html"><span class="nav-icon">VE</span>Ventas</a></li>
+                <li><a href="reportes.html"><span class="nav-icon">RP</span>Reportes</a></li>
+                <li><a href="importar-datos.html" class="active"><span class="nav-icon">ML</span>Prediccion</a></li>
+                <li><a href="login.html" id="login-link"><span class="nav-icon">AC</span>Acceder</a></li>
+                <li><button id="logout-btn" style="display:none;"><span class="nav-icon">SA</span>Cerrar sesion</button></li>
+            </ul>
+            <div class="sidebar-footer">Sube archivos CSV/Excel para alimentar<br/>la prediccion operativa.</div>
+        </aside>
+
+        <div class="main-area">
+            <header class="topbar">
+                <div class="topbar-title">
+                    <h1>Prediccion de inventario</h1>
+                    <p>Sube inventarios o movimientos y obten regresion, clasificacion o ambas con Random Forest.</p>
+                </div>
+                <div class="topbar-actions">
+                    <a href="reportes.html" class="btn btn-primary">Ver reporte de prediccion</a>
+                    <a href="inventario.html" class="btn btn-secondary">Volver a inventario</a>
+                </div>
+            </header>
+
+            <main class="page-content">
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <h2>Archivo de entrada</h2>
+                            <p>Acepta columnas ERP como producto, SKU, fecha, ventas, salidas, stock, inventario, entradas, stock_minimo, precio, costo y categoria.</p>
+                        </div>
+                    </div>
+                    <form id="import-form" class="filters-grid">
+                        <div class="form-group">
+                            <label for="file-input">Archivo CSV o Excel</label>
+                            <input type="file" id="file-input" accept=".csv,.xlsx" required />
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Procesar archivo</button>
+                        </div>
+                    </form>
+                    <div id="import-result" class="empty-state">Aun no has subido ningun archivo.</div>
+                </section>
+
+                <section class="dashboard-grid">
+                    <article class="stat-card">
+                        <span class="stat-label">Filas</span>
+                        <strong class="stat-value" id="import-stat-rows">0</strong>
+                        <p>Registros procesados.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Columnas</span>
+                        <strong class="stat-value" id="import-stat-columns">0</strong>
+                        <p>Campos detectados.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Stock estimado</span>
+                        <strong class="stat-value" id="import-stat-stock">0</strong>
+                        <p>Prediccion de inventario.</p>
+                    </article>
+                    <article class="stat-card">
+                        <span class="stat-label">Demanda</span>
+                        <strong class="stat-value" id="import-stat-demand">0</strong>
+                        <p>Prediccion de salidas/ventas.</p>
+                    </article>
+                </section>
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <h2>Datos importados</h2>
+                            <p>Vista dinamica de las columnas recibidas en el ultimo archivo.</p>
+                        </div>
+                    </div>
+                    <div id="import-table" class="empty-state">Sin datos importados.</div>
+                </section>
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <h2>Prediccion por columnas</h2>
+                            <p>Valor estimado es la prediccion numerica. Nivel interpreta ese resultado como bajo, normal o alto para facilitar decisiones.</p>
+                        </div>
+                    </div>
+                    <div id="import-column-predictions" class="empty-state">Sin predicciones por columna.</div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/auth-guard.js?v=20260630-auth"></script>
+    
+    <script src="js/nav.js?v=20260630-stable-nav"></script>
+    <script src="js/api.js?v=20260630-localhost-api-v3"></script>
+    <script src="js/auth.js?v=20260630-timeout-auth"></script>
+    <script src="js/import-store.js?v=20260630-import-aliases-v5"></script>
+    <script>
+        const formatInt = (value) => new Intl.NumberFormat('es-PE', { maximumFractionDigits: 0 }).format(Number(value || 0));
+
+        function renderColumnPredictions(snapshot) {
+            const rows = Object.entries(snapshot.profile?.column_predictions || {}).map(([column, prediction]) => ({
+                columna: column,
+                valor_estimado: prediction.predicted,
+                tendencia: prediction.trend,
+                nivel: prediction.classification,
+                promedio: snapshot.profile.numeric[column]?.avg,
+                minimo: snapshot.profile.numeric[column]?.min,
+                maximo: snapshot.profile.numeric[column]?.max,
+            }));
+            renderDynamicTable(
+                document.getElementById('import-column-predictions'),
+                rows,
+                ['columna', 'valor_estimado', 'tendencia', 'nivel', 'promedio', 'minimo', 'maximo'],
+                'Sin predicciones por columna.'
+            );
+        }
+
+        function updateImportStats(snapshot) {
+            document.getElementById('import-stat-rows').textContent = formatInt(snapshot.imported_rows);
+            document.getElementById('import-stat-columns').textContent = formatInt(snapshot.columns.length);
+            document.getElementById('import-stat-stock').textContent = formatInt(snapshot.prediction?.predicted_stock);
+            document.getElementById('import-stat-demand').textContent = formatInt(snapshot.prediction?.predicted_demand);
+        }
+
+        async function renderImportResult(data, note) {
+            const resultBox = document.getElementById('import-result');
+            const tableBox = document.getElementById('import-table');
+            const snapshot = saveImportSnapshot(data);
+            await saveFullImportRows(snapshot, data);
+            updateImportStats(snapshot);
+            resultBox.innerHTML = `
+                <strong>Archivo procesado correctamente.</strong>
+                ${note ? `<span>${note}</span>` : ''}
+                <span>Filas importadas: ${snapshot.imported_rows}</span>
+                <span>Columnas detectadas: ${snapshot.columns.join(', ') || 'Sin encabezados'}</span>
+                <span>Demanda pronosticada: ${snapshot.prediction.predicted_demand}</span>
+                <span>Stock estimado: ${snapshot.prediction.predicted_stock}</span>
+                <span>Tarea: ${snapshot.prediction.task}</span>
+                <span>Metodo: ${snapshot.prediction.algorithm}</span>
+                <span>Clasificacion: ${snapshot.prediction.classification}</span>
+            `;
+            renderDynamicTable(tableBox, snapshot.raw_rows, snapshot.columns, 'Sin datos importados.');
+            renderColumnPredictions(snapshot);
+        }
+
+        document.getElementById('import-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const fileInput = document.getElementById('file-input');
+            const resultBox = document.getElementById('import-result');
+            const submitButton = event.submitter || event.target.querySelector('button[type="submit"]');
+            if (!fileInput.files.length) {
+                resultBox.innerHTML = '<strong>Selecciona un archivo.</strong>';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            resultBox.innerHTML = '<strong>Procesando archivo...</strong><span>Si el backend no responde, se usara el calculo local para CSV.</span>';
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.textContent = 'Procesando...';
+            }
+
+            try {
+                const file = fileInput.files[0];
+                if (file.name.toLowerCase().endsWith('.csv')) {
+                    const text = await file.text();
+                    const rawRows = parseDelimitedText(text);
+                    if (!rawRows.length) {
+                        resultBox.innerHTML = '<strong>No se encontraron filas validas en el archivo.</strong>';
+                        return;
+                    }
+                    await renderImportResult(createLocalImportPayload(rawRows), 'CSV procesado localmente.');
+                    return;
+                }
+
+                const token = localStorage.getItem('token');
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 3500);
+                const response = await fetch('http://localhost:8000/api/v1/imports/inventory/upload-and-predict', {
+                    method: 'POST',
+                    headers: token ? { Authorization: `Bearer ${token}` } : {},
+                    body: formData,
+                    signal: controller.signal,
+                });
+                clearTimeout(timeoutId);
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.detail || 'Error al procesar el archivo');
+                await renderImportResult(data);
+            } catch (error) {
+                const file = fileInput.files[0];
+                if (!file.name.toLowerCase().endsWith('.csv')) {
+                    resultBox.innerHTML = `<strong>No se pudo procesar el archivo.</strong><span>${error.message}</span><span>Para Excel necesitas el backend activo. Para pruebas inmediatas usa CSV.</span>`;
+                    return;
+                }
+
+                resultBox.innerHTML = `<strong>No se pudo procesar el CSV.</strong><span>${error.message}</span>`;
+            } finally {
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Procesar archivo';
+                }
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const snapshot = getImportSnapshot();
+            if (snapshot) {
+                updateImportStats(snapshot);
+                renderDynamicTable(document.getElementById('import-table'), snapshot.raw_rows, snapshot.columns, 'Sin datos importados.');
+                renderColumnPredictions(snapshot);
+            }
+        });
+    </script>
+</body>
+</html>
+
+

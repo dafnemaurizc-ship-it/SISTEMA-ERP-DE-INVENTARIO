@@ -15,5 +15,8 @@ class Prestamo(Base):
     fecha_devolucion_real = Column(Date, nullable=True)
     estado = Column(String(15), nullable=False, default="activo")
 
+    # Multi-tenant: movimiento asociado a client (derivado de usuario/libro)
+    client_id = Column(Integer, ForeignKey("clients.id"), nullable=True)
+
     usuario = relationship("Usuario", back_populates="prestamos")
     libro = relationship("Libro", back_populates="prestamos")

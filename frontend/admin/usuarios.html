@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BiblioApp - Usuarios</title>
+    <title>Novaris ERP - Usuarios</title>
     <link rel="stylesheet" href="../css/styles.css?v=20260620-redesign2">
     <link rel="stylesheet" href="../css/components.css?v=20260620-redesign2">
     <link rel="stylesheet" href="../css/layout.css?v=20260620-redesign2">
@@ -12,14 +12,16 @@
     <div class="app-shell">
         <aside class="sidebar">
             <div class="sidebar-brand">
-                <span class="brand-mark">BA</span>
-                <div><strong>BiblioApp</strong><span>Panel bibliotecario</span></div>
+                <span class="brand-mark">N</span>
+                <div><strong>Novaris ERP</strong><span>Administracion ERP</span></div>
             </div>
             <ul class="sidebar-nav">
-                <li><a href="../dashboard.html"><span class="nav-icon">IN</span>Inicio</a></li>
-                <li><a href="../index.html"><span class="nav-icon">CA</span>Catalogo</a></li>
-                <li><a href="libros.html"><span class="nav-icon">LB</span>Libros</a></li>
-                <li><a href="prestamos.html"><span class="nav-icon">PE</span>Pedidos</a></li>
+                <li><a href="../dashboard.html"><span class="nav-icon">DS</span>Dashboard</a></li>
+                <li><a href="../index.html"><span class="nav-icon">PR</span>Productos</a></li>
+                <li><a href="../inventario.html"><span class="nav-icon">IV</span>Inventario</a></li>
+                <li><a href="../importar-datos.html"><span class="nav-icon">ML</span>Prediccion</a></li>
+                <li><a href="libros.html"><span class="nav-icon">GP</span>Gestion</a></li>
+                <li><a href="prestamos.html"><span class="nav-icon">OP</span>Ordenes</a></li>
                 <li><a href="usuarios.html" class="active"><span class="nav-icon">US</span>Usuarios</a></li>
                 <li><button id="logout-btn"><span class="nav-icon">SA</span>Cerrar sesion</button></li>
             </ul>
@@ -30,7 +32,7 @@
             <header class="topbar">
                 <div class="topbar-title">
                     <h1>Usuarios</h1>
-                    <p>Vista preparada para gestion de estudiantes, docentes y personal.</p>
+                    <p>Vista preparada para gestion de equipos, operadores y administradores.</p>
                 </div>
             </header>
 
@@ -51,9 +53,14 @@
         </div>
     </div>
 
+    <script src="../js/auth-guard.js?v=20260630-auth"></script>
+    
+    <script src="../js/nav.js?v=20260630-stable-nav"></script>
     <script src="../js/api.js?v=20260620-redesign"></script>
     <script src="../js/auth.js?v=20260620-redesign"></script>
     <script src="../js/dom.js?v=20260620-redesign"></script>
     <script src="../js/admin.js?v=20260620-redesign"></script>
 </body>
 </html>
+
+
