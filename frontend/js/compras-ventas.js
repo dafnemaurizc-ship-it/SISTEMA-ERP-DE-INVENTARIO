@@ -93,6 +93,63 @@ function commerceUnitCostFromRow(raw, normalized = {}) {
     return 0;
 }
 
+function commerceInferCategory(product, category) {
+    const current = String(category || "").trim();
+    if (current && current !== "Sin categoria") return current;
+
+    const text = commerceNormalizeText(product);
+    if (/(cola|soda|juice|jugo|drink|bebida|agua|tea|cafe|cranberry|orange|mango|berry)/.test(text)) return "Bebidas";
+    if (/(snack|galleta|pan|postre|dulce|cream|helado)/.test(text)) return "Snacks";
+    if (/(comida|menu|plato|food|meal|pollo|carne|pizza|burger)/.test(text)) return "Comidas";
+    if (/(ropa|shirt|camisa|polo|zapato|shoe|textil)/.test(text)) return "Textil";
+    if (/(accesorio|mouse|teclado|cable|funda)/.test(text)) return "Accesorios";
+    if (/(monitor|periferico|electron|computo|ssd|disco|laptop|tablet|telefono|phone|celular)/.test(text)) return "Tecnologia";
+    return current || "General";
+}
+
+function commerceEstimatedSalePrice(row) {
+    const directPrice = Number(row.precio || 0);
+    if (Number.isFinite(directPrice) && directPrice > 0) {
+        return { price: directPrice, mode: "Precio importado" };
+    }
+
+    const ventas = Number(row.ventas || 0);
+    const importedRevenue = Number(row.ingresoEstimado || 0);
+    if (ventas > 0 && importedRevenue > 0) {
+        return { price: importedRevenue / ventas, mode: "Ingresos importados" };
+    }
+
+    const unitCost = Number(row.costo || row.costoUnitario || 0);
+    if (Number.isFinite(unitCost) && unitCost > 0) {
+        return { price: unitCost * 1.35, mode: "Costo + margen" };
+    }
+
+    const text = commerceNormalizeText(`${row.producto} ${row.categoria}`);
+    if (/(cola|soda|juice|jugo|drink|bebida|agua|tea|cafe|cranberry|orange|mango|berry)/.test(text)) {
+        return { price: 4.5, mode: "Estimacion ERP" };
+    }
+    if (/(snack|galleta|pan|postre|dulce|cream|helado)/.test(text)) {
+        return { price: 6.5, mode: "Estimacion ERP" };
+    }
+    if (/(comida|menu|plato|food|meal|pollo|carne|pizza|burger)/.test(text)) {
+        return { price: 18, mode: "Estimacion ERP" };
+    }
+    if (/(ropa|shirt|camisa|polo|zapato|shoe|textil)/.test(text)) {
+        return { price: 49, mode: "Estimacion ERP" };
+    }
+    if (/(accesorio|mouse|teclado|cable|funda)/.test(text)) {
+        return { price: 35, mode: "Estimacion ERP" };
+    }
+    if (/(monitor|periferico|electron|computo|ssd|disco)/.test(text)) {
+        return { price: 220, mode: "Estimacion ERP" };
+    }
+    if (/(laptop|notebook|tablet|telefono|phone|celular)/.test(text)) {
+        return { price: 1200, mode: "Estimacion ERP" };
+    }
+
+    return { price: 10, mode: "Estimacion ERP" };
+}
+
 function commerceProductRows(dataset) {
     const rawRows = dataset?.raw_rows || [];
     const normalizedRows = rawRows.length && typeof normalizeErpRows === "function"
@@ -109,7 +166,10 @@ function commerceProductRows(dataset) {
             commerceFirstValue(raw, ["product_name", "product", "producto", "product_detail", "product_type", "item_name", "menu_item", "description", "descripcion", "nombre", "name", "sku", "codigo", "product_id", "item"], ["product_detail", "item_name", "menu_item"]) ||
             `Producto ${index + 1}`
         );
-        const category = row.category || commerceFirstValue(raw, ["categoria", "category", "rubro", "linea", "familia", "department", "item_category", "product_category", "product_type", "menu_category", "type", "tipo"], ["category", "categoria", "type"]) || "Sin categoria";
+        const category = commerceInferCategory(
+            name,
+            row.category || commerceFirstValue(raw, ["categoria", "category", "rubro", "linea", "familia", "department", "item_category", "product_category", "product_type", "menu_category", "type", "tipo"], ["category", "categoria", "type"]) || "Sin categoria"
+        );
         const stockValue = commerceNumber(raw, ["stock_quantity", "stock", "inventory_level", "inventory", "inventario", "stock_total", "stock_actual", "current_stock", "available_stock", "existencias", "disponible", "current_inventory", "inventory_quantity", "on_hand", "onhand"], ["stock", "inventory", "on_hand"]);
         const minimumValue = commerceNumber(raw, ["reorder_level", "reorder_point", "stock_minimo", "minimum_stock", "minimo", "punto_reorden"]);
         const salesValue = commerceNumber(raw, ["sales_volume", "units_sold", "demand_forecast", "ventas", "salidas", "egresos", "cantidad", "quantity", "qty", "transaction_qty", "quantity_sold", "qty_sold", "sold_quantity", "order_quantity", "ordered_quantity", "items_sold", "total_quantity", "count", "demanda"], ["transaction_qty", "quantity", "qty", "sold", "ventas", "sales", "cantidad"]);
@@ -133,6 +193,7 @@ function commerceProductRows(dataset) {
             historialStock: [],
             historialEntradas: [],
             costosUnitarios: [],
+            priceEstimateMode: "",
         };
 
         const normalizedStock = Number(row.stock);
@@ -170,7 +231,7 @@ function commerceProductRows(dataset) {
         else if (Number.isFinite(normalizedCost) && normalizedCost > 0) current.costo = normalizedCost;
         const resolvedUnitCost = commerceUnitCostFromRow(raw, row);
         if (resolvedUnitCost > 0) current.costosUnitarios.push(resolvedUnitCost);
-        current.categoria = current.categoria === "Sin categoria" ? category : current.categoria;
+        current.categoria = current.categoria === "Sin categoria" || current.categoria === "General" ? category : current.categoria;
         current.registros += 1;
         grouped.set(name, current);
     });
@@ -179,13 +240,19 @@ function commerceProductRows(dataset) {
         const promedioVentas = item.registros ? item.ventas / item.registros : 0;
         const minimo = item.minimo || (promedioVentas > 0 ? Math.round(promedioVentas) : 0);
         const faltante = Math.max(0, minimo - item.stock);
-        const ingresoEstimado = item.ingresoEstimado || item.ventas * (item.precio || 0);
-        const precio = item.precio || (item.ventas > 0 && ingresoEstimado > 0 ? ingresoEstimado / item.ventas : 0);
-        const costoUnitario = item.costo || commerceMedian(item.costosUnitarios) || precio;
+        const estimatedPrice = commerceEstimatedSalePrice({
+            ...item,
+            costoUnitario: commerceMedian(item.costosUnitarios),
+        });
+        const precio = estimatedPrice.price;
+        const ingresoEstimado = item.ingresoEstimado > 0 ? item.ingresoEstimado : item.ventas * precio;
+        const costoUnitario = item.costo || commerceMedian(item.costosUnitarios) || precio * 0.7;
         return {
             ...item,
+            categoria: commerceInferCategory(item.producto, item.categoria),
             precio: Math.round(precio * 100) / 100,
             costoUnitario: Math.round(costoUnitario * 100) / 100,
+            priceEstimateMode: estimatedPrice.mode,
             minimo,
             ventas: Math.round(item.ventas * 100) / 100,
             promedioVentas: Math.round(promedioVentas * 100) / 100,
@@ -630,6 +697,7 @@ async function loadTopSalesProducts() {
             { label: "Stock actual", value: (row) => commerceFormatNumber(row.stock) },
             { label: "Precio", value: (row) => commerceFormatMoney(row.precio) },
             { label: "Ingresos estimados", value: (row) => commerceFormatMoney(row.ingresoEstimado) },
+            { label: "Metodo", value: (row) => row.priceEstimateMode || "Estimacion ERP" },
             {
                 label: "Estado",
                 value: (row) => row.stock <= 0 ? "Sin stock" : row.stock <= row.minimo ? "Reponer" : "Disponible",
