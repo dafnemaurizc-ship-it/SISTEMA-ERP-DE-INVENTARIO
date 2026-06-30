@@ -24,9 +24,43 @@ function saveLocalUsers(users) {
     localStorage.setItem("local_users", JSON.stringify(users));
 }
 
+function normalizeEmail(email) {
+    return String(email || "").trim().toLowerCase();
+}
+
+function getSavedProfiles() {
+    try {
+        return JSON.parse(localStorage.getItem("saved_profiles") || "{}");
+    } catch (error) {
+        return {};
+    }
+}
+
+function saveProfile(profile) {
+    const email = normalizeEmail(profile.email);
+    if (!email) return profile;
+    const profiles = getSavedProfiles();
+    profiles[email] = {
+        ...(profiles[email] || {}),
+        ...profile,
+        email,
+        updated_at: new Date().toISOString(),
+    };
+    localStorage.setItem("saved_profiles", JSON.stringify(profiles));
+    return profiles[email];
+}
+
+function getSavedProfile(email) {
+    return getSavedProfiles()[normalizeEmail(email)] || null;
+}
+
+function setCurrentUserProfile(profile) {
+    localStorage.setItem("user_data", JSON.stringify(saveProfile(profile)));
+}
+
 function localRegister(nombre, email, password, companyName = "", ruc = "", phone = "") {
     const users = getLocalUsers();
-    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedEmail = normalizeEmail(email);
 
     if (password.length < 8) {
         throw new Error("La contrasena debe tener minimo 8 caracteres.");
@@ -50,6 +84,7 @@ function localRegister(nombre, email, password, companyName = "", ruc = "", phon
     };
     users.push(user);
     saveLocalUsers(users);
+    saveProfile(user);
     return { ...user, local: true };
 }
 
@@ -65,15 +100,11 @@ function localLogin(email, password) {
 
     const token = `local-demo-token-${user.id}`;
     localStorage.setItem("token", token);
-    localStorage.setItem(
-        "user_data",
-        JSON.stringify({
-            email: user.email,
-            role: user.role,
-            nombre: user.nombre,
-            local: true,
-        })
-    );
+    setCurrentUserProfile({
+        ...user,
+        ...(getSavedProfile(user.email) || {}),
+        local: true,
+    });
 
     return { access_token: token, token_type: "bearer", role: user.role, local: true };
 }
@@ -95,23 +126,33 @@ async function login(email, password) {
     }
 
     localStorage.setItem("token", response.access_token);
-    localStorage.setItem(
-        "user_data",
-        JSON.stringify({
-            email,
-            role: response.role,
-        })
-    );
+    setCurrentUserProfile({
+        ...(getSavedProfile(email) || {}),
+        email,
+        role: response.role,
+        local: false,
+    });
 
     return response;
 }
 
 async function register(nombre, email, password, companyName = "", ruc = "", phone = "") {
+    const profile = {
+        nombre,
+        email,
+        role: companyName || ruc ? "cliente_admin" : "lector",
+        company_name: companyName,
+        ruc,
+        phone,
+        activo: true,
+    };
     try {
-        return await apiFetch("/auth/register", {
+        const response = await apiFetch("/auth/register", {
             method: "POST",
             body: JSON.stringify({ nombre, email, password, company_name: companyName, ruc, phone }),
         });
+        saveProfile({ ...profile, ...response });
+        return response;
     } catch (error) {
         if (!error.isNetworkError) throw error;
         return localRegister(nombre, email, password, companyName, ruc, phone);

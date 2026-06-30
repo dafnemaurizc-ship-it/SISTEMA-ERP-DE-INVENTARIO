@@ -52,7 +52,7 @@
                             <p>Registra un nuevo cliente o proveedor.</p>
                         </div>
                     </div>
-                    <form class="filters-grid">
+                    <form class="filters-grid" id="relation-form">
                         <div class="form-group">
                             <label for="tipo-relacion">Tipo</label>
                             <select id="tipo-relacion">
@@ -100,7 +100,7 @@
                             <thead>
                                 <tr><th>Tipo</th><th>Nombre</th><th>Documento</th><th>Correo</th><th>Estado</th></tr>
                             </thead>
-                            <tbody>
+                            <tbody id="relations-body">
                                 <tr><td>Cliente</td><td>Grupo Sol</td><td>20500000001</td><td>ventas@gruposol.com</td><td><span class="badge badge-success">Activo</span></td></tr>
                                 <tr><td>Proveedor</td><td>TechSupply</td><td>20411122233</td><td>compras@techsupply.com</td><td><span class="badge badge-warning">Pendiente</span></td></tr>
                                 <tr><td>Cliente</td><td>Sigma Labs</td><td>20622233344</td><td>ops@sigma.com</td><td><span class="badge badge-info">En revisión</span></td></tr>
@@ -112,13 +112,14 @@
         </div>
     </div>
 
-    <script src="js/auth-guard.js?v=20260630-auth"></script>
+    <script src="js/auth-guard.js?v=20260630-login-required"></script>
     
     <script src="js/nav.js?v=20260630-stable-nav"></script>
     <script src="js/api.js?v=20260630-localhost-api-v3"></script>
-    <script src="js/auth.js?v=20260620-redesign"></script>
+    <script src="js/auth.js?v=20260630-profiles-v2"></script>
     <script src="js/import-store.js?v=20260630-import-aliases-v5"></script>
-    <script src="js/compras-ventas.js?v=20260630-costos-v9"></script>
+    <script src="js/compras-ventas.js?v=20260630-rf-fallback-v2"></script>
+    <script src="js/clientes-proveedores.js?v=20260630-local-relations"></script>
 </body>
 </html>
 
