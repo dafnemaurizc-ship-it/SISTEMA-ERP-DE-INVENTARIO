@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Novaris ERP - Facturación</title>
+    <title>Novaris ERP - Facturacion</title>
     <link rel="stylesheet" href="css/styles.css?v=20260630-novaris" />
     <link rel="stylesheet" href="css/components.css?v=20260630-logo" />
-    <link rel="stylesheet" href="css/layout.css?v=20260630-logo" />
+    <link rel="stylesheet" href="css/layout.css?v=20260630-billing-v1" />
 </head>
 <body>
     <div class="app-shell">
@@ -15,7 +15,7 @@
                 <span class="brand-mark">N</span>
                 <div>
                     <strong>Novaris ERP</strong>
-                    <span>Facturación y órdenes</span>
+                    <span>Facturacion y comprobantes</span>
                 </div>
             </div>
             <ul class="sidebar-nav">
@@ -26,79 +26,278 @@
                 <li><a href="compras.html"><span class="nav-icon">CO</span>Compras</a></li>
                 <li><a href="ventas.html"><span class="nav-icon">VE</span>Ventas</a></li>
                 <li><a href="clientes-proveedores.html"><span class="nav-icon">CP</span>Clientes/Proveedores</a></li>
-                <li><a href="facturacion.html" class="active"><span class="nav-icon">FA</span>Facturación</a></li>
+                <li>
+                    <a href="facturacion.html" class="active"><span class="nav-icon">FA</span>Facturacion</a>
+                    <ul class="sidebar-subnav">
+                        <li><a href="#nueva-venta">Nueva venta</a></li>
+                        <li><a href="#emitir-comprobante">Emitir comprobante</a></li>
+                        <li><a href="#historial">Historial</a></li>
+                        <li><a href="#clientes">Clientes</a></li>
+                        <li><a href="#formas-pago">Formas de pago</a></li>
+                        <li><a href="#caja">Caja</a></li>
+                    </ul>
+                </li>
                 <li><a href="reportes.html"><span class="nav-icon">RP</span>Reportes</a></li>
                 <li><a href="login.html" id="login-link"><span class="nav-icon">AC</span>Acceder</a></li>
-                <li><button id="logout-btn" style="display:none;"><span class="nav-icon">SA</span>Cerrar sesión</button></li>
+                <li><button id="logout-btn" style="display:none;"><span class="nav-icon">SA</span>Cerrar sesion</button></li>
             </ul>
-            <div class="sidebar-footer">Módulo de facturación y órdenes<br/>para operar el negocio.</div>
+            <div class="sidebar-footer">Modulo de facturacion<br/>para ventas, comprobantes y caja.</div>
         </aside>
 
         <div class="main-area">
             <header class="topbar">
                 <div class="topbar-title">
-                    <h1>Facturación</h1>
-                    <p>Gestiona órdenes, documentos y seguimiento de pagos.</p>
+                    <h1>&#128196; Modulo: Facturacion</h1>
+                    <p>Registra ventas, emite comprobantes, administra clientes y controla pagos.</p>
                 </div>
                 <div class="topbar-actions">
                     <a href="dashboard.html" class="btn btn-secondary">Volver</a>
                 </div>
             </header>
 
-            <main class="page-content">
+            <main class="page-content billing-page">
                 <section class="dashboard-grid">
                     <article class="stat-card">
-                        <span class="stat-label">Órdenes vigentes</span>
-                        <strong class="stat-value">18</strong>
-                        <p>Pedidos en proceso de cobro o despacho.</p>
+                        <span class="stat-label">Ventas del dia</span>
+                        <strong class="stat-value">24</strong>
+                        <p>Operaciones listas para comprobante.</p>
                     </article>
                     <article class="stat-card">
-                        <span class="stat-label">Facturas emitidas</span>
+                        <span class="stat-label">Facturas</span>
                         <strong class="stat-value">142</strong>
-                        <p>Documentos emitidos este trimestre.</p>
+                        <p>Comprobantes emitidos este trimestre.</p>
                     </article>
                     <article class="stat-card">
                         <span class="stat-label">Por cobrar</span>
-                        <strong class="stat-value">$24.6k</strong>
-                        <p>Saldo pendiente de cobro.</p>
+                        <strong class="stat-value">S/ 24.6k</strong>
+                        <p>Saldo pendiente de pago.</p>
                     </article>
                     <article class="stat-card">
-                        <span class="stat-label">Vencidas</span>
-                        <strong class="stat-value">4</strong>
-                        <p>Facturas con atraso de pago.</p>
+                        <span class="stat-label">Caja del dia</span>
+                        <strong class="stat-value">S/ 8.4k</strong>
+                        <p>Ingresos menos egresos registrados.</p>
                     </article>
                 </section>
 
-                <section class="panel">
+                <section class="billing-menu panel">
+                    <div class="panel-title">
+                        <h2>Menu de facturacion</h2>
+                        <p>Accesos del modulo segun el flujo solicitado.</p>
+                    </div>
+                    <nav class="module-nav" aria-label="Menu interno de facturacion">
+                        <a href="#nueva-venta">Nueva venta</a>
+                        <a href="#emitir-comprobante">Emitir comprobante</a>
+                        <a href="#historial">Historial</a>
+                        <a href="#clientes">Clientes</a>
+                        <a href="#formas-pago">Formas de pago</a>
+                        <a href="#caja">Caja</a>
+                    </nav>
+                </section>
+
+                <section class="billing-grid">
+                    <article class="panel" id="nueva-venta">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <h2>1. Nueva venta</h2>
+                                <p>Registrar una venta con cliente, productos, impuestos y forma de pago.</p>
+                            </div>
+                            <span class="badge badge-info">Operativo</span>
+                        </div>
+                        <form class="billing-form">
+                            <div class="form-group">
+                                <label for="venta-cliente">Cliente</label>
+                                <select id="venta-cliente">
+                                    <option>Grupo Sol</option>
+                                    <option>Sigma Labs</option>
+                                    <option>Cliente final</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="venta-producto">Producto</label>
+                                <input type="text" id="venta-producto" placeholder="Buscar producto o SKU" />
+                            </div>
+                            <div class="form-group">
+                                <label for="venta-cantidad">Cantidad</label>
+                                <input type="number" id="venta-cantidad" min="1" value="1" />
+                            </div>
+                            <div class="form-group">
+                                <label for="venta-descuento">Descuento</label>
+                                <input type="number" id="venta-descuento" min="0" value="0" />
+                            </div>
+                            <div class="form-group">
+                                <label for="venta-igv">Impuestos IGV</label>
+                                <select id="venta-igv">
+                                    <option>18%</option>
+                                    <option>Exonerado</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="venta-pago">Forma de pago</label>
+                                <select id="venta-pago">
+                                    <option>Efectivo</option>
+                                    <option>Tarjeta</option>
+                                    <option>Transferencia</option>
+                                    <option>Yape</option>
+                                    <option>Plin</option>
+                                    <option>Credito</option>
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn-primary">Registrar venta</button>
+                        </form>
+                    </article>
+
+                    <article class="panel" id="emitir-comprobante">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <h2>2. Emitir comprobante</h2>
+                                <p>Selecciona el tipo de documento comercial.</p>
+                            </div>
+                        </div>
+                        <div class="billing-options">
+                            <button type="button" class="btn btn-primary">Factura</button>
+                            <button type="button" class="btn btn-secondary">Boleta</button>
+                            <button type="button" class="btn btn-secondary" disabled>Nota de credito V2</button>
+                            <button type="button" class="btn btn-secondary" disabled>Nota de debito V2</button>
+                        </div>
+                        <div class="billing-summary">
+                            <div><span>Subtotal</span><strong>S/ 1,000.00</strong></div>
+                            <div><span>IGV 18%</span><strong>S/ 180.00</strong></div>
+                            <div><span>Total</span><strong>S/ 1,180.00</strong></div>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="panel" id="historial">
                     <div class="panel-header">
                         <div class="panel-title">
-                            <h2>Últimas órdenes</h2>
-                            <p>Vista resumida de documentos comerciales.</p>
+                            <h2>3. Historial de comprobantes</h2>
+                            <p>Tabla de documentos emitidos con acciones operativas.</p>
                         </div>
                     </div>
                     <div class="table-wrap">
                         <table>
                             <thead>
-                                <tr><th>Cliente</th><th>Documento</th><th>Fecha</th><th>Total</th><th>Estado</th></tr>
+                                <tr>
+                                    <th>N de comprobante</th>
+                                    <th>Fecha</th>
+                                    <th>Cliente</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
                             </thead>
                             <tbody>
-                                <tr><td>Grupo Sol</td><td>F001-0021</td><td>2026-06-29</td><td>$3,240</td><td><span class="badge badge-success">Pagada</span></td></tr>
-                                <tr><td>Sigma Labs</td><td>F001-0022</td><td>2026-06-28</td><td>$1,980</td><td><span class="badge badge-warning">Pendiente</span></td></tr>
-                                <tr><td>Innova S.A.</td><td>F001-0023</td><td>2026-06-27</td><td>$2,460</td><td><span class="badge badge-info">Procesando</span></td></tr>
+                                <tr>
+                                    <td>F001-0021</td>
+                                    <td>2026-06-29</td>
+                                    <td>Grupo Sol</td>
+                                    <td>S/ 3,240.00</td>
+                                    <td><span class="badge badge-success">Pagada</span></td>
+                                    <td class="table-actions"><button class="btn btn-secondary">Ver</button><button class="btn btn-secondary">PDF</button><button class="btn btn-secondary">Reenviar</button></td>
+                                </tr>
+                                <tr>
+                                    <td>B001-0148</td>
+                                    <td>2026-06-28</td>
+                                    <td>Cliente final</td>
+                                    <td>S/ 480.00</td>
+                                    <td><span class="badge badge-warning">Pendiente</span></td>
+                                    <td class="table-actions"><button class="btn btn-secondary">Ver</button><button class="btn btn-secondary">PDF</button><button class="btn btn-secondary">Reenviar</button></td>
+                                </tr>
+                                <tr>
+                                    <td>F001-0023</td>
+                                    <td>2026-06-27</td>
+                                    <td>Innova S.A.</td>
+                                    <td>S/ 2,460.00</td>
+                                    <td><span class="badge badge-info">Procesando</span></td>
+                                    <td class="table-actions"><button class="btn btn-secondary">Ver</button><button class="btn btn-secondary">PDF</button><button class="btn btn-secondary">Reenviar</button></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
+                </section>
+
+                <section class="billing-grid">
+                    <article class="panel" id="clientes">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <h2>4. Clientes</h2>
+                                <p>Administra personas y empresas para facturacion.</p>
+                            </div>
+                        </div>
+                        <div class="feature-list two-columns">
+                            <span>Personas</span>
+                            <span>Empresas</span>
+                            <span>DNI</span>
+                            <span>RUC</span>
+                            <span>Razon social</span>
+                            <span>Direccion</span>
+                            <span>Correo</span>
+                            <span>Telefono</span>
+                        </div>
+                    </article>
+
+                    <article class="panel" id="formas-pago">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <h2>5. Formas de pago</h2>
+                                <p>Medios disponibles para registrar cobros.</p>
+                            </div>
+                        </div>
+                        <div class="payment-grid">
+                            <span class="badge badge-success">Efectivo</span>
+                            <span class="badge badge-info">Tarjeta</span>
+                            <span class="badge badge-info">Transferencia</span>
+                            <span class="badge badge-warning">Yape</span>
+                            <span class="badge badge-warning">Plin</span>
+                            <span class="badge badge-info">Credito</span>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="billing-grid">
+                    <article class="panel" id="caja">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <h2>6. Caja</h2>
+                                <p>Opcional para V1: control diario de efectivo y movimientos.</p>
+                            </div>
+                            <span class="badge badge-warning">V1 opcional</span>
+                        </div>
+                        <div class="cash-grid">
+                            <div><span>Apertura de caja</span><strong>S/ 500.00</strong></div>
+                            <div><span>Ingresos</span><strong>S/ 8,920.00</strong></div>
+                            <div><span>Egresos</span><strong>S/ 980.00</strong></div>
+                            <div><span>Saldo del dia</span><strong>S/ 8,440.00</strong></div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary">Apertura</button>
+                            <button type="button" class="btn btn-primary">Cierre de caja</button>
+                        </div>
+                    </article>
+
+                    <article class="panel" id="sunat">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <h2>7. Integracion con SUNAT</h2>
+                                <p>Version futura para validacion y facturacion electronica.</p>
+                            </div>
+                            <span class="badge badge-info">V2</span>
+                        </div>
+                        <div class="feature-list">
+                            <span>Consulta de RUC</span>
+                            <span>Validacion de datos del cliente</span>
+                            <span>Estado del comprobante</span>
+                            <span>Facturacion electronica cuando el sistema evolucione</span>
+                        </div>
+                    </article>
                 </section>
             </main>
         </div>
     </div>
 
     <script src="js/auth-guard.js?v=20260630-login-required"></script>
-    
     <script src="js/nav.js?v=20260630-stable-nav"></script>
     <script src="js/api.js?v=20260620-redesign"></script>
     <script src="js/auth.js?v=20260630-profiles-v2"></script>
 </body>
 </html>
-
-
