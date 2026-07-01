@@ -253,9 +253,8 @@
     border: 1px solid rgba(15, 159, 174, 0.22);
     border-radius: 999px;
     color: var(--color-primary-900);
-    font-size: 0.72rem;
+    font-size: 1.45rem;
     font-weight: 850;
-    text-transform: uppercase;
 }
 
 .visual-meter {
@@ -270,8 +269,9 @@
         radial-gradient(circle at center, #fff 58%, transparent 60%),
         conic-gradient(var(--color-accent) var(--meter), #e5edf4 0);
     border-radius: 999px;
-    font-size: 0.85rem;
+    font-size: 0.78rem;
     font-weight: 800;
+    text-align: center;
 }
 
 .quick-action {
