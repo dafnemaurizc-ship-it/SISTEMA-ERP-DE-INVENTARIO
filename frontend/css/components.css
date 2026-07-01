@@ -1,5 +1,5 @@
 .btn {
-    min-height: 40px;
+    min-height: 42px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -11,25 +11,27 @@
     font-weight: 650;
     line-height: 1;
     cursor: pointer;
-    transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
 }
 
 .btn:hover {
     text-decoration: none;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
 }
 
 .btn-primary {
-    background: var(--color-primary-800);
+    background: linear-gradient(135deg, var(--color-primary-800), var(--color-primary-700));
     color: #fff;
+    border-color: rgba(255, 255, 255, 0.08);
 }
 
 .btn-primary:hover {
-    background: var(--color-primary-900);
+    background: linear-gradient(135deg, var(--color-primary-900), var(--color-primary-800));
 }
 
 .btn-secondary {
-    background: var(--color-surface);
+    background: var(--color-surface-raised);
     color: var(--color-primary-800);
     border-color: var(--color-border);
 }
@@ -93,7 +95,18 @@
 }
 
 .panel {
-    padding: 1.25rem;
+    position: relative;
+    overflow: hidden;
+    padding: 1.35rem;
+}
+
+.panel::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--color-accent), var(--color-primary-700));
+    opacity: 0.85;
 }
 
 .panel-header {
@@ -117,6 +130,7 @@
     width: min(100%, 480px);
     padding: 2rem;
     box-shadow: var(--shadow-md);
+    border-color: var(--color-border-strong);
 }
 
 .form-group {
@@ -159,7 +173,7 @@
     font-size: 0;
     font-weight: 800;
     letter-spacing: 0;
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 10px 22px rgba(12, 127, 143, 0.16);
 }
 
 .badge {
@@ -171,6 +185,7 @@
     border-radius: 999px;
     font-size: 0.78rem;
     font-weight: 700;
+    border: 1px solid rgba(255, 255, 255, 0.55);
     white-space: nowrap;
 }
 
@@ -205,12 +220,13 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
 }
 
 .book-card:hover {
     border-color: var(--color-border-strong);
     box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
 }
 
 .book-card-content {
@@ -253,6 +269,7 @@
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
 }
 
 table {
@@ -270,12 +287,12 @@ table {
 
 thead {
     color: var(--color-primary-900);
-    background: var(--color-surface-muted);
+    background: #f3f7fb;
 }
 
 th,
 td {
-    padding: 0.9rem 1rem;
+    padding: 0.95rem 1rem;
     text-align: left;
     border-bottom: 1px solid var(--color-border);
     vertical-align: middle;
@@ -284,12 +301,12 @@ td {
 th {
     font-size: 0.78rem;
     font-weight: 800;
-    letter-spacing: 0.04em;
+    letter-spacing: 0;
     text-transform: uppercase;
 }
 
 tbody tr:hover {
-    background: #fbfdff;
+    background: #f8fcff;
 }
 
 .empty-state {
@@ -335,6 +352,7 @@ tbody tr:hover {
 .pagination button:hover:not(:disabled) {
     color: #fff;
     background: var(--color-primary-800);
+    box-shadow: var(--shadow-sm);
 }
 
 .pagination button:disabled {

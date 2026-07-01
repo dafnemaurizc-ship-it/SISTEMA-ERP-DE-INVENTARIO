@@ -1,27 +1,31 @@
 :root {
-    --color-primary-900: #0f2742;
-    --color-primary-800: #173a5e;
-    --color-primary-700: #1f4f7a;
-    --color-accent: #0ea5b7;
-    --color-success: #15803d;
+    --color-primary-950: #071827;
+    --color-primary-900: #0d253c;
+    --color-primary-800: #143a5c;
+    --color-primary-700: #1d5682;
+    --color-accent: #0f9fae;
+    --color-accent-strong: #0c7f8f;
+    --color-accent-soft: #e6f7f9;
+    --color-success: #147a3d;
     --color-success-soft: #dcfce7;
-    --color-warning: #b45309;
+    --color-warning: #a15c07;
     --color-warning-soft: #fef3c7;
-    --color-danger: #b91c1c;
+    --color-danger: #ad1d1d;
     --color-danger-soft: #fee2e2;
     --color-info-soft: #e0f2fe;
-    --color-bg: #f4f7fb;
+    --color-bg: #eef4f8;
     --color-surface: #ffffff;
-    --color-surface-muted: #f8fafc;
-    --color-border: #d9e2ec;
-    --color-border-strong: #c3ceda;
-    --color-text: #243447;
-    --color-text-muted: #66788a;
-    --shadow-sm: 0 1px 2px rgba(15, 39, 66, 0.06);
-    --shadow-md: 0 10px 24px rgba(15, 39, 66, 0.08);
+    --color-surface-muted: #f6f9fc;
+    --color-surface-raised: #fbfdff;
+    --color-border: #d7e1ea;
+    --color-border-strong: #b7c7d6;
+    --color-text: #1c2b3a;
+    --color-text-muted: #64758a;
+    --shadow-sm: 0 1px 2px rgba(7, 24, 39, 0.06), 0 1px 8px rgba(7, 24, 39, 0.04);
+    --shadow-md: 0 16px 36px rgba(7, 24, 39, 0.10);
     --radius-sm: 6px;
     --radius-md: 8px;
-    --sidebar-width: 268px;
+    --sidebar-width: 280px;
 }
 
 * {
@@ -37,7 +41,8 @@ html {
 body {
     min-height: 100vh;
     color: var(--color-text);
-    background: var(--color-bg);
+    background:
+        linear-gradient(180deg, #f8fbfe 0, var(--color-bg) 340px);
     font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     line-height: 1.5;
 }
@@ -61,7 +66,7 @@ h2,
 h3,
 h4 {
     color: var(--color-primary-900);
-    font-weight: 700;
+    font-weight: 750;
     line-height: 1.2;
 }
 
@@ -88,10 +93,11 @@ select {
     min-height: 44px;
     padding: 0.68rem 0.8rem;
     color: var(--color-text);
-    background: var(--color-surface);
+    background: var(--color-surface-raised);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-sm);
     font: inherit;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
 }
 
 textarea {
