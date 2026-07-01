@@ -246,17 +246,19 @@ function renderVisualSummary(rows, snapshot) {
     const topPurchase = [...rows]
         .filter((row) => Number(row.compra || 0) > 0)
         .sort((a, b) => Number(b.compra || 0) - Number(a.compra || 0))[0];
-    const coverage = Math.round((totals.stock / Math.max(1, totals.stock + totals.compra)) * 100);
     const productCount = snapshot?.profile?.totals?.products || rows.length;
+    const coveredCount = rows.filter((row) => Number(row.compra || 0) <= 0).length;
+    const alertCount = Math.max(0, productCount - coveredCount);
+    const coverage = productCount ? Math.round((coveredCount / productCount) * 100) : 0;
 
-    updateVisualCard(cards[0], "\uD83D\uDCE6", "Productos importados", `${formatInteger(productCount)} productos unicos detectados`);
-    updateVisualCard(cards[1], "\uD83D\uDCC8", "Mayor demanda", `${topDemand?.producto || "-"} - ${formatInteger(topDemand?.ventas)} unidades`);
+    updateVisualCard(cards[0], "Datos", "Productos importados", `${formatInteger(productCount)} productos unicos detectados`);
+    updateVisualCard(cards[1], "Venta", "Mayor demanda", `${topDemand?.producto || "-"} - ${formatInteger(topDemand?.ventas)} unidades`);
     if (topPurchase) {
-        updateVisualCard(cards[2], "\uD83D\uDED2", "Reposicion sugerida", `${topPurchase.producto} - comprar ${formatInteger(topPurchase.compra)}`);
+        updateVisualCard(cards[2], "Stock", "Reposicion sugerida", `${topPurchase.producto} - comprar ${formatInteger(topPurchase.compra)}`);
     } else {
-        updateVisualCard(cards[2], "\u2705", "Sin reposicion urgente", `Stock suficiente en ${formatInteger(productCount)} productos`);
+        updateVisualCard(cards[2], "OK", "Sin reposicion urgente", `Stock suficiente en ${formatInteger(productCount)} productos`);
     }
-    updateMeterCard(cards[3], coverage, "Cobertura de stock", `${formatInteger(totals.stock)} unidades disponibles`);
+    updateMeterCard(cards[3], coverage, "Productos cubiertos", `${formatInteger(coveredCount)} sin alerta / ${formatInteger(alertCount)} por revisar`);
 }
 
 function updateVisualCard(card, icon, title, detail) {
@@ -274,7 +276,7 @@ function updateMeterCard(card, percent, title, detail) {
     const detailElement = card.querySelector("span:last-child");
     if (meter) {
         meter.style.setProperty("--meter", `${Math.max(0, Math.min(100, percent))}%`);
-        meter.textContent = `${percent}%`;
+        meter.textContent = percent >= 100 ? "OK" : `${percent}%`;
     }
     if (titleElement) titleElement.textContent = title;
     if (detailElement) detailElement.textContent = detail;

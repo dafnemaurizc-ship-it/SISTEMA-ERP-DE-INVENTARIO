@@ -57,14 +57,14 @@
 .sidebar-nav a,
 .sidebar-nav button {
     width: 100%;
-    min-height: 44px;
+    min-height: 46px;
     display: flex;
     align-items: center;
-    gap: 0.65rem;
-    padding: 0.68rem 0.78rem;
+    justify-content: flex-start;
+    padding: 0.72rem 0.95rem;
     color: #dbeafe;
-    background: transparent;
-    border: 0;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: var(--radius-sm);
     font: inherit;
     font-weight: 650;
@@ -76,7 +76,8 @@
 .sidebar-nav button:hover,
 .sidebar-nav .active {
     color: #fff;
-    background: rgba(255, 255, 255, 0.13);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.18);
     box-shadow: inset 3px 0 0 var(--color-accent);
     text-decoration: none;
 }
@@ -251,7 +252,10 @@
     background: var(--color-accent-soft);
     border: 1px solid rgba(15, 159, 174, 0.22);
     border-radius: 999px;
-    font-size: 1.6rem;
+    color: var(--color-primary-900);
+    font-size: 0.72rem;
+    font-weight: 850;
+    text-transform: uppercase;
 }
 
 .visual-meter {
