@@ -1,14 +1,14 @@
 (function () {
     const items = [
-        { href: "dashboard.html", icon: "DS", label: "Dashboard" },
-        { href: "index.html", icon: "PR", label: "Productos" },
-        { href: "inventario.html", icon: "IV", label: "Inventario" },
-        { href: "compras.html", icon: "CO", label: "Compras" },
-        { href: "ventas.html", icon: "VE", label: "Ventas" },
-        { href: "clientes-proveedores.html", icon: "CP", label: "Clientes/Proveedores" },
-        { href: "facturacion.html", icon: "FA", label: "Facturacion" },
-        { href: "importar-datos.html", icon: "ML", label: "Prediccion" },
-        { href: "reportes.html", icon: "RP", label: "Reportes" },
+        { href: "dashboard.html", icon: "📊", label: "Dashboard" },
+        { href: "index.html", icon: "📦", label: "Productos" },
+        { href: "inventario.html", icon: "🧮", label: "Inventario" },
+        { href: "compras.html", icon: "🛒", label: "Compras" },
+        { href: "ventas.html", icon: "💰", label: "Ventas" },
+        { href: "clientes-proveedores.html", icon: "👥", label: "Clientes/Proveedores" },
+        { href: "facturacion.html", icon: "🧾", label: "Facturacion" },
+        { href: "importar-datos.html", icon: "🤖", label: "Prediccion" },
+        { href: "reportes.html", icon: "📈", label: "Reportes" },
     ];
 
     function normalize(file) {
@@ -43,13 +43,13 @@
             const button = document.createElement("button");
             button.id = "logout-btn";
             button.type = "button";
-            button.innerHTML = '<span class="nav-icon">SA</span>Cerrar sesion';
+            button.innerHTML = '<span class="nav-icon">🚪</span>Cerrar sesion';
             authItem.appendChild(button);
         } else {
             const link = document.createElement("a");
             link.id = "login-link";
             link.href = buildHref("login.html");
-            link.innerHTML = '<span class="nav-icon">AC</span>Acceder';
+            link.innerHTML = '<span class="nav-icon">🔐</span>Acceder';
             authItem.appendChild(link);
         }
         nav.appendChild(authItem);

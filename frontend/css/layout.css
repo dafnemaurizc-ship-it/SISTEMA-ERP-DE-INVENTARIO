@@ -82,16 +82,17 @@
 }
 
 .nav-icon {
-    width: 1.7rem;
-    height: 1.7rem;
+    width: 1.9rem;
+    height: 1.9rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: #d7fbff;
-    background: rgba(15, 159, 174, 0.22);
+    color: #fff;
+    background: rgba(255, 255, 255, 0.13);
     border-radius: var(--radius-sm);
-    font-size: 0.78rem;
+    font-size: 1rem;
     font-weight: 800;
+    line-height: 1;
 }
 
 .sidebar-footer {
