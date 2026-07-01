@@ -6,7 +6,7 @@
     <title>Novaris ERP - Prediccion de inventario</title>
     <link rel="stylesheet" href="css/styles.css?v=20260630-design-v2" />
     <link rel="stylesheet" href="css/components.css?v=20260630-design-v2" />
-    <link rel="stylesheet" href="css/layout.css?v=20260630-emoji-nav-v1" />
+    <link rel="stylesheet" href="css/layout.css?v=20260630-visual-dashboard-v1" />
 </head>
 <body>
     <div class="app-shell">
@@ -18,17 +18,7 @@
                     <span>Inventario predictivo</span>
                 </div>
             </div>
-            <ul class="sidebar-nav">
-                <li><a href="dashboard.html"><span class="nav-icon">ðŸ“Š</span>ðŸ“Š Dashboard</a></li>
-                <li><a href="index.html"><span class="nav-icon">ðŸ“¦</span>Productos</a></li>
-                <li><a href="inventario.html"><span class="nav-icon">ðŸ§®</span>Inventario</a></li>
-                <li><a href="compras.html"><span class="nav-icon">ðŸ›’</span>Compras</a></li>
-                <li><a href="ventas.html"><span class="nav-icon">ðŸ’°</span>Ventas</a></li>
-                <li><a href="reportes.html"><span class="nav-icon">ðŸ“ˆ</span>Reportes</a></li>
-                <li><a href="importar-datos.html" class="active"><span class="nav-icon">ðŸ¤–</span>Prediccion</a></li>
-                <li><a href="login.html" id="login-link"><span class="nav-icon">ðŸ”</span>Acceder</a></li>
-                <li><button id="logout-btn" style="display:none;"><span class="nav-icon">ðŸšª</span>Cerrar sesion</button></li>
-            </ul>
+            <ul class="sidebar-nav"></ul>
             <div class="sidebar-footer">Sube archivos CSV/Excel para alimentar<br/>la prediccion operativa.</div>
         </aside>
 
@@ -39,8 +29,8 @@
                     <p>Sube inventarios o movimientos y obten regresion, clasificacion o ambas con Random Forest.</p>
                 </div>
                 <div class="topbar-actions">
-                    <a href="reportes.html" class="btn btn-primary">ðŸ“ˆ Ver reporte de prediccion</a>
-                    <a href="inventario.html" class="btn btn-secondary">â† Volver a inventario</a>
+                    <a href="reportes.html" class="btn btn-primary">ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â°ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¸ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“ÃƒÆ’Ã¢â‚¬Â¹ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â  Ver reporte de prediccion</a>
+                    <a href="inventario.html" class="btn btn-secondary">ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â Volver a inventario</a>
                 </div>
             </header>
 
@@ -58,7 +48,7 @@
                             <input type="file" id="file-input" accept=".csv,.xlsx" required />
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary">âš™ï¸ Procesar archivo</button>
+                            <button type="submit" class="btn btn-primary">ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¯ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¸ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â Procesar archivo</button>
                         </div>
                     </form>
                     <div id="import-result" class="empty-state">Aun no has subido ningun archivo.</div>
@@ -112,7 +102,7 @@
 
     <script src="js/auth-guard.js?v=20260630-login-required"></script>
     
-    <script src="js/nav.js?v=20260630-emoji-nav-v1"></script>
+    <script src="js/nav.js?v=20260630-visual-dashboard-v1"></script>
     <script src="js/api.js?v=20260630-localhost-api-v3"></script>
     <script src="js/auth.js?v=20260630-timeout-auth"></script>
     <script src="js/import-store.js?v=20260630-import-aliases-v5"></script>

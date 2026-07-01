@@ -226,6 +226,54 @@ function renderModelChart(container, snapshot) {
     renderBarChart(container, data, "valor", "Sin valores predictivos disponibles.");
 }
 
+function renderVisualSummary(rows, snapshot) {
+    const container = document.getElementById("dashboard-visual-summary");
+    if (!container) return;
+
+    const cards = [...container.querySelectorAll(".visual-card")];
+    if (!rows.length || cards.length < 4) return;
+
+    const totals = rows.reduce(
+        (acc, row) => {
+            acc.stock += Number(row.stock || 0);
+            acc.ventas += Number(row.ventas || 0);
+            acc.compra += Number(row.compra || 0);
+            return acc;
+        },
+        { stock: 0, ventas: 0, compra: 0 }
+    );
+    const topDemand = [...rows].sort((a, b) => Number(b.ventas || 0) - Number(a.ventas || 0))[0];
+    const topPurchase = [...rows].sort((a, b) => Number(b.compra || 0) - Number(a.compra || 0))[0];
+    const coverage = Math.round((totals.stock / Math.max(1, totals.stock + totals.compra)) * 100);
+    const productCount = snapshot?.profile?.totals?.products || rows.length;
+
+    updateVisualCard(cards[0], "📦", "Productos importados", `${formatInteger(productCount)} productos unicos detectados`);
+    updateVisualCard(cards[1], "📈", "Mayor demanda", `${topDemand?.producto || "-"} · ${formatInteger(topDemand?.ventas)} unidades`);
+    updateVisualCard(cards[2], "🛒", "Reposicion sugerida", `${topPurchase?.producto || "-"} · comprar ${formatInteger(topPurchase?.compra)}`);
+    updateMeterCard(cards[3], coverage, "Cobertura de stock", `${formatInteger(totals.stock)} unidades disponibles`);
+}
+
+function updateVisualCard(card, icon, title, detail) {
+    const iconElement = card.querySelector(".visual-icon");
+    const titleElement = card.querySelector("strong");
+    const detailElement = card.querySelector("span:last-child");
+    if (iconElement) iconElement.textContent = icon;
+    if (titleElement) titleElement.textContent = title;
+    if (detailElement) detailElement.textContent = detail;
+}
+
+function updateMeterCard(card, percent, title, detail) {
+    const meter = card.querySelector(".visual-meter");
+    const titleElement = card.querySelector("strong");
+    const detailElement = card.querySelector("span:last-child");
+    if (meter) {
+        meter.style.setProperty("--meter", `${Math.max(0, Math.min(100, percent))}%`);
+        meter.textContent = `${percent}%`;
+    }
+    if (titleElement) titleElement.textContent = title;
+    if (detailElement) detailElement.textContent = detail;
+}
+
 async function dashboardDataset(snapshot) {
     let fullDataset = null;
     try {
@@ -263,6 +311,7 @@ async function loadDashboard() {
         "Importa un CSV o Excel para actualizar este tablero."
     );
     renderPrediction(snapshot);
+    renderVisualSummary(chartRows, snapshot);
     renderColumnSummary(snapshot);
     renderBarChart(
         document.getElementById("dashboard-stock-chart"),

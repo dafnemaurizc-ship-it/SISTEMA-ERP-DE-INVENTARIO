@@ -6,7 +6,7 @@
     <title>Novaris ERP - Dashboard</title>
     <link rel="stylesheet" href="css/styles.css?v=20260630-design-v2">
     <link rel="stylesheet" href="css/components.css?v=20260630-design-v2">
-    <link rel="stylesheet" href="css/layout.css?v=20260630-emoji-nav-v1">
+    <link rel="stylesheet" href="css/layout.css?v=20260630-visual-dashboard-v1">
 </head>
 <body>
     <div class="app-shell">
@@ -15,19 +15,7 @@
                 <span class="brand-mark">N</span>
                 <div><strong>Novaris ERP</strong><span>Operaciones inteligentes</span></div>
             </div>
-            <ul class="sidebar-nav">
-                <li><a href="dashboard.html" class="active"><span class="nav-icon">ðŸ“Š</span>ðŸ“Š Dashboard</a></li>
-                <li><a href="index.html"><span class="nav-icon">ðŸ“¦</span>Productos</a></li>
-                <li><a href="inventario.html"><span class="nav-icon">ðŸ§®</span>Inventario</a></li>
-                <li><a href="compras.html"><span class="nav-icon">ðŸ›’</span>Compras</a></li>
-                <li><a href="ventas.html"><span class="nav-icon">ðŸ’°</span>Ventas</a></li>
-                <li><a href="clientes-proveedores.html"><span class="nav-icon">ðŸ‘¥</span>Clientes/Proveedores</a></li>
-                <li><a href="facturacion.html"><span class="nav-icon">ðŸ§¾</span>Facturacion</a></li>
-                <li><a href="importar-datos.html"><span class="nav-icon">ðŸ¤–</span>Prediccion</a></li>
-                <li><a href="reportes.html"><span class="nav-icon">ðŸ“ˆ</span>Reportes</a></li>
-                <li><a href="login.html" id="login-link"><span class="nav-icon">ðŸ”</span>Acceder</a></li>
-                <li><button id="logout-btn" style="display:none;"><span class="nav-icon">ðŸšª</span>Cerrar sesion</button></li>
-            </ul>
+            <ul class="sidebar-nav"></ul>
             <div class="sidebar-footer">ERP para empresas modernas<br>Inventarios, ventas y prediccion.</div>
         </aside>
 
@@ -38,7 +26,7 @@
                     <p>Vision operativa actualizada con la ultima base importada.</p>
                 </div>
                 <div class="topbar-actions">
-                    <a href="importar-datos.html" class="btn btn-primary">ðŸ¤– Importar y predecir</a>
+                    <a href="importar-datos.html" class="btn btn-primary">&#129302; Importar y predecir</a>
                 </div>
             </header>
 
@@ -63,6 +51,37 @@
                         <span class="stat-label">Prediccion demanda</span>
                         <strong class="stat-value" id="dash-demand">0</strong>
                         <p>Demanda estimada por el modelo.</p>
+                    </article>
+                </section>
+
+                <section class="visual-grid" id="dashboard-visual-summary">
+                    <article class="visual-card">
+                        <span class="visual-icon">&#128230;</span>
+                        <div>
+                            <strong>Productos importados</strong>
+                            <span>Esperando datos reales...</span>
+                        </div>
+                    </article>
+                    <article class="visual-card">
+                        <span class="visual-icon">&#128200;</span>
+                        <div>
+                            <strong>Mayor demanda</strong>
+                            <span>Esperando datos reales...</span>
+                        </div>
+                    </article>
+                    <article class="visual-card">
+                        <span class="visual-icon">&#128722;</span>
+                        <div>
+                            <strong>Reposicion sugerida</strong>
+                            <span>Esperando datos reales...</span>
+                        </div>
+                    </article>
+                    <article class="visual-card visual-card-meter">
+                        <span class="visual-meter" style="--meter: 0%;">0%</span>
+                        <div>
+                            <strong>Cobertura de stock</strong>
+                            <span>Esperando datos reales...</span>
+                        </div>
                     </article>
                 </section>
 
@@ -104,7 +123,7 @@
                             <h2>Alertas urgentes</h2>
                             <p>Productos agotados o que necesitan reposicion inmediata.</p>
                         </div>
-                        <a href="reportes.html" class="btn btn-secondary">ðŸ“ˆ Ver reporte completo</a>
+                        <a href="reportes.html" class="btn btn-secondary">&#128200; Ver reporte completo</a>
                     </div>
                     <div id="dashboard-alerts" class="empty-state">Sin alertas urgentes.</div>
                 </section>
@@ -187,12 +206,12 @@
 
     <script src="js/auth-guard.js?v=20260630-login-required"></script>
     
-    <script src="js/nav.js?v=20260630-emoji-nav-v1"></script>
+    <script src="js/nav.js?v=20260630-visual-dashboard-v1"></script>
     <script src="js/api.js?v=20260620-redesign"></script>
     <script src="js/auth.js?v=20260630-profiles-v2"></script>
     <script src="js/dom.js?v=20260620-redesign"></script>
     <script src="js/import-store.js?v=20260630-expanded-aliases"></script>
-    <script src="js/dashboard.js?v=20260630-complete-charts"></script>
+    <script src="js/dashboard.js?v=20260630-visual-dashboard-v1"></script>
 </body>
 </html>
 

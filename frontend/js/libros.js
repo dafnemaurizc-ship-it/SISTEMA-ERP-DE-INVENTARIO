@@ -1,7 +1,6 @@
 let currentPage = 0;
 const limit = 12;
 let catalogItems = [];
-let hasSearched = false;
 
 function catalogFirstValue(row, aliases, fragments = []) {
     const normalize = typeof normalizeColumnName === "function"
@@ -33,7 +32,9 @@ function importedRowsToProducts(dataset) {
     const rows = rawRows.length && typeof normalizeErpRows === "function"
         ? normalizeErpRows(rawRows)
         : dataset?.rows || [];
-    return rows.map((row, index) => {
+    const grouped = new Map();
+
+    rows.forEach((row, index) => {
         const raw = rawRows[index] || {};
         const title =
             row.product ||
@@ -41,21 +42,37 @@ function importedRowsToProducts(dataset) {
             `Producto ${index + 1}`;
         const code = catalogFirstValue(raw, ["sku", "codigo", "code", "isbn", "product_id", "item_id"]) || title;
         const stock = Number(row.stock || catalogFirstValue(raw, ["stock", "stock_quantity", "inventory_level", "inventory", "inventario", "current_inventory", "on_hand"], ["stock", "inventory", "on_hand"]) || 0);
-        return {
-            id: index + 1,
+        const sales = Number(row.quantity || catalogFirstValue(raw, ["ventas", "sales", "sales_volume", "unit_sales", "units_sold", "quantity", "cantidad", "qty", "demanda"], ["sales", "quantity", "ventas"]) || 0);
+        const category = row.category || catalogFirstValue(raw, ["category", "categoria", "product_category", "item_category", "product_type", "linea", "region", "department"], ["category", "categoria", "type"]) || "Importado";
+        const key = String(code || title).trim().toLowerCase();
+        const current = grouped.get(key) || {
+            id: grouped.size + 1,
             titulo: title,
             autor: catalogFirstValue(raw, ["brand", "marca", "supplier", "proveedor", "store_id", "store"]) || "Importado",
             isbn: String(code),
-            categoria: row.category || catalogFirstValue(raw, ["category", "categoria", "product_category", "item_category", "product_type", "linea", "region", "department"], ["category", "categoria", "type"]) || "Importado",
-            stock_total: stock,
-            disponibles: stock,
-            descripcion: Object.entries(raw)
-                .slice(0, 4)
-                .map(([key, value]) => `${key}: ${value}`)
-                .join(" | "),
+            categoria: category,
+            stock_total: 0,
+            disponibles: 0,
+            ventas: 0,
+            registros: 0,
             raw,
         };
+        current.stock_total = stock || current.stock_total;
+        current.disponibles = stock || current.disponibles;
+        current.ventas += sales;
+        current.registros += 1;
+        if (current.categoria === "Importado" && category !== "Importado") current.categoria = category;
+        grouped.set(key, current);
     });
+
+    return [...grouped.values()].map((product) => ({
+        ...product,
+        descripcion: [
+            `${product.registros} registro(s) importados`,
+            `Ventas/demanda acumulada: ${new Intl.NumberFormat("es-PE", { maximumFractionDigits: 0 }).format(product.ventas || 0)}`,
+            `Stock actual: ${new Intl.NumberFormat("es-PE", { maximumFractionDigits: 0 }).format(product.disponibles || 0)}`,
+        ].join(" | "),
+    }));
 }
 
 async function loadImportedCatalog() {
@@ -88,6 +105,15 @@ function getFilteredProducts() {
 
 async function loadLibros(offset = 0) {
     currentPage = Math.floor(offset / limit);
+    catalogItems = await loadImportedCatalog();
+    if (catalogItems.length) {
+        const source = document.getElementById("catalog-source");
+        if (source) {
+            source.textContent = `Productos desde el Excel/base importada: ${catalogItems.length} productos unicos disponibles.`;
+        }
+        renderCatalog(offset, getFilteredProducts().length);
+        return;
+    }
 
     try {
         const queryParams = new URLSearchParams({ limit, offset });
@@ -134,30 +160,6 @@ async function loadLibros(offset = 0) {
 
 function renderCatalog(offset = 0, total = 0) {
     populateCategorias(catalogItems);
-    if (!hasSearched) {
-        const container = document.getElementById("books-container");
-        if (container) {
-            clearChildren(container);
-            appendText(container, "div", "Ingresa un producto, codigo o dato y presiona Buscar.", "empty-state");
-        }
-        setupPagination(0, 0);
-        return;
-    }
-
-    const q = (document.getElementById("search-input")?.value || "").trim();
-    const categoria = document.getElementById("category-select")?.value || "";
-    const disponibilidad = document.getElementById("availability-filter")?.value || "";
-    const tipo = document.getElementById("material-filter")?.value || "";
-    if (!q && !categoria && !disponibilidad && !tipo) {
-        const container = document.getElementById("books-container");
-        if (container) {
-            clearChildren(container);
-            appendText(container, "div", "Escribe un criterio de busqueda o selecciona un filtro.", "empty-state");
-        }
-        setupPagination(0, 0);
-        return;
-    }
-
     const filteredItems = getFilteredProducts();
     const paginated = filteredItems.slice(offset, offset + limit);
     displayLibros(paginated);
@@ -260,7 +262,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchBtn = document.getElementById("search-btn");
     if (searchBtn) {
         searchBtn.addEventListener("click", () => {
-            hasSearched = true;
             renderCatalog(0);
         });
     }
@@ -269,7 +270,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (searchInput) {
         searchInput.addEventListener("keypress", (event) => {
             if (event.key === "Enter") {
-                hasSearched = true;
                 renderCatalog(0);
             }
         });
@@ -279,7 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const element = document.getElementById(id);
         if (element) {
             element.addEventListener("change", () => {
-                if (hasSearched) renderCatalog(0);
+                renderCatalog(0);
             });
         }
     });
