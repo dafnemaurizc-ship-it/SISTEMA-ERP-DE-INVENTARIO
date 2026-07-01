@@ -243,13 +243,19 @@ function renderVisualSummary(rows, snapshot) {
         { stock: 0, ventas: 0, compra: 0 }
     );
     const topDemand = [...rows].sort((a, b) => Number(b.ventas || 0) - Number(a.ventas || 0))[0];
-    const topPurchase = [...rows].sort((a, b) => Number(b.compra || 0) - Number(a.compra || 0))[0];
+    const topPurchase = [...rows]
+        .filter((row) => Number(row.compra || 0) > 0)
+        .sort((a, b) => Number(b.compra || 0) - Number(a.compra || 0))[0];
     const coverage = Math.round((totals.stock / Math.max(1, totals.stock + totals.compra)) * 100);
     const productCount = snapshot?.profile?.totals?.products || rows.length;
 
-    updateVisualCard(cards[0], "📦", "Productos importados", `${formatInteger(productCount)} productos unicos detectados`);
-    updateVisualCard(cards[1], "📈", "Mayor demanda", `${topDemand?.producto || "-"} · ${formatInteger(topDemand?.ventas)} unidades`);
-    updateVisualCard(cards[2], "🛒", "Reposicion sugerida", `${topPurchase?.producto || "-"} · comprar ${formatInteger(topPurchase?.compra)}`);
+    updateVisualCard(cards[0], "\uD83D\uDCE6", "Productos importados", `${formatInteger(productCount)} productos unicos detectados`);
+    updateVisualCard(cards[1], "\uD83D\uDCC8", "Mayor demanda", `${topDemand?.producto || "-"} - ${formatInteger(topDemand?.ventas)} unidades`);
+    if (topPurchase) {
+        updateVisualCard(cards[2], "\uD83D\uDED2", "Reposicion sugerida", `${topPurchase.producto} - comprar ${formatInteger(topPurchase.compra)}`);
+    } else {
+        updateVisualCard(cards[2], "\u2705", "Sin reposicion urgente", `Stock suficiente en ${formatInteger(productCount)} productos`);
+    }
     updateMeterCard(cards[3], coverage, "Cobertura de stock", `${formatInteger(totals.stock)} unidades disponibles`);
 }
 
