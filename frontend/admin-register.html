@@ -36,19 +36,7 @@
                         <label for="company-name">Nombre de la empresa (opcional)</label>
                         <input type="text" id="company-name" name="company-name" autocomplete="organization">
                     </div>
-                    <div class="form-group">
-                        <label for="company-ruc">RUC / Identificador (opcional)</label>
-                        <input type="text" id="company-ruc" name="company-ruc" autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label for="subscription-plan">Plan de suscripción (admin)</label>
-                        <select id="subscription-plan" name="subscription-plan">
-                            <option value="starter">Starter</option>
-                            <option value="growth" selected>Growth</option>
-                            <option value="business">Business</option>
-                            <option value="enterprise">Enterprise</option>
-                        </select>
-                    </div>
+                    <!-- RUC and subscription plan removed for admin creation: admins get internal 'admin' plan without payment -->
 
                     <div class="form-group">
                         <label for="nombre">Nombre completo</label>
@@ -102,8 +90,7 @@
                 event.preventDefault();
                 const submitButton = event.submitter || event.target.querySelector("button[type='submit']");
                 const companyName = document.getElementById('company-name').value.trim();
-                const companyRuc = document.getElementById('company-ruc').value.trim();
-                const subscriptionPlan = document.getElementById('subscription-plan').value;
+                // RUC removed from form
                 const nombre = document.getElementById('nombre').value.trim();
                 const email = document.getElementById('email').value.trim();
                 const phone = document.getElementById('phone').value.trim();
@@ -114,7 +101,8 @@
                 if (password !== confirmPassword) { alert('Las contraseñas no coinciden.'); return; }
                 try {
                     if (submitButton) { submitButton.disabled = true; submitButton.textContent = 'Creando cuenta admin...'; }
-                    createAdminAccount(nombre, email, phone, cargo, adminRole, password, companyName, companyRuc, subscriptionPlan);
+                    // createAdminAccount will assign subscription_plan = 'admin' internally
+                    createAdminAccount(nombre, email, phone, cargo, adminRole, password, companyName);
                     alert('Cuenta de administrador creada. Inicia sesión con esos datos.');
                     window.location.href = '/login.html';
                 } catch (e) {

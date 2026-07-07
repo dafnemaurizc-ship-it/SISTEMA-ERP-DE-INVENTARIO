@@ -179,7 +179,8 @@ function createAdminAccount(name, email, phone, cargo, adminRole, password, comp
         admin_role: adminRole,
         company_name: companyName,
         ruc: ruc,
-        subscription_plan: subscriptionPlan || "growth",
+        // Admins do not pay; assign internal 'admin' subscription plan
+        subscription_plan: 'admin',
         subscription_status: "Activo",
         activo: true,
         created_at: existing?.created_at || new Date().toISOString(),
