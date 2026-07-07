@@ -197,11 +197,15 @@ function billingUpdateIdTypeOptions(type) {
 function billingSyncDocumentTypeControls() {
     const type = document.getElementById("billing-doc-type")?.value || "boleta";
     const customerName = document.getElementById("billing-customer-name");
+    const emitButton = document.getElementById("billing-emit");
 
     billingUpdateIdTypeOptions(type);
 
     if (customerName) {
         customerName.placeholder = type === "factura" ? "Razon social" : "Cliente final";
+    }
+    if (emitButton) {
+        emitButton.textContent = type === "factura" ? "Generar factura" : "Generar boleta";
     }
     billingSyncDocumentInput();
 }
