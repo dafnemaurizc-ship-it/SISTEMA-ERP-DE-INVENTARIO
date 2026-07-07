@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // Listen to storage events so the relations table updates when other tabs/pages modify it
 window.addEventListener("storage", (event) => {
     if (!event) return;
-    if (event.key === RELATIONS_KEY) {
+    if (event.key === RELATIONS_KEY || event.key === "novaris_relations_updated_at") {
         try {
             renderRelations();
         } catch (e) {
@@ -107,3 +107,17 @@ window.addEventListener("storage", (event) => {
         }
     }
 });
+
+// Polling fallback: detect external changes in case storage events are unreliable
+let __novaris_relations_last = localStorage.getItem(RELATIONS_KEY) || "";
+setInterval(() => {
+    try {
+        const current = localStorage.getItem(RELATIONS_KEY) || "";
+        if (current !== __novaris_relations_last) {
+            __novaris_relations_last = current;
+            renderRelations();
+        }
+    } catch (e) {
+        // ignore
+    }
+}, 2500);

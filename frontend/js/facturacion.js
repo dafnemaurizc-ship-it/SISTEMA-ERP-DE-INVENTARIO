@@ -625,6 +625,12 @@ function billingUpsertClient(name, doc) {
             relations.unshift(relation);
         }
         localStorage.setItem(RELATIONS_KEY, JSON.stringify(relations.slice(0, 80)));
+        // write a secondary timestamp key to ensure other tabs receive a storage event
+        try {
+            localStorage.setItem("novaris_relations_updated_at", String(Date.now()));
+        } catch (e) {
+            // ignore
+        }
         if (typeof window.renderRelations === "function") {
             try { window.renderRelations(); } catch (e) { /* ignore */ }
         }
