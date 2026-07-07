@@ -301,7 +301,7 @@ body.sidebar-open .mobile-sidebar-toggle span:nth-child(3) {
 
 .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1.25rem;
 }
 
@@ -345,23 +345,24 @@ body.sidebar-open .mobile-sidebar-toggle span:nth-child(3) {
 
 .quick-actions-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
     gap: 1rem;
 }
 
 .visual-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1rem;
 }
 
 .visual-card {
-    min-height: 112px;
+    min-width: 0;
+    min-height: 124px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 0.9rem;
-    padding: 1rem;
+    padding: 1rem 1.15rem;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
@@ -370,6 +371,8 @@ body.sidebar-open .mobile-sidebar-toggle span:nth-child(3) {
 
 .visual-card > div {
     min-width: 0;
+    display: grid;
+    gap: 0.24rem;
 }
 
 :root[data-theme="dark"] .visual-card {
@@ -384,40 +387,49 @@ body.sidebar-open .mobile-sidebar-toggle span:nth-child(3) {
 .visual-card strong {
     color: var(--color-primary-900);
     font-size: 0.98rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
 }
 
 .visual-card span:last-child {
-    margin-top: 0.24rem;
     color: var(--color-text-muted);
     font-size: 0.9rem;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
 }
 
-.visual-icon {
-    width: 52px;
-    height: 52px;
-    flex: 0 0 52px;
-    display: inline-flex;
+.visual-card .visual-icon {
+    width: 58px;
+    height: 58px;
+    aspect-ratio: 1 / 1;
+    flex: 0 0 58px;
+    display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto;
+    padding: 0;
+    margin: 0;
     background: var(--color-accent-soft);
     border: 1px solid rgba(15, 159, 174, 0.22);
     border-radius: 999px;
     color: var(--color-primary-900);
-    font-size: 1.45rem;
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+    font-size: 1.42rem;
     font-weight: 850;
     line-height: 1;
     text-align: center;
+    vertical-align: middle;
 }
 
-.visual-meter {
+.visual-card .visual-meter {
     width: 58px;
     height: 58px;
+    aspect-ratio: 1 / 1;
     flex: 0 0 58px;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto;
+    padding: 0;
+    margin: 0;
     color: var(--color-primary-900);
     background:
         radial-gradient(circle at center, #fff 58%, transparent 60%),
@@ -425,7 +437,9 @@ body.sidebar-open .mobile-sidebar-toggle span:nth-child(3) {
     border-radius: 999px;
     font-size: 0.78rem;
     font-weight: 800;
+    line-height: 1;
     text-align: center;
+    vertical-align: middle;
 }
 
 :root[data-theme="dark"] .visual-meter {
@@ -2134,6 +2148,13 @@ body.sidebar-open .mobile-sidebar-toggle span:nth-child(3) {
     }
 }
 
+@media (max-width: 1279px) {
+    .dashboard-grid,
+    .visual-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
 @media (max-width: 1023px) {
     .app-shell,
     .auth-page {
@@ -2341,7 +2362,6 @@ body.sidebar-open .mobile-sidebar-toggle span:nth-child(3) {
         font-size: 1.45rem;
     }
 
-    .visual-card,
     .admin-list-item,
     .admin-goal-top,
     .admin-plan-head,
@@ -2350,6 +2370,14 @@ body.sidebar-open .mobile-sidebar-toggle span:nth-child(3) {
     .cash-grid div {
         align-items: stretch;
         flex-direction: column;
+    }
+
+    .visual-card {
+        align-items: center;
+        flex-direction: row;
+        gap: 0.85rem;
+        min-height: auto;
+        padding: 0.95rem;
     }
 
     .admin-main-section-heading {
