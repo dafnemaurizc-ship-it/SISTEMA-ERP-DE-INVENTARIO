@@ -208,6 +208,22 @@
             nav.appendChild(li);
         });
 
+        // ensure active state is kept in sync with current hash/path
+        function updateActive() {
+            const links = nav.querySelectorAll('a');
+            const current = normalize(window.location.pathname) || "dashboard.html";
+            const currentHash = window.location.hash || "#dashboard-summary";
+            links.forEach((lnk) => {
+                lnk.classList.remove('active');
+                const href = lnk.getAttribute('href') || '';
+                if (href.startsWith('#') && href === currentHash) lnk.classList.add('active');
+                else if (!href.startsWith('#') && normalize(href) === current) lnk.classList.add('active');
+            });
+        }
+
+        updateActive();
+        window.addEventListener('hashchange', updateActive);
+
         const authItem = document.createElement("li");
         if (localStorage.getItem("token")) {
             const button = document.createElement("button");

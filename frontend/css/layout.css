@@ -1231,8 +1231,8 @@
 .admin-goal,
 .admin-permissions-grid label {
     padding: 0.85rem;
-    background: #0b1424;
-    border: 1px solid #253653;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
     border-radius: 8px;
 }
 
@@ -1255,13 +1255,13 @@
 .admin-list-item strong,
 .admin-goal strong,
 .admin-permissions-grid span {
-    color: #e8eef8;
+    color: var(--color-text);
 }
 
 .admin-plan-card p,
 .admin-list-item span,
 .admin-goal span {
-    color: #9ba9bd;
+    color: var(--color-text-muted);
     font-size: 0.88rem;
 }
 
