@@ -1354,6 +1354,22 @@
     color: var(--color-text);
 }
 
+/* Ensure admin tables override global dark-table muted rules */
+.admin-pro-shell table,
+.admin-pro-shell thead,
+.admin-pro-shell tbody,
+.admin-pro-shell th,
+.admin-pro-shell td {
+    color: var(--color-text) !important;
+}
+.admin-pro-shell thead th {
+    color: var(--color-text) !important;
+    font-weight: 700;
+}
+.admin-pro-shell tbody td {
+    color: var(--color-text) !important;
+}
+
 .admin-pro-shell tbody tr:hover {
     background: #16233a;
 }
