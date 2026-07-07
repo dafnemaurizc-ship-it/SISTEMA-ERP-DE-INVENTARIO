@@ -352,3 +352,33 @@ if (document.querySelector("#register-form")) {
 }
 
 document.addEventListener("DOMContentLoaded", setupAuthUI);
+
+function setupLogoBehavior() {
+    function goHome() {
+        try {
+            const token = localStorage.getItem('token');
+            if (token) window.location.href = '/dashboard.html';
+            else window.location.href = '/login.html';
+        } catch (e) {
+            window.location.href = '/login.html';
+        }
+    }
+
+    document.querySelectorAll('.sidebar-brand, .brand-mark, .sidebar-brand .brand-mark, .brand-link').forEach((el) => {
+        el.style.cursor = 'pointer';
+        el.addEventListener('click', (event) => {
+            // if currently on a register page, go to login (first tab)
+            const path = window.location.pathname || '';
+            if (path.endsWith('/register.html') || path.endsWith('/admin-register.html')) {
+                window.location.href = '/login.html';
+                return;
+            }
+            // default behavior: go to dashboard if logged in, otherwise login
+            goHome();
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    try { setupLogoBehavior(); } catch (e) { /* ignore */ }
+});
