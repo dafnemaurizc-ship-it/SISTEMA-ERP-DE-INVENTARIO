@@ -374,7 +374,23 @@ function commerceRenderSupplierRecommendations(container, rows, prediction, empt
         return;
     }
 
-    container.className = "supplier-recommendations";
+    container.className = "table-wrap supplier-table-wrap";
+    const table = document.createElement("table");
+    table.className = "supplier-recommendations-table";
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Stock</th>
+                <th>Demanda</th>
+                <th>Compra sugerida</th>
+                <th>Metodo</th>
+                <th>Recomendacion ERP</th>
+                <th>Proveedores externos</th>
+            </tr>
+        </thead>
+    `;
+    const tbody = document.createElement("tbody");
 
     rows.forEach((row) => {
         const predictedDemand = commercePredictedDemand(row, prediction);
@@ -387,52 +403,45 @@ function commerceRenderSupplierRecommendations(container, rows, prediction, empt
                 ? "Prioridad alta: buscar proveedor con entrega inmediata."
                 : "Comprar para volver al minimo operativo.");
 
-        const card = document.createElement("article");
-        card.className = "supplier-card";
+        const tr = document.createElement("tr");
 
-        const header = document.createElement("div");
-        header.className = "supplier-card-header";
-        const title = document.createElement("div");
-        title.className = "supplier-card-title";
-        const eyebrow = document.createElement("span");
-        eyebrow.className = "supplier-card-eyebrow";
-        eyebrow.textContent = "Producto faltante";
+        const product = document.createElement("td");
+        product.className = "supplier-product-cell";
         const name = document.createElement("h3");
         name.textContent = row.producto || "Producto sin nombre";
         const category = document.createElement("p");
         category.textContent = row.categoria || "Sin categoria";
-        title.append(eyebrow, name, category);
-        const method = document.createElement("span");
-        method.className = "badge badge-info";
-        method.textContent = commercePredictionLabel(prediction, row);
-        header.append(title, method);
-        card.appendChild(header);
+        product.append(name, category);
+        tr.appendChild(product);
 
-        const metrics = document.createElement("div");
-        metrics.className = "supplier-metrics";
         [
             ["Stock actual", commerceFormatNumber(row.stock)],
             ["Demanda predicha", predictedDemand === null ? "Sin prediccion" : commerceFormatNumber(predictedDemand)],
             ["Comprar sugerido", recommended === null ? "Sin prediccion" : commerceFormatNumber(recommended)],
-        ].forEach(([label, value]) => {
-            const metric = document.createElement("div");
-            metric.className = "supplier-metric";
-            const metricLabel = document.createElement("span");
-            metricLabel.textContent = label;
-            const metricValue = document.createElement("strong");
-            metricValue.textContent = value;
-            metric.append(metricLabel, metricValue);
-            metrics.appendChild(metric);
+        ].forEach(([, value]) => {
+            const td = document.createElement("td");
+            td.className = "supplier-number-cell";
+            td.textContent = value;
+            tr.appendChild(td);
         });
-        card.appendChild(metrics);
+
+        const method = document.createElement("td");
+        const methodBadge = document.createElement("span");
+        methodBadge.className = "badge badge-info";
+        methodBadge.textContent = commercePredictionLabel(prediction, row);
+        method.appendChild(methodBadge);
+        tr.appendChild(method);
 
         const recommendation = document.createElement("p");
-        recommendation.className = "supplier-recommendation";
+        const recommendationCell = document.createElement("td");
+        recommendationCell.className = "supplier-recommendation-cell";
         recommendation.textContent = recommendationText;
-        card.appendChild(recommendation);
+        recommendationCell.appendChild(recommendation);
+        tr.appendChild(recommendationCell);
 
+        const linksCell = document.createElement("td");
         const links = document.createElement("div");
-        links.className = "supplier-links";
+        links.className = "supplier-table-links";
         commerceSupplierLinks(row).forEach((item) => {
             const link = document.createElement("a");
             link.href = item.url;
@@ -442,9 +451,13 @@ function commerceRenderSupplierRecommendations(container, rows, prediction, empt
             link.textContent = item.label;
             links.appendChild(link);
         });
-        card.appendChild(links);
-        container.appendChild(card);
+        linksCell.appendChild(links);
+        tr.appendChild(linksCell);
+        tbody.appendChild(tr);
     });
+
+    table.appendChild(tbody);
+    container.appendChild(table);
 }
 
 async function commerceDataset() {

@@ -93,103 +93,86 @@
     gap: 0.45rem;
 }
 
-.supplier-recommendations {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 1rem;
+.supplier-table-wrap {
+    max-height: min(620px, 72vh);
+    overflow: auto;
+    scrollbar-gutter: stable;
 }
 
-.supplier-card {
-    min-width: 0;
-    display: grid;
-    gap: 1rem;
-    padding: 1rem;
-    background: var(--color-surface-raised);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
+.supplier-recommendations-table {
+    min-width: 1080px;
+    table-layout: fixed;
 }
 
-.supplier-card-header {
-    min-width: 0;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 0.85rem;
+.supplier-recommendations-table th,
+.supplier-recommendations-table td {
+    padding: 0.78rem 0.85rem;
+    vertical-align: top;
 }
 
-.supplier-card-title {
-    min-width: 0;
-    display: grid;
-    gap: 0.18rem;
+.supplier-recommendations-table th:nth-child(1),
+.supplier-recommendations-table td:nth-child(1) {
+    width: 230px;
 }
 
-.supplier-card-eyebrow {
-    color: var(--color-text-muted);
-    font-size: 0.74rem;
-    font-weight: 800;
-    text-transform: uppercase;
+.supplier-recommendations-table th:nth-child(2),
+.supplier-recommendations-table td:nth-child(2),
+.supplier-recommendations-table th:nth-child(3),
+.supplier-recommendations-table td:nth-child(3),
+.supplier-recommendations-table th:nth-child(4),
+.supplier-recommendations-table td:nth-child(4) {
+    width: 112px;
 }
 
-.supplier-card h3 {
-    min-width: 0;
-    color: var(--color-primary-900);
-    font-size: 1.05rem;
-    overflow-wrap: anywhere;
+.supplier-recommendations-table th:nth-child(5),
+.supplier-recommendations-table td:nth-child(5) {
+    width: 140px;
 }
 
-.supplier-card p {
+.supplier-recommendations-table th:nth-child(6),
+.supplier-recommendations-table td:nth-child(6) {
+    width: 260px;
+}
+
+.supplier-recommendations-table th:nth-child(7),
+.supplier-recommendations-table td:nth-child(7) {
+    width: 220px;
+}
+
+.supplier-product-cell h3 {
     margin: 0;
-}
-
-.supplier-metrics {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.65rem;
-}
-
-.supplier-metric {
-    min-width: 0;
-    display: grid;
-    gap: 0.18rem;
-    padding: 0.75rem;
-    background: var(--color-surface-muted);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-}
-
-.supplier-metric span {
-    color: var(--color-text-muted);
-    font-size: 0.78rem;
-    font-weight: 700;
-}
-
-.supplier-metric strong {
     color: var(--color-primary-900);
-    font-size: 1rem;
-    font-variant-numeric: tabular-nums;
+    font-size: 0.98rem;
     overflow-wrap: anywhere;
 }
 
-.supplier-recommendation {
-    padding: 0.8rem 0.9rem;
+.supplier-product-cell p,
+.supplier-recommendation-cell p {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.88rem;
+}
+
+.supplier-number-cell {
+    color: var(--color-primary-900);
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.supplier-recommendation-cell p {
     color: var(--color-text);
-    background: var(--color-accent-soft);
-    border: 1px solid rgba(37, 99, 235, 0.16);
-    border-radius: var(--radius-sm);
-    font-size: 0.92rem;
+    line-height: 1.4;
 }
 
-.supplier-links {
+.supplier-table-links {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.55rem;
+    gap: 0.42rem;
 }
 
-.supplier-links .btn {
+.supplier-table-links .btn {
     width: 100%;
-    min-height: 38px;
-    padding-inline: 0.65rem;
+    min-height: 34px;
+    padding: 0.42rem 0.55rem;
 }
 
 .btn:disabled {
@@ -638,26 +621,26 @@ tbody tr:hover {
         min-width: 640px;
     }
 
-    .supplier-recommendations {
-        grid-template-columns: 1fr;
+    .supplier-table-wrap {
+        max-height: 68vh;
     }
 
-    .supplier-card {
-        padding: 0.9rem;
+    .supplier-recommendations-table {
+        min-width: 980px;
     }
 
-    .supplier-card-header {
-        align-items: stretch;
-        flex-direction: column;
+    .supplier-recommendations-table th,
+    .supplier-recommendations-table td {
+        padding: 0.68rem 0.7rem;
     }
 
-    .supplier-card-header .badge {
-        width: fit-content;
+    .supplier-recommendations-table th:nth-child(1),
+    .supplier-recommendations-table td:nth-child(1) {
+        width: 210px;
     }
 
-    .supplier-metrics,
-    .supplier-links {
-        grid-template-columns: 1fr;
+    .supplier-table-links .btn {
+        min-height: 38px;
     }
 
     .assistant-widget {
