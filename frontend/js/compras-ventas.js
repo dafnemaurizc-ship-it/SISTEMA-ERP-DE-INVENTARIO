@@ -374,64 +374,65 @@ function commerceRenderSupplierRecommendations(container, rows, prediction, empt
         return;
     }
 
-    container.className = "table-wrap";
-    const table = document.createElement("table");
-    table.innerHTML = `
-        <thead>
-            <tr>
-                <th>Producto faltante</th>
-                <th>Categoria</th>
-                <th>Stock actual</th>
-                <th>Demanda predicha</th>
-                <th>Comprar sugerido</th>
-                <th>Metodo</th>
-                <th>Recomendacion ERP</th>
-                <th>Buscar proveedores externos</th>
-            </tr>
-        </thead>
-    `;
-    const tbody = document.createElement("tbody");
+    container.className = "supplier-recommendations";
 
     rows.forEach((row) => {
-        const tr = document.createElement("tr");
-        const product = document.createElement("td");
-        product.textContent = row.producto;
-        tr.appendChild(product);
-
-        const category = document.createElement("td");
-        category.textContent = row.categoria;
-        tr.appendChild(category);
-
-        const stock = document.createElement("td");
-        stock.textContent = commerceFormatNumber(row.stock);
-        tr.appendChild(stock);
-
-        const predicted = document.createElement("td");
         const predictedDemand = commercePredictedDemand(row, prediction);
-        predicted.textContent = predictedDemand === null ? "Sin prediccion" : commerceFormatNumber(predictedDemand);
-        tr.appendChild(predicted);
-
         const recommended = commerceRecommendedPurchase(row, prediction);
-        const suggested = document.createElement("td");
-        suggested.textContent = recommended === null ? "Sin prediccion" : commerceFormatNumber(recommended);
-        tr.appendChild(suggested);
-
-        const method = document.createElement("td");
-        method.innerHTML = `<span class="badge badge-info">${commercePredictionLabel(prediction, row)}</span>`;
-        tr.appendChild(method);
-
-        const recommendation = document.createElement("td");
-        recommendation.textContent = row.recommendation || (recommended === null
+        const recommendationText = row.recommendation || (recommended === null
             ? "No hay columnas numericas de ventas, stock o reposicion para predecir este producto."
             : recommended > row.faltante
             ? "Comprar segun demanda predicha para cubrir ventas proximas."
             : row.stock <= 0
                 ? "Prioridad alta: buscar proveedor con entrega inmediata."
                 : "Comprar para volver al minimo operativo.");
-        tr.appendChild(recommendation);
 
-        const links = document.createElement("td");
-        links.className = "external-links";
+        const card = document.createElement("article");
+        card.className = "supplier-card";
+
+        const header = document.createElement("div");
+        header.className = "supplier-card-header";
+        const title = document.createElement("div");
+        title.className = "supplier-card-title";
+        const eyebrow = document.createElement("span");
+        eyebrow.className = "supplier-card-eyebrow";
+        eyebrow.textContent = "Producto faltante";
+        const name = document.createElement("h3");
+        name.textContent = row.producto || "Producto sin nombre";
+        const category = document.createElement("p");
+        category.textContent = row.categoria || "Sin categoria";
+        title.append(eyebrow, name, category);
+        const method = document.createElement("span");
+        method.className = "badge badge-info";
+        method.textContent = commercePredictionLabel(prediction, row);
+        header.append(title, method);
+        card.appendChild(header);
+
+        const metrics = document.createElement("div");
+        metrics.className = "supplier-metrics";
+        [
+            ["Stock actual", commerceFormatNumber(row.stock)],
+            ["Demanda predicha", predictedDemand === null ? "Sin prediccion" : commerceFormatNumber(predictedDemand)],
+            ["Comprar sugerido", recommended === null ? "Sin prediccion" : commerceFormatNumber(recommended)],
+        ].forEach(([label, value]) => {
+            const metric = document.createElement("div");
+            metric.className = "supplier-metric";
+            const metricLabel = document.createElement("span");
+            metricLabel.textContent = label;
+            const metricValue = document.createElement("strong");
+            metricValue.textContent = value;
+            metric.append(metricLabel, metricValue);
+            metrics.appendChild(metric);
+        });
+        card.appendChild(metrics);
+
+        const recommendation = document.createElement("p");
+        recommendation.className = "supplier-recommendation";
+        recommendation.textContent = recommendationText;
+        card.appendChild(recommendation);
+
+        const links = document.createElement("div");
+        links.className = "supplier-links";
         commerceSupplierLinks(row).forEach((item) => {
             const link = document.createElement("a");
             link.href = item.url;
@@ -441,13 +442,9 @@ function commerceRenderSupplierRecommendations(container, rows, prediction, empt
             link.textContent = item.label;
             links.appendChild(link);
         });
-        tr.appendChild(links);
-
-        tbody.appendChild(tr);
+        card.appendChild(links);
+        container.appendChild(card);
     });
-
-    table.appendChild(tbody);
-    container.appendChild(table);
 }
 
 async function commerceDataset() {
