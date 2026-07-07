@@ -1374,6 +1374,28 @@
     background: #16233a;
 }
 
+/* Make admin tables more readable: lighten table background and ensure text contrast */
+.admin-pro-shell .table-wrap {
+    background: rgba(255,255,255,0.02) !important;
+    border-color: rgba(0,0,0,0.06) !important;
+}
+.admin-pro-shell .table-wrap table {
+    background: transparent !important;
+}
+.admin-pro-shell .table-wrap thead th,
+.admin-pro-shell .table-wrap tbody td {
+    color: var(--color-text) !important;
+}
+.admin-pro-shell .table-wrap thead {
+    background: rgba(255,255,255,0.03) !important;
+}
+.admin-pro-shell .table-wrap tbody tr {
+    background: rgba(0,0,0,0.02) !important;
+}
+.admin-pro-shell .table-wrap .badge {
+    color: var(--color-text) !important;
+}
+
 .admin-forecast-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
