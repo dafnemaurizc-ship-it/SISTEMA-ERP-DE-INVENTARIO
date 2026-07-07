@@ -139,7 +139,7 @@ async function login(email, password) {
     return response;
 }
 
-function createAdminAccount(name, email, phone, cargo, adminRole, password) {
+function createAdminAccount(name, email, phone, cargo, adminRole, password, companyName = "", ruc = "", subscriptionPlan = "growth") {
     const users = getLocalUsers();
     const normalizedEmail = normalizeEmail(email);
 
@@ -177,6 +177,10 @@ function createAdminAccount(name, email, phone, cargo, adminRole, password) {
         phone,
         cargo,
         admin_role: adminRole,
+        company_name: companyName,
+        ruc: ruc,
+        subscription_plan: subscriptionPlan || "growth",
+        subscription_status: "Activo",
         activo: true,
         created_at: existing?.created_at || new Date().toISOString(),
     };
