@@ -135,6 +135,176 @@
         return `${parts[0][0] || ""}${parts[1][0] || ""}`.toUpperCase();
     }
 
+    function profileValue(value, fallback = "-") {
+        const normalized = String(value || "").trim();
+        return normalized || fallback;
+    }
+
+    function appendProfileDetail(grid, label, value) {
+        const item = document.createElement("div");
+        item.className = "profile-detail-item";
+
+        const caption = document.createElement("span");
+        caption.textContent = label;
+
+        const data = document.createElement("strong");
+        data.textContent = profileValue(value);
+
+        item.append(caption, data);
+        grid.appendChild(item);
+    }
+
+    function closeProfileModal() {
+        const modal = document.getElementById("user-profile-modal");
+        if (!modal) return;
+        modal.classList.add("hidden");
+        modal.setAttribute("aria-hidden", "true");
+    }
+
+    function ensureProfileModal() {
+        let modal = document.getElementById("user-profile-modal");
+        if (modal) return modal;
+
+        modal = document.createElement("div");
+        modal.id = "user-profile-modal";
+        modal.className = "profile-view-modal hidden";
+        modal.setAttribute("aria-hidden", "true");
+
+        const card = document.createElement("section");
+        card.className = "profile-view-card";
+        card.setAttribute("role", "dialog");
+        card.setAttribute("aria-modal", "true");
+        card.setAttribute("aria-labelledby", "user-profile-modal-title");
+
+        const header = document.createElement("div");
+        header.className = "profile-view-header";
+
+        const headingWrap = document.createElement("div");
+        const eyebrow = document.createElement("span");
+        eyebrow.className = "profile-view-eyebrow";
+        eyebrow.textContent = "Cuenta";
+
+        const title = document.createElement("h2");
+        title.id = "user-profile-modal-title";
+
+        headingWrap.append(eyebrow, title);
+
+        const closeButton = document.createElement("button");
+        closeButton.type = "button";
+        closeButton.className = "profile-view-close";
+        closeButton.setAttribute("aria-label", "Cerrar");
+        closeButton.textContent = "x";
+        closeButton.addEventListener("click", closeProfileModal);
+
+        header.append(headingWrap, closeButton);
+
+        const body = document.createElement("div");
+        body.className = "profile-view-body";
+
+        card.append(header, body);
+        modal.appendChild(card);
+        document.body.appendChild(modal);
+
+        modal.addEventListener("click", (event) => {
+            if (event.target === modal) closeProfileModal();
+        });
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") closeProfileModal();
+        });
+
+        return modal;
+    }
+
+    function buildProfileSummary(user, displayName) {
+        const summary = document.createElement("div");
+        summary.className = "profile-view-summary";
+
+        const avatar = document.createElement("span");
+        avatar.className = "profile-view-avatar";
+        avatar.textContent = userInitials(displayName);
+
+        const text = document.createElement("div");
+        const name = document.createElement("strong");
+        name.textContent = displayName;
+        const email = document.createElement("span");
+        email.textContent = profileValue(user?.email, "Sin correo registrado");
+        text.append(name, email);
+
+        summary.append(avatar, text);
+        return summary;
+    }
+
+    function openProfileModal(action) {
+        const modal = ensureProfileModal();
+        const user = readCurrentUser() || {};
+        const displayName = userDisplayName(user);
+        const title = modal.querySelector("#user-profile-modal-title");
+        const body = modal.querySelector(".profile-view-body");
+        body.innerHTML = "";
+
+        if (action === "profile") {
+            title.textContent = "Mi perfil";
+            const grid = document.createElement("div");
+            grid.className = "profile-detail-grid";
+            appendProfileDetail(grid, "Nombre", displayName);
+            appendProfileDetail(grid, "Correo", user.email);
+            appendProfileDetail(grid, "Rol", user.role || user.tipo_usuario || "Cliente");
+            appendProfileDetail(grid, "Telefono", user.phone || user.telefono);
+            appendProfileDetail(grid, "Estado", user.status || user.subscription_status || "Activo");
+            appendProfileDetail(grid, "Documento", user.document || user.documento || user.ruc || user.dni);
+            body.append(buildProfileSummary(user, displayName), grid);
+        } else if (action === "settings") {
+            title.textContent = "Configuracion";
+
+            const settings = document.createElement("div");
+            settings.className = "profile-settings";
+
+            const themeGroup = document.createElement("label");
+            themeGroup.className = "profile-setting-field";
+            const themeLabel = document.createElement("span");
+            themeLabel.textContent = "Tema de la interfaz";
+            const themeSelect = document.createElement("select");
+            themeSelect.innerHTML = `
+                <option value="light">Modo claro</option>
+                <option value="dark">Modo oscuro</option>
+            `;
+            themeSelect.value = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+            themeGroup.append(themeLabel, themeSelect);
+
+            const saveButton = document.createElement("button");
+            saveButton.type = "button";
+            saveButton.className = "btn btn-primary";
+            saveButton.textContent = "Guardar configuracion";
+
+            const feedback = document.createElement("p");
+            feedback.className = "profile-settings-feedback";
+            feedback.setAttribute("aria-live", "polite");
+
+            saveButton.addEventListener("click", () => {
+                applyTheme(themeSelect.value);
+                feedback.textContent = "Configuracion guardada.";
+            });
+
+            settings.append(themeGroup, saveButton, feedback);
+            body.appendChild(settings);
+        } else if (action === "company") {
+            title.textContent = "Mi empresa";
+            const grid = document.createElement("div");
+            grid.className = "profile-detail-grid";
+            appendProfileDetail(grid, "Empresa", user.company_name || user.companyName || user.business_name || user.empresa || displayName);
+            appendProfileDetail(grid, "RUC", user.ruc || user.tax_id || user.documento);
+            appendProfileDetail(grid, "Correo", user.company_email || user.email);
+            appendProfileDetail(grid, "Telefono", user.company_phone || user.phone || user.telefono);
+            appendProfileDetail(grid, "Plan", user.subscription_plan || user.plan || "Growth");
+            appendProfileDetail(grid, "Suscripcion", user.subscription_status || user.status || "Activa");
+            body.append(buildProfileSummary(user, displayName), grid);
+        }
+
+        modal.classList.remove("hidden");
+        modal.setAttribute("aria-hidden", "false");
+        modal.querySelector(".profile-view-close")?.focus();
+    }
+
     function closeProfileMenus(except = null) {
         document.querySelectorAll(".user-profile").forEach((profile) => {
             if (profile === except) return;
@@ -204,13 +374,18 @@
         dropdown.addEventListener("click", (event) => {
             const action = event.target.closest("[data-profile-action]")?.dataset.profileAction;
             if (!action) return;
+            closeProfileMenus();
             if (action === "logout") {
-                localStorage.removeItem("token");
-                localStorage.removeItem("user_data");
-                window.location.href = "/login.html";
+                if (typeof window.logout === "function") {
+                    window.logout();
+                } else {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("user_data");
+                    window.location.href = "/login.html";
+                }
                 return;
             }
-            closeProfileMenus();
+            openProfileModal(action);
         });
 
         topbarActions.appendChild(wrapper);
