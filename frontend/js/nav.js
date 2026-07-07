@@ -104,6 +104,118 @@
         }
     }
 
+    function readCurrentUser() {
+        try {
+            return JSON.parse(localStorage.getItem("user_data") || "null");
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function userDisplayName(user) {
+        const fullName = [user?.first_name, user?.last_name].filter(Boolean).join(" ").trim();
+        return String(
+            user?.company_name ||
+            user?.companyName ||
+            user?.business_name ||
+            user?.empresa ||
+            user?.nombre ||
+            user?.name ||
+            fullName ||
+            user?.email ||
+            "Cliente"
+        ).trim() || "Cliente";
+    }
+
+    function userInitials(name) {
+        const clean = String(name || "Cliente").trim();
+        const parts = clean.split(/\s+/).filter(Boolean);
+        if (!parts.length) return "CL";
+        if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+        return `${parts[0][0] || ""}${parts[1][0] || ""}`.toUpperCase();
+    }
+
+    function closeProfileMenus(except = null) {
+        document.querySelectorAll(".user-profile").forEach((profile) => {
+            if (profile === except) return;
+            profile.classList.remove("is-open");
+            profile.querySelector(".user-profile-button")?.setAttribute("aria-expanded", "false");
+        });
+    }
+
+    function renderUserProfileMenu() {
+        const topbarActions = document.querySelector(".topbar-actions");
+        if (!topbarActions || document.querySelector(".user-profile")) return;
+        if (!localStorage.getItem("token")) return;
+
+        const user = readCurrentUser();
+        const displayName = userDisplayName(user);
+        const initials = userInitials(displayName);
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "user-profile";
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "user-profile-button";
+        button.setAttribute("aria-haspopup", "true");
+        button.setAttribute("aria-expanded", "false");
+
+        const avatar = document.createElement("span");
+        avatar.className = "user-avatar";
+        avatar.setAttribute("aria-hidden", "true");
+        avatar.textContent = initials;
+
+        const name = document.createElement("span");
+        name.className = "user-profile-name";
+        name.textContent = displayName;
+
+        const chevron = document.createElement("span");
+        chevron.className = "user-profile-chevron";
+        chevron.setAttribute("aria-hidden", "true");
+        chevron.textContent = "⌄";
+
+        button.append(avatar, name, chevron);
+
+        const dropdown = document.createElement("div");
+        dropdown.className = "user-profile-dropdown";
+        dropdown.setAttribute("role", "menu");
+        [
+            ["profile", "Mi perfil"],
+            ["settings", "Configuracion"],
+            ["company", "Mi empresa"],
+            ["logout", "Cerrar sesion"],
+        ].forEach(([action, label]) => {
+            const item = document.createElement("button");
+            item.type = "button";
+            item.setAttribute("role", "menuitem");
+            item.dataset.profileAction = action;
+            item.textContent = label;
+            dropdown.appendChild(item);
+        });
+        wrapper.append(button, dropdown);
+
+        button.addEventListener("click", (event) => {
+            event.stopPropagation();
+            const nextOpen = !wrapper.classList.contains("is-open");
+            closeProfileMenus(wrapper);
+            wrapper.classList.toggle("is-open", nextOpen);
+            button.setAttribute("aria-expanded", nextOpen ? "true" : "false");
+        });
+        dropdown.addEventListener("click", (event) => {
+            const action = event.target.closest("[data-profile-action]")?.dataset.profileAction;
+            if (!action) return;
+            if (action === "logout") {
+                localStorage.removeItem("token");
+                localStorage.removeItem("user_data");
+                window.location.href = "/login.html";
+                return;
+            }
+            closeProfileMenus();
+        });
+
+        topbarActions.appendChild(wrapper);
+    }
+
     function appendAssistantMessage(body, role, text) {
         const item = document.createElement("div");
         item.className = `assistant-message ${role}`;
@@ -290,6 +402,11 @@
         renderNav();
         setupResponsiveSidebar();
         renderAssistant();
+        renderUserProfileMenu();
         applyTheme(localStorage.getItem(THEME_KEY) || "light");
+        document.addEventListener("click", () => closeProfileMenus());
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") closeProfileMenus();
+        });
     });
 })();
