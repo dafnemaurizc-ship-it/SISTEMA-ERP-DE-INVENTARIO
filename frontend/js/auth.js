@@ -315,11 +315,12 @@ if (document.querySelector("#register-form")) {
     document.querySelector("#register-form").addEventListener("submit", async (event) => {
         event.preventDefault();
         const submitButton = event.submitter || event.target.querySelector("button[type='submit']");
-        const nombre = document.getElementById("nombre").value;
-        const email = document.getElementById("email").value;
-        const phone = document.getElementById("phone").value;
-        const cargo = document.getElementById("cargo").value;
-        const adminRole = document.getElementById("admin-role").value;
+        const companyName = document.getElementById("company-name").value.trim();
+        const companyRuc = document.getElementById("company-ruc").value.trim();
+        const subscriptionPlan = document.getElementById("subscription-plan").value;
+        const nombre = document.getElementById("nombre").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const phone = document.getElementById("phone").value.trim();
         const password = document.getElementById("password").value;
         const confirmPassword = document.getElementById("confirm-password").value;
 
@@ -331,16 +332,16 @@ if (document.querySelector("#register-form")) {
         try {
             if (submitButton) {
                 submitButton.disabled = true;
-                submitButton.textContent = "Creando cuenta admin...";
+                submitButton.textContent = "Creando cuenta...";
             }
-            createAdminAccount(nombre, email, phone, cargo, adminRole, password);
-            alert("Cuenta de administrador creada. Inicia sesión con esos datos.");
+            await register(nombre, email, password, companyName, companyRuc, phone, subscriptionPlan);
+            alert("Cuenta de cliente creada. Inicia sesión con esos datos.");
             window.location.href = "/login.html";
         } catch (error) {
             alert("Error: " + error.message);
             if (submitButton) {
                 submitButton.disabled = false;
-                submitButton.textContent = "Crear cuenta admin";
+                submitButton.textContent = "Crear cuenta";
             }
         }
     });
