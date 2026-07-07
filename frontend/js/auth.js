@@ -367,10 +367,15 @@ function setupLogoBehavior() {
     document.querySelectorAll('.sidebar-brand, .brand-mark, .sidebar-brand .brand-mark, .brand-link').forEach((el) => {
         el.style.cursor = 'pointer';
         el.addEventListener('click', (event) => {
-            // if currently on a register page, go to login (first tab)
-            const path = window.location.pathname || '';
-            if (path.endsWith('/register.html') || path.endsWith('/admin-register.html')) {
-                window.location.href = '/login.html';
+            // if currently on a register page, go back to previous page if possible,
+            // otherwise fall back to login (first tab)
+            const path = (window.location.pathname || '').toLowerCase();
+            if (path.indexOf('register.html') !== -1 || path.indexOf('admin-register.html') !== -1) {
+                if (window.history && window.history.length > 1) {
+                    window.history.back();
+                } else {
+                    window.location.href = '/login.html';
+                }
                 return;
             }
             // default behavior: go to dashboard if logged in, otherwise login
