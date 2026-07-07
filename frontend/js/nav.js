@@ -176,6 +176,48 @@
         });
     }
 
+    function setupResponsiveSidebar() {
+        const sidebar = document.querySelector(".sidebar");
+        const topbar = document.querySelector(".topbar");
+        if (!sidebar || !topbar || document.querySelector(".mobile-sidebar-toggle")) return;
+
+        sidebar.id = sidebar.id || "app-sidebar";
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "mobile-sidebar-toggle";
+        button.setAttribute("aria-controls", sidebar.id);
+        button.setAttribute("aria-expanded", "false");
+        button.setAttribute("aria-label", "Abrir menu");
+        button.innerHTML = "<span></span><span></span><span></span>";
+
+        const backdrop = document.createElement("div");
+        backdrop.className = "sidebar-backdrop";
+        backdrop.hidden = true;
+
+        topbar.prepend(button);
+        document.body.appendChild(backdrop);
+
+        const setOpen = (open) => {
+            document.body.classList.toggle("sidebar-open", open);
+            button.setAttribute("aria-expanded", open ? "true" : "false");
+            button.setAttribute("aria-label", open ? "Cerrar menu" : "Abrir menu");
+            backdrop.hidden = !open;
+        };
+
+        button.addEventListener("click", () => setOpen(!document.body.classList.contains("sidebar-open")));
+        backdrop.addEventListener("click", () => setOpen(false));
+        sidebar.addEventListener("click", (event) => {
+            if (event.target.closest("a, button")) setOpen(false);
+        });
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") setOpen(false);
+        });
+        window.addEventListener("resize", () => {
+            if (window.innerWidth >= 1024) setOpen(false);
+        });
+    }
+
     function renderNav() {
         const nav = document.querySelector(".sidebar-nav");
         if (!nav) return;
@@ -246,6 +288,7 @@
 
     document.addEventListener("DOMContentLoaded", () => {
         renderNav();
+        setupResponsiveSidebar();
         renderAssistant();
         applyTheme(localStorage.getItem(THEME_KEY) || "light");
     });

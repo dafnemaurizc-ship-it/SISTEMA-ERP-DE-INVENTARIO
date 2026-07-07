@@ -10,6 +10,7 @@
     font-size: 0.94rem;
     font-weight: 650;
     line-height: 1;
+    white-space: nowrap;
     cursor: pointer;
     transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
 }
@@ -86,7 +87,7 @@
 }
 
 .external-links {
-    min-width: 360px;
+    min-width: 0;
     display: flex;
     flex-wrap: wrap;
     gap: 0.45rem;
@@ -182,6 +183,7 @@
 
 .form-actions {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.75rem;
     justify-content: flex-end;
     margin-top: 1.25rem;
@@ -325,6 +327,8 @@
     width: 100%;
     max-width: 100%;
     overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
@@ -341,6 +345,17 @@ table {
     min-width: 0;
     border-collapse: collapse;
     background: var(--color-surface);
+}
+
+.table-wrap table {
+    min-width: 720px;
+}
+
+.table-wrap thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: inherit;
 }
 
 .table-select {
@@ -364,6 +379,7 @@ td {
     text-align: left;
     border-bottom: 1px solid var(--color-border);
     vertical-align: middle;
+    overflow-wrap: anywhere;
 }
 
 th {
@@ -408,6 +424,7 @@ tbody tr:hover {
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-md);
     pointer-events: auto;
+    max-height: calc(100vh - 2rem);
 }
 
 .assistant-widget.is-open .assistant-panel {
@@ -448,7 +465,7 @@ tbody tr:hover {
 }
 
 .assistant-body {
-    max-height: 330px;
+    max-height: min(330px, calc(100vh - 240px));
     display: grid;
     gap: 0.65rem;
     overflow-y: auto;
@@ -481,6 +498,68 @@ tbody tr:hover {
     padding: 0.85rem;
     border-top: 1px solid var(--color-border);
     background: var(--color-surface);
+}
+
+@media (max-width: 767px) {
+    .btn {
+        min-height: 46px;
+        white-space: normal;
+    }
+
+    .panel,
+    .form-card {
+        padding: 1rem;
+    }
+
+    .form-card {
+        width: 100%;
+    }
+
+    .form-actions,
+    .book-card .actions {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-actions .btn,
+    .book-card .actions .btn,
+    .topbar-actions .btn,
+    .external-links .btn {
+        width: 100%;
+    }
+
+    th,
+    td {
+        padding: 0.72rem 0.75rem;
+        font-size: 0.86rem;
+    }
+
+    .table-wrap table {
+        min-width: 640px;
+    }
+
+    .assistant-widget {
+        right: 0.75rem;
+        bottom: 0.75rem;
+        width: calc(100% - 1.5rem);
+    }
+
+    .assistant-panel {
+        max-height: calc(100vh - 1.5rem);
+    }
+
+    .assistant-body {
+        max-height: calc(100vh - 230px);
+    }
+
+    .assistant-form {
+        grid-template-columns: 1fr;
+    }
+
+    .assistant-message {
+        max-width: 94%;
+    }
 }
 
 :root[data-theme="dark"] table {
