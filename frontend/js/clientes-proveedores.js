@@ -95,3 +95,15 @@ document.addEventListener("DOMContentLoaded", () => {
     setupRelationForm();
     renderRelations();
 });
+
+// Listen to storage events so the relations table updates when other tabs/pages modify it
+window.addEventListener("storage", (event) => {
+    if (!event) return;
+    if (event.key === RELATIONS_KEY) {
+        try {
+            renderRelations();
+        } catch (e) {
+            // ignore
+        }
+    }
+});
