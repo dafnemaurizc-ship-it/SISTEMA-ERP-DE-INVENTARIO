@@ -631,6 +631,17 @@ function billingUpsertClient(name, doc) {
         } catch (e) {
             // ignore
         }
+        // Broadcast channel fallback for modern browsers
+        try {
+            if (typeof BroadcastChannel !== "undefined") {
+                const bc = new BroadcastChannel("novaris_relations");
+                bc.postMessage({ type: "relations-updated", time: Date.now() });
+                bc.close();
+            }
+        } catch (e) {
+            // ignore
+        }
+        console.debug("billingUpsertClient: relations updated", relations.length, relations[0]);
         if (typeof window.renderRelations === "function") {
             try { window.renderRelations(); } catch (e) { /* ignore */ }
         }

@@ -53,6 +53,7 @@ function renderRelations() {
     const saved = getRelations();
     const rows = saved.length ? saved : defaultRelations();
     tbody.innerHTML = "";
+    console.debug("renderRelations: rows=", rows.length);
     rows.forEach((row) => {
         const tr = document.createElement("tr");
         appendRelationCell(tr, row.tipo === "proveedor" ? "Proveedor" : "Cliente");
@@ -121,3 +122,15 @@ setInterval(() => {
         // ignore
     }
 }, 2500);
+
+// BroadcastChannel listener (more reliable for same-origin tabs)
+try {
+    if (typeof BroadcastChannel !== "undefined") {
+        const bc = new BroadcastChannel("novaris_relations");
+        bc.addEventListener("message", (e) => {
+            try { console.debug('clientes-proveedores: bc message', e.data); renderRelations(); } catch (err) {}
+        });
+    }
+} catch (e) {
+    // ignore
+}
