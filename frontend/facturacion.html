@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Novaris ERP - Facturacion</title>
     <link rel="stylesheet" href="css/styles.css?v=20260630-design-v2" />
-    <link rel="stylesheet" href="css/components.css?v=20260630-design-v2" />
-    <link rel="stylesheet" href="css/layout.css?v=20260630-word-menu-v1" />
+    <link rel="stylesheet" href="css/components.css?v=20260707-logo-v1" />
+    <link rel="stylesheet" href="css/layout.css?v=20260707-doc-type-v1" />
 </head>
 <body>
     <div class="app-shell">
@@ -19,99 +19,103 @@
                 </div>
             </div>
             <ul class="sidebar-nav"></ul>
-            <div class="sidebar-footer">Modulo de facturacion<br/>para ventas, comprobantes y caja.</div>
+            <div class="sidebar-footer">Emite boletas y facturas<br/>desde productos importados.</div>
         </aside>
 
         <div class="main-area">
             <header class="topbar">
                 <div class="topbar-title">
-                    <h1>Modulo: Facturacion</h1>
-                    <p>Registra ventas, emite comprobantes, administra clientes y controla pagos.</p>
+                    <h1>Registro de ventas</h1>
+                    <p>Selecciona productos importados, revisa el subtotal y genera boleta o factura.</p>
                 </div>
                 <div class="topbar-actions">
-                    <a href="dashboard.html" class="btn btn-secondary">Volver</a>
+                    <a href="importar-datos.html" class="btn btn-secondary">Importar productos</a>
                 </div>
             </header>
 
             <main class="page-content billing-page">
                 <section class="dashboard-grid">
                     <article class="stat-card">
-                        <span class="stat-label">Ventas del dia</span>
-                        <strong class="stat-value">24</strong>
-                        <p>Operaciones listas para comprobante.</p>
+                        <span class="stat-label">Productos cargados</span>
+                        <strong class="stat-value" id="billing-stat-products">0</strong>
+                        <p>Productos disponibles desde el ultimo archivo.</p>
                     </article>
                     <article class="stat-card">
-                        <span class="stat-label">Facturas</span>
-                        <strong class="stat-value">142</strong>
-                        <p>Comprobantes emitidos este trimestre.</p>
+                        <span class="stat-label">Venta actual</span>
+                        <strong class="stat-value" id="billing-stat-cart">S/ 0.00</strong>
+                        <p>Total del comprobante en preparacion.</p>
                     </article>
                     <article class="stat-card">
-                        <span class="stat-label">Por cobrar</span>
-                        <strong class="stat-value">S/ 24.6k</strong>
-                        <p>Saldo pendiente de pago.</p>
+                        <span class="stat-label">Emitidos</span>
+                        <strong class="stat-value" id="billing-stat-docs">0</strong>
+                        <p>Boletas y facturas generadas localmente.</p>
                     </article>
                     <article class="stat-card">
-                        <span class="stat-label">Caja del dia</span>
-                        <strong class="stat-value">S/ 8.4k</strong>
-                        <p>Ingresos menos egresos registrados.</p>
+                        <span class="stat-label">Caja local</span>
+                        <strong class="stat-value" id="billing-stat-cash">S/ 0.00</strong>
+                        <p>Total acumulado de comprobantes emitidos.</p>
                     </article>
                 </section>
 
-                <section class="billing-menu panel">
-                    <div class="panel-title">
-                        <h2>Menu de facturacion</h2>
-                        <p>Accesos del modulo segun el flujo solicitado.</p>
-                    </div>
-                    <nav class="module-nav" aria-label="Menu interno de facturacion">
-                        <a href="#nueva-venta">Nueva venta</a>
-                        <a href="#emitir-comprobante">Emitir comprobante</a>
-                        <a href="#historial">Historial</a>
-                        <a href="#clientes">Clientes</a>
-                        <a href="#formas-pago">Formas de pago</a>
-                        <a href="#caja">Caja</a>
-                    </nav>
-                </section>
-
-                <section class="billing-grid">
-                    <article class="panel" id="nueva-venta">
+                <section class="billing-sale-grid">
+                    <article class="panel billing-products-panel">
                         <div class="panel-header">
                             <div class="panel-title">
-                                <h2>1. Nueva venta</h2>
-                                <p>Registrar una venta con cliente, productos, impuestos y forma de pago.</p>
+                                <h2>Buscar productos</h2>
+                                <p>Lista tomada del CSV/Excel importado en Prediccion.</p>
                             </div>
-                            <span class="badge badge-info">Operativo</span>
+                            <span class="badge badge-info" id="billing-source-badge">Sin archivo</span>
                         </div>
-                        <form class="billing-form">
+                        <div class="billing-product-filters">
                             <div class="form-group">
-                                <label for="venta-cliente">Cliente</label>
-                                <select id="venta-cliente">
-                                    <option>Grupo Sol</option>
-                                    <option>Sigma Labs</option>
-                                    <option>Cliente final</option>
+                                <label for="billing-product-search">Producto, SKU o categoria</label>
+                                <input type="search" id="billing-product-search" placeholder="Nombre del producto..." />
+                            </div>
+                            <div class="form-group">
+                                <label for="billing-category-filter">Categoria</label>
+                                <select id="billing-category-filter">
+                                    <option value="">Todas</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="billing-products-table" class="empty-state">Importa un archivo para vender productos.</div>
+                    </article>
+
+                    <article class="panel billing-checkout-panel">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <h2>Datos del cliente</h2>
+                                <p>Boleta acepta DNI, RUC o Carnet de Extranjeria. Factura requiere RUC y razon social.</p>
+                            </div>
+                        </div>
+
+                        <form class="billing-client-form" id="billing-client-form">
+                            <div class="form-group">
+                                <label for="billing-doc-type">Comprobante</label>
+                                <select id="billing-doc-type">
+                                    <option value="boleta">Boleta</option>
+                                    <option value="factura">Factura</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="venta-producto">Producto</label>
-                                <input type="text" id="venta-producto" placeholder="Buscar producto o SKU" />
-                            </div>
-                            <div class="form-group">
-                                <label for="venta-cantidad">Cantidad</label>
-                                <input type="number" id="venta-cantidad" min="1" value="1" />
-                            </div>
-                            <div class="form-group">
-                                <label for="venta-descuento">Descuento</label>
-                                <input type="number" id="venta-descuento" min="0" value="0" />
-                            </div>
-                            <div class="form-group">
-                                <label for="venta-igv">Impuestos IGV</label>
-                                <select id="venta-igv">
-                                    <option>18%</option>
-                                    <option>Exonerado</option>
+                                <label for="billing-id-type">Tipo doc.</label>
+                                <select id="billing-id-type">
+                                    <option value="dni">DNI</option>
+                                    <option value="ruc">RUC</option>
+                                    <option value="ce">Carnet extranjeria</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="venta-pago">Forma de pago</label>
-                                <select id="venta-pago">
+                                <label for="billing-customer-name">Cliente / razon social</label>
+                                <input type="text" id="billing-customer-name" placeholder="Cliente final" />
+                            </div>
+                            <div class="form-group">
+                                <label for="billing-customer-doc" id="billing-customer-doc-label">DNI</label>
+                                <input type="text" id="billing-customer-doc" placeholder="8 digitos" inputmode="numeric" autocomplete="off" maxlength="8" />
+                            </div>
+                            <div class="form-group">
+                                <label for="billing-payment">Pago</label>
+                                <select id="billing-payment">
                                     <option>Efectivo</option>
                                     <option>Tarjeta</option>
                                     <option>Transferencia</option>
@@ -120,154 +124,63 @@
                                     <option>Credito</option>
                                 </select>
                             </div>
-                            <button type="button" class="btn btn-primary">Registrar venta</button>
                         </form>
-                    </article>
 
-                    <article class="panel" id="emitir-comprobante">
-                        <div class="panel-header">
-                            <div class="panel-title">
-                                <h2>2. Emitir comprobante</h2>
-                                <p>Selecciona el tipo de documento comercial.</p>
-                            </div>
+                        <div class="panel-title billing-detail-title">
+                            <h2>Detalle de la venta</h2>
                         </div>
-                        <div class="billing-options">
-                            <button type="button" class="btn btn-primary">Factura</button>
-                            <button type="button" class="btn btn-secondary">Boleta</button>
-                            <button type="button" class="btn btn-secondary" disabled>Nota de credito V2</button>
-                            <button type="button" class="btn btn-secondary" disabled>Nota de debito V2</button>
+                        <div id="billing-cart-table" class="empty-state">Agrega productos desde la lista.</div>
+
+                        <div class="billing-totals">
+                            <div><span>Op. gravada</span><strong id="billing-subtotal">S/ 0.00</strong></div>
+                            <div><span>IGV (18%)</span><strong id="billing-igv">S/ 0.00</strong></div>
+                            <div class="billing-total-row"><span>Total</span><strong id="billing-total">S/ 0.00</strong></div>
                         </div>
-                        <div class="billing-summary">
-                            <div><span>Subtotal</span><strong>S/ 1,000.00</strong></div>
-                            <div><span>IGV 18%</span><strong>S/ 180.00</strong></div>
-                            <div><span>Total</span><strong>S/ 1,180.00</strong></div>
+
+                        <div id="billing-message" class="billing-message" aria-live="polite"></div>
+                        <div class="form-actions billing-actions">
+                            <button type="button" class="btn btn-secondary" id="billing-clear">Limpiar</button>
+                            <button type="button" class="btn btn-primary" id="billing-emit">Generar comprobante</button>
                         </div>
                     </article>
                 </section>
 
-                <section class="panel" id="historial">
-                    <div class="panel-header">
-                        <div class="panel-title">
-                            <h2>3. Historial de comprobantes</h2>
-                            <p>Tabla de documentos emitidos con acciones operativas.</p>
-                        </div>
-                    </div>
-                    <div class="table-wrap">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>N de comprobante</th>
-                                    <th>Fecha</th>
-                                    <th>Cliente</th>
-                                    <th>Total</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>F001-0021</td>
-                                    <td>2026-06-29</td>
-                                    <td>Grupo Sol</td>
-                                    <td>S/ 3,240.00</td>
-                                    <td><span class="badge badge-success">Pagada</span></td>
-                                    <td class="table-actions"><button class="btn btn-secondary">Ver</button><button class="btn btn-secondary">PDF</button><button class="btn btn-secondary">Reenviar</button></td>
-                                </tr>
-                                <tr>
-                                    <td>B001-0148</td>
-                                    <td>2026-06-28</td>
-                                    <td>Cliente final</td>
-                                    <td>S/ 480.00</td>
-                                    <td><span class="badge badge-warning">Pendiente</span></td>
-                                    <td class="table-actions"><button class="btn btn-secondary">Ver</button><button class="btn btn-secondary">PDF</button><button class="btn btn-secondary">Reenviar</button></td>
-                                </tr>
-                                <tr>
-                                    <td>F001-0023</td>
-                                    <td>2026-06-27</td>
-                                    <td>Innova S.A.</td>
-                                    <td>S/ 2,460.00</td>
-                                    <td><span class="badge badge-info">Procesando</span></td>
-                                    <td class="table-actions"><button class="btn btn-secondary">Ver</button><button class="btn btn-secondary">PDF</button><button class="btn btn-secondary">Reenviar</button></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-
-                <section class="billing-grid">
-                    <article class="panel" id="clientes">
+                <section class="billing-sale-grid">
+                    <article class="panel">
                         <div class="panel-header">
                             <div class="panel-title">
-                                <h2>4. Clientes</h2>
-                                <p>Administra personas y empresas para facturacion.</p>
+                                <h2>Comprobante generado</h2>
+                                <p>Vista previa lista para imprimir o guardar como PDF desde el navegador.</p>
                             </div>
+                            <button type="button" class="btn btn-secondary" id="billing-print">Imprimir</button>
                         </div>
-                        <div class="feature-list two-columns">
-                            <span>Personas</span>
-                            <span>Empresas</span>
-                            <span>DNI</span>
-                            <span>RUC</span>
-                            <span>Razon social</span>
-                            <span>Direccion</span>
-                            <span>Correo</span>
-                            <span>Telefono</span>
-                        </div>
+                        <div id="billing-receipt-preview" class="empty-state">Aun no has generado ningun comprobante.</div>
                     </article>
 
-                    <article class="panel" id="formas-pago">
+                    <article class="panel">
                         <div class="panel-header">
                             <div class="panel-title">
-                                <h2>5. Formas de pago</h2>
-                                <p>Medios disponibles para registrar cobros.</p>
+                                <h2>Recomendaciones aplicadas</h2>
+                                <p>Validaciones para reducir errores al emitir.</p>
                             </div>
-                        </div>
-                        <div class="payment-grid">
-                            <span class="badge badge-success">Efectivo</span>
-                            <span class="badge badge-info">Tarjeta</span>
-                            <span class="badge badge-info">Transferencia</span>
-                            <span class="badge badge-warning">Yape</span>
-                            <span class="badge badge-warning">Plin</span>
-                            <span class="badge badge-info">Credito</span>
-                        </div>
-                    </article>
-                </section>
-
-                <section class="billing-grid">
-                    <article class="panel" id="caja">
-                        <div class="panel-header">
-                            <div class="panel-title">
-                                <h2>6. Caja</h2>
-                                <p>Opcional para V1: control diario de efectivo y movimientos.</p>
-                            </div>
-                            <span class="badge badge-warning">V1 opcional</span>
-                        </div>
-                        <div class="cash-grid">
-                            <div><span>Apertura de caja</span><strong>S/ 500.00</strong></div>
-                            <div><span>Ingresos</span><strong>S/ 8,920.00</strong></div>
-                            <div><span>Egresos</span><strong>S/ 980.00</strong></div>
-                            <div><span>Saldo del dia</span><strong>S/ 8,440.00</strong></div>
-                        </div>
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-secondary">Apertura</button>
-                            <button type="button" class="btn btn-primary">Cierre de caja</button>
-                        </div>
-                    </article>
-
-                    <article class="panel" id="sunat">
-                        <div class="panel-header">
-                            <div class="panel-title">
-                                <h2>7. Integracion con SUNAT</h2>
-                                <p>Version futura para validacion y facturacion electronica.</p>
-                            </div>
-                            <span class="badge badge-info">V2</span>
                         </div>
                         <div class="feature-list">
-                            <span>Consulta de RUC</span>
-                            <span>Validacion de datos del cliente</span>
-                            <span>Estado del comprobante</span>
-                            <span>Facturacion electronica cuando el sistema evolucione</span>
+                            <span>Factura exige RUC de 11 digitos.</span>
+                            <span>Boleta acepta DNI de 8 digitos o CE de 9 a 12 digitos.</span>
+                            <span>No permite vender mas que el stock importado.</span>
+                            <span>El precio se toma del archivo; si falta, se estima con el ERP.</span>
                         </div>
                     </article>
+                </section>
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <h2>Comprobantes recientes</h2>
+                            <p>Historial local de boletas y facturas emitidas en este navegador.</p>
+                        </div>
+                    </div>
+                    <div id="billing-history-table" class="empty-state">Sin comprobantes emitidos.</div>
                 </section>
             </main>
         </div>
@@ -277,5 +190,8 @@
     <script src="js/nav.js?v=20260630-word-menu-v1"></script>
     <script src="js/api.js?v=20260620-redesign"></script>
     <script src="js/auth.js?v=20260630-profiles-v2"></script>
+    <script src="js/import-store.js?v=20260630-import-aliases-v5"></script>
+    <script src="js/compras-ventas.js?v=20260630-rf-fallback-v2"></script>
+    <script src="js/facturacion.js?v=20260707-issuer-v1"></script>
 </body>
 </html>

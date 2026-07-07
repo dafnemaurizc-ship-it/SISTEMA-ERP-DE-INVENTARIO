@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Novaris ERP - Prediccion de inventario</title>
     <link rel="stylesheet" href="css/styles.css?v=20260630-design-v2" />
-    <link rel="stylesheet" href="css/components.css?v=20260630-design-v2" />
-    <link rel="stylesheet" href="css/layout.css?v=20260630-word-menu-v1" />
+    <link rel="stylesheet" href="css/components.css?v=20260707-logo-v1" />
+    <link rel="stylesheet" href="css/layout.css?v=20260707-logo-v1" />
 </head>
 <body>
     <div class="app-shell">
@@ -109,20 +109,52 @@
     <script>
         const formatInt = (value) => new Intl.NumberFormat('es-PE', { maximumFractionDigits: 0 }).format(Number(value || 0));
 
+        function relatedPredictionColumn(column, numericColumns) {
+            const normalized = typeof normalizeColumnName === 'function'
+                ? normalizeColumnName(column)
+                : String(column || '').toLowerCase();
+            const groups = [
+                ['stock', 'inventario', 'existencias', 'disponible'],
+                ['ventas', 'salidas', 'cantidad', 'quantity', 'demanda', 'sales'],
+                ['precio', 'price', 'costo', 'cost'],
+                ['entrada', 'ingreso', 'compra', 'incoming'],
+            ];
+            const ownGroup = groups.find((group) => group.some((fragment) => normalized.includes(fragment)));
+            const preferredGroups = ownGroup
+                ? groups.filter((group) => group !== ownGroup)
+                : groups;
+
+            for (const group of preferredGroups) {
+                const match = numericColumns.find((candidate) => {
+                    if (candidate === column) return false;
+                    const candidateName = normalizeColumnName(candidate);
+                    return group.some((fragment) => candidateName.includes(fragment));
+                });
+                if (match) return match;
+            }
+
+            return numericColumns.find((candidate) => candidate !== column) || null;
+        }
+
         function renderColumnPredictions(snapshot) {
-            const rows = Object.entries(snapshot.profile?.column_predictions || {}).map(([column, prediction]) => ({
-                columna: column,
-                valor_estimado: prediction.predicted,
-                tendencia: prediction.trend,
-                nivel: prediction.classification,
-                promedio: snapshot.profile.numeric[column]?.avg,
-                minimo: snapshot.profile.numeric[column]?.min,
-                maximo: snapshot.profile.numeric[column]?.max,
-            }));
+            const numericColumns = Object.keys(snapshot.profile?.numeric || {});
+            const rows = Object.entries(snapshot.profile?.column_predictions || {}).map(([column, prediction]) => {
+                const relatedColumn = relatedPredictionColumn(column, numericColumns);
+                return {
+                    columna: column,
+                    variables_cruzadas: relatedColumn ? `${column} + ${relatedColumn}` : `${column} + sin segunda variable`,
+                    valor_estimado: prediction.predicted,
+                    tendencia: prediction.trend,
+                    nivel: prediction.classification,
+                    promedio: snapshot.profile.numeric[column]?.avg,
+                    minimo: snapshot.profile.numeric[column]?.min,
+                    maximo: snapshot.profile.numeric[column]?.max,
+                };
+            });
             renderDynamicTable(
                 document.getElementById('import-column-predictions'),
                 rows,
-                ['columna', 'valor_estimado', 'tendencia', 'nivel', 'promedio', 'minimo', 'maximo'],
+                ['columna', 'variables_cruzadas', 'valor_estimado', 'tendencia', 'nivel', 'promedio', 'minimo', 'maximo'],
                 'Sin predicciones por columna.'
             );
         }

@@ -9,6 +9,7 @@ from app.inventory.router import router as inventory_router
 from app.imports.router import router as imports_router
 from app.predictions.router import router as predictions_router
 from app.reports.router import router as reports_router
+from app.routers.erp import router as erp_router
 
 app = FastAPI(
     title="BiblioApp API",
@@ -43,6 +44,7 @@ app.include_router(inventory_router, prefix="/api/v1/inventory", tags=["Inventor
 app.include_router(imports_router, prefix="/api/v1/imports", tags=["Imports"])
 app.include_router(predictions_router, prefix="/api/v1/predictions", tags=["Predictions"])
 app.include_router(reports_router, prefix="/api/v1/reports", tags=["Reports"])
+app.include_router(erp_router, prefix="/api/v1", tags=["ERP"])
 
 
 @app.on_event("startup")

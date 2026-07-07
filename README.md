@@ -17,7 +17,7 @@ NOVARIS ERP es una propuesta de plataforma empresarial construida sobre la base 
 - FastAPI
 - SQLAlchemy 2.0
 - Pydantic
-- SQLite
+- PostgreSQL
 
 **Frontend**
 - HTML5
@@ -29,7 +29,21 @@ NOVARIS ERP es una propuesta de plataforma empresarial construida sobre la base 
 ### Requisitos
 - Python 3.11+
 - pip
-- Docker (opcional)
+- Docker / Docker Compose para PostgreSQL
+
+### Opcion recomendada con PostgreSQL
+
+```bash
+docker compose up --build
+```
+
+Esto levanta:
+- PostgreSQL en `localhost:5432`
+- Backend en `http://localhost:8000`
+- Frontend en `http://localhost:3000`
+
+Los usuarios registrados se guardan en la tabla `usuarios`.
+Cada inicio de sesion exitoso se guarda en `user_login_audits`.
 
 ### Backend
 
@@ -38,6 +52,7 @@ cd backend
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+set DATABASE_URL=postgresql+psycopg://novaris:novaris_dev_password@localhost:5432/novaris_erp
 uvicorn app.main:app --reload
 ```
 

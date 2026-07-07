@@ -9,7 +9,7 @@ function getUserData() {
 
 function isAdmin() {
     const userData = getUserData();
-    return userData && (userData.role === "admin" || userData.role === "cliente_admin");
+    return userData && userData.role === "admin";
 }
 
 function getLocalUsers() {
@@ -58,7 +58,7 @@ function setCurrentUserProfile(profile) {
     localStorage.setItem("user_data", JSON.stringify(saveProfile(profile)));
 }
 
-function localRegister(nombre, email, password, companyName = "", ruc = "", phone = "") {
+function localRegister(nombre, email, password, companyName = "", ruc = "", phone = "", subscriptionPlan = "growth") {
     const users = getLocalUsers();
     const normalizedEmail = normalizeEmail(email);
 
@@ -75,10 +75,12 @@ function localRegister(nombre, email, password, companyName = "", ruc = "", phon
         nombre,
         email: normalizedEmail,
         password,
-        role: companyName || ruc ? "cliente_admin" : "lector",
+        role: companyName || ruc ? "company_admin" : "user",
         company_name: companyName,
         ruc,
         phone,
+        subscription_plan: subscriptionPlan || "growth",
+        subscription_status: "Activo",
         activo: true,
         created_at: new Date().toISOString(),
     };
@@ -128,6 +130,7 @@ async function login(email, password) {
     localStorage.setItem("token", response.access_token);
     setCurrentUserProfile({
         ...(getSavedProfile(email) || {}),
+        ...response,
         email,
         role: response.role,
         local: false,
@@ -136,7 +139,80 @@ async function login(email, password) {
     return response;
 }
 
-async function register(nombre, email, password, companyName = "", ruc = "", phone = "") {
+function createAdminAccount(name, email, phone, cargo, adminRole, password) {
+    const users = getLocalUsers();
+    const normalizedEmail = normalizeEmail(email);
+
+    if (!name.trim()) {
+        throw new Error("Ingresa el nombre completo del administrador.");
+    }
+    if (!normalizedEmail) {
+        throw new Error("Ingresa el correo del administrador.");
+    }
+    if (!phone.trim()) {
+        throw new Error("Ingresa el teléfono del administrador.");
+    }
+    if (!cargo.trim()) {
+        throw new Error("Ingresa el cargo del administrador.");
+    }
+    if (!adminRole.trim()) {
+        throw new Error("Selecciona un rol administrativo.");
+    }
+    if (password.length < 8) {
+        throw new Error("La contraseña debe tener mínimo 8 caracteres.");
+    }
+
+    const existing = users.find((user) => user.email === normalizedEmail);
+    if (existing && existing.role !== "admin") {
+        throw new Error("Ese correo ya está registrado como cliente.");
+    }
+
+    const admin = {
+        ...(existing || {}),
+        id: existing?.id || Date.now(),
+        nombre: name,
+        email: normalizedEmail,
+        password,
+        role: "admin",
+        phone,
+        cargo,
+        admin_role: adminRole,
+        activo: true,
+        created_at: existing?.created_at || new Date().toISOString(),
+    };
+
+    const nextUsers = existing
+        ? users.map((user) => user.email === normalizedEmail ? admin : user)
+        : [admin, ...users];
+    saveLocalUsers(nextUsers);
+    saveProfile(admin);
+    return admin;
+}
+
+function adminLogin(email, password) {
+    const normalizedEmail = normalizeEmail(email);
+    if (!normalizedEmail) {
+        throw new Error("Ingresa el correo del administrador.");
+    }
+    const user = getLocalUsers().find(
+        (item) => item.email === normalizedEmail && item.password === password && item.role === "admin"
+    );
+
+    if (!user) {
+        throw new Error("No existe un administrador con esas credenciales. Crea el admin primero.");
+    }
+
+    const token = `local-admin-token-${user.id}`;
+    localStorage.setItem("token", token);
+    setCurrentUserProfile({
+        ...user,
+        ...(getSavedProfile(user.email) || {}),
+        local: true,
+    });
+    return { access_token: token, token_type: "bearer", role: "admin", local: true };
+}
+
+async function register(nombre, email, password, companyName = "", ruc = "", phone = "", subscriptionPlan = "growth") {
     const profile = {
         nombre,
         email,
@@ -144,6 +220,8 @@ async function register(nombre, email, password, companyName = "", ruc = "", pho
         company_name: companyName,
         ruc,
         phone,
+        subscription_plan: subscriptionPlan || "growth",
+        subscription_status: "Activo",
         activo: true,
     };
     try {
@@ -155,7 +233,7 @@ async function register(nombre, email, password, companyName = "", ruc = "", pho
         return response;
     } catch (error) {
         if (!error.isNetworkError) throw error;
-        return localRegister(nombre, email, password, companyName, ruc, phone);
+        return localRegister(nombre, email, password, companyName, ruc, phone, subscriptionPlan);
     }
 }
 
@@ -185,7 +263,12 @@ if (document.querySelector("#login-form")) {
                 submitButton.textContent = "Ingresando...";
             }
             await login(email, password);
-            window.location.href = "/dashboard.html";
+            const user = getUserData();
+            if (user?.role === "admin") {
+                window.location.href = "/admin-dashboard.html";
+            } else {
+                window.location.href = "/dashboard.html";
+            }
         } catch (error) {
             alert("Error: " + error.message);
             if (submitButton) {
@@ -196,30 +279,68 @@ if (document.querySelector("#login-form")) {
     });
 }
 
+if (document.querySelector("#admin-login-form")) {
+    const showAdminLogin = document.getElementById("show-admin-login");
+    const backToClientLogin = document.getElementById("back-to-client-login");
+    const clientLoginPanel = document.getElementById("client-login-panel");
+    const adminLoginPanel = document.getElementById("admin-login-panel");
+
+    showAdminLogin?.addEventListener("click", (event) => {
+        event.preventDefault();
+        if (clientLoginPanel) clientLoginPanel.classList.add("auth-admin-hidden");
+        if (adminLoginPanel) adminLoginPanel.classList.remove("auth-admin-hidden");
+    });
+
+    backToClientLogin?.addEventListener("click", (event) => {
+        event.preventDefault();
+        if (adminLoginPanel) adminLoginPanel.classList.add("auth-admin-hidden");
+        if (clientLoginPanel) clientLoginPanel.classList.remove("auth-admin-hidden");
+    });
+
+    document.querySelector("#admin-login-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const email = document.getElementById("admin-email").value;
+        const password = document.getElementById("admin-password").value;
+
+        try {
+            adminLogin(email, password);
+            window.location.href = "/admin-dashboard.html";
+        } catch (error) {
+            alert("Error: " + error.message);
+        }
+    });
+}
+
 if (document.querySelector("#register-form")) {
     document.querySelector("#register-form").addEventListener("submit", async (event) => {
         event.preventDefault();
         const submitButton = event.submitter || event.target.querySelector("button[type='submit']");
         const nombre = document.getElementById("nombre").value;
         const email = document.getElementById("email").value;
+        const phone = document.getElementById("phone").value;
+        const cargo = document.getElementById("cargo").value;
+        const adminRole = document.getElementById("admin-role").value;
         const password = document.getElementById("password").value;
-        const companyName = document.getElementById("company_name")?.value || "";
-        const ruc = document.getElementById("ruc")?.value || "";
-        const phone = document.getElementById("phone")?.value || "";
+        const confirmPassword = document.getElementById("confirm-password").value;
+
+        if (password !== confirmPassword) {
+            alert("Error: Las contraseñas no coinciden.");
+            return;
+        }
 
         try {
             if (submitButton) {
                 submitButton.disabled = true;
-                submitButton.textContent = "Creando cuenta...";
+                submitButton.textContent = "Creando cuenta admin...";
             }
-            const response = await register(nombre, email, password, companyName, ruc, phone);
-            alert(response.local ? "Cuenta creada localmente. Inicia sesion con esos datos." : "Cuenta creada exitosamente. Inicia sesion ahora.");
+            createAdminAccount(nombre, email, phone, cargo, adminRole, password);
+            alert("Cuenta de administrador creada. Inicia sesión con esos datos.");
             window.location.href = "/login.html";
         } catch (error) {
             alert("Error: " + error.message);
             if (submitButton) {
                 submitButton.disabled = false;
-                submitButton.textContent = "Crear cuenta";
+                submitButton.textContent = "Crear cuenta admin";
             }
         }
     });

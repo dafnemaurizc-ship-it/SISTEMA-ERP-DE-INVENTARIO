@@ -15,9 +15,19 @@ class Usuario(Base):
     role = Column(String(20), nullable=False, default="lector")
     activo = Column(Boolean, default=True, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+    last_login_at = Column(DateTime(timezone=True), nullable=True)
 
     # Multi-tenant: usuario puede pertenecer a una empresa (client)
     client_id = Column(Integer, ForeignKey("clients.id"), nullable=True)
     client = relationship("Client", back_populates="users")
 
     prestamos = relationship("Prestamo", back_populates="usuario", lazy="dynamic")
+    login_audits = relationship("UserLoginAudit", back_populates="usuario", lazy="dynamic")
+
+    @property
+    def company_name(self):
+        return self.client.name if self.client else None
+
+    @property
+    def ruc(self):
+        return self.client.ruc if self.client else None

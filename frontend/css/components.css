@@ -30,10 +30,26 @@
     background: linear-gradient(135deg, var(--color-primary-900), var(--color-primary-800));
 }
 
+:root[data-theme="dark"] .btn-primary {
+    background: linear-gradient(135deg, #4f8cff, #2f6df0);
+    border-color: rgba(119, 170, 255, 0.3);
+    box-shadow: 0 10px 24px rgba(47, 109, 240, 0.16);
+}
+
+:root[data-theme="dark"] .btn-primary:hover {
+    background: linear-gradient(135deg, #6fa2ff, #3f7ff2);
+}
+
 .btn-secondary {
     background: var(--color-surface-raised);
     color: var(--color-primary-800);
     border-color: var(--color-border);
+}
+
+:root[data-theme="dark"] .btn-secondary {
+    color: #8fb7ff;
+    background: #0c1628;
+    border-color: #2d456b;
 }
 
 .btn-secondary:hover {
@@ -94,6 +110,17 @@
     box-shadow: var(--shadow-sm);
 }
 
+:root[data-theme="dark"] .card,
+:root[data-theme="dark"] .panel,
+:root[data-theme="dark"] .form-card,
+:root[data-theme="dark"] .book-card,
+:root[data-theme="dark"] .stat-card,
+:root[data-theme="dark"] .quick-action,
+:root[data-theme="dark"] .detail-card {
+    background: #111b2f;
+    border-color: #253653;
+}
+
 .panel {
     position: relative;
     overflow: hidden;
@@ -107,6 +134,10 @@
     width: 4px;
     background: linear-gradient(180deg, var(--color-accent), var(--color-primary-700));
     opacity: 0.85;
+}
+
+.theme-toggle {
+    min-width: 112px;
 }
 
 .panel-header {
@@ -164,16 +195,21 @@
     justify-content: center;
     overflow: hidden;
     color: transparent;
-    background-color: #fff;
-    background-image: url("../assets/novaris-logo.png");
+    background-color: transparent;
+    background-image: url("../assets/novaris-logo-transparent.png");
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 82%;
-    border-radius: var(--radius-md);
+    background-size: contain;
+    border-radius: 0;
     font-size: 0;
     font-weight: 800;
     letter-spacing: 0;
-    box-shadow: 0 10px 22px rgba(12, 127, 143, 0.16);
+    box-shadow: none;
+}
+
+:root[data-theme="dark"] .brand-mark {
+    background-position: center;
+    box-shadow: none;
 }
 
 .badge {
@@ -213,6 +249,28 @@
 .badge-info {
     color: #075985;
     background: var(--color-info-soft);
+}
+
+:root[data-theme="dark"] .badge-success,
+:root[data-theme="dark"] .badge-aprobado,
+:root[data-theme="dark"] .badge-entregado {
+    color: #86efac;
+}
+
+:root[data-theme="dark"] .badge-danger,
+:root[data-theme="dark"] .badge-rechazado,
+:root[data-theme="dark"] .badge-vencido {
+    color: #fca5a5;
+}
+
+:root[data-theme="dark"] .badge-warning,
+:root[data-theme="dark"] .badge-pendiente,
+:root[data-theme="dark"] .badge-activo {
+    color: #fde68a;
+}
+
+:root[data-theme="dark"] .badge-info {
+    color: #93c5fd;
 }
 
 .book-card {
@@ -265,6 +323,7 @@
 
 .table-wrap {
     width: 100%;
+    max-width: 100%;
     overflow-x: auto;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
@@ -272,9 +331,14 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
 }
 
+:root[data-theme="dark"] .table-wrap {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
 table {
     width: 100%;
-    min-width: 720px;
+    max-width: 100%;
+    min-width: 0;
     border-collapse: collapse;
     background: var(--color-surface);
 }
@@ -288,6 +352,10 @@ table {
 thead {
     color: var(--color-primary-900);
     background: #f3f7fb;
+}
+
+:root[data-theme="dark"] thead {
+    background: #17243c;
 }
 
 th,
@@ -307,6 +375,116 @@ th {
 
 tbody tr:hover {
     background: #f8fcff;
+}
+
+:root[data-theme="dark"] tbody tr:hover {
+    background: #16233a;
+}
+
+#billing-history-table.table-wrap tbody tr {
+    cursor: pointer;
+}
+
+#billing-history-table.table-wrap tbody tr:focus {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: -1px;
+}
+
+.assistant-widget {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 40;
+    width: min(390px, calc(100% - 2rem));
+    max-width: 100%;
+    pointer-events: none;
+}
+
+.assistant-panel {
+    overflow: hidden;
+    display: none;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    pointer-events: auto;
+}
+
+.assistant-widget.is-open .assistant-panel {
+    display: grid;
+}
+
+.assistant-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    color: #fff;
+    background: linear-gradient(135deg, var(--color-primary-800), var(--color-accent-strong));
+}
+
+.assistant-header strong,
+.assistant-header span {
+    display: block;
+}
+
+.assistant-header span {
+    margin-top: 0.12rem;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.82rem;
+}
+
+.assistant-close {
+    width: 34px;
+    height: 34px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-sm);
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.assistant-body {
+    max-height: 330px;
+    display: grid;
+    gap: 0.65rem;
+    overflow-y: auto;
+    padding: 1rem;
+    background: var(--color-surface-muted);
+}
+
+.assistant-message {
+    width: fit-content;
+    max-width: 86%;
+    padding: 0.72rem 0.85rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    background: var(--color-surface);
+    font-size: 0.92rem;
+}
+
+.assistant-message.user {
+    justify-self: end;
+    color: #fff;
+    background: var(--color-primary-700);
+    border-color: var(--color-primary-700);
+}
+
+.assistant-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.65rem;
+    padding: 0.85rem;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+:root[data-theme="dark"] table {
+    background: #111b2f;
 }
 
 .empty-state {
@@ -358,4 +536,30 @@ tbody tr:hover {
 .pagination button:disabled {
     color: var(--color-text-muted);
     background: var(--color-surface-muted);
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #billing-receipt-preview,
+    #billing-receipt-preview * {
+        visibility: visible;
+    }
+
+    #billing-receipt-preview {
+        position: absolute;
+        inset: 0 auto auto 50%;
+        width: min(190mm, 100%);
+        transform: translateX(-50%);
+        color: #111827;
+        background: #fff;
+        border: 0;
+        box-shadow: none;
+    }
+
+    .receipt-footer {
+        color: #9ca3af;
+    }
 }

@@ -1,4 +1,21 @@
 services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_DB=novaris_erp
+      - POSTGRES_USER=novaris
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-novaris_dev_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U novaris -d novaris_erp"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
   backend:
     build:
       context: ./backend
@@ -8,12 +25,14 @@ services:
     volumes:
       - ./backend/app:/app/app
       - ./backend/scripts:/app/scripts
-      - sqlite_data:/app/data
     environment:
-      - DATABASE_URL=sqlite:////app/data/biblioapp.db
+      - DATABASE_URL=postgresql+psycopg://novaris:${POSTGRES_PASSWORD:-novaris_dev_password}@db:5432/novaris_erp
       - JWT_SECRET_KEY=${JWT_SECRET_KEY:-dev-secret-change-me}
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173,http://127.0.0.1:5173}
       - DEBUG=${DEBUG:-false}
+    depends_on:
+      db:
+        condition: service_healthy
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     restart: unless-stopped
 
@@ -28,4 +47,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  sqlite_data:
+  postgres_data:

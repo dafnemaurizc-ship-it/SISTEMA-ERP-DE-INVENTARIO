@@ -3,7 +3,12 @@ from statistics import mean
 from datetime import datetime
 
 import numpy as np
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+
+try:
+    from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+except ModuleNotFoundError:  # pragma: no cover - fallback for minimal environments
+    RandomForestClassifier = None
+    RandomForestRegressor = None
 
 FIELD_ALIASES = {
     "date": ("date", "fecha", "period", "periodo", "fecha_movimiento", "fecha_venta"),
@@ -203,7 +208,7 @@ def predict_inventory_from_rows(rows: List[dict]) -> dict:
     predicted_demand = int(round(avg_quantity))
     predicted_class = _threshold_class(predicted_stock)
 
-    if len(features) >= 4:
+    if len(features) >= 4 and RandomForestRegressor is not None and RandomForestClassifier is not None:
         try:
             X = np.array(features[:-1])
             y_stock = np.array(stocks[1:])

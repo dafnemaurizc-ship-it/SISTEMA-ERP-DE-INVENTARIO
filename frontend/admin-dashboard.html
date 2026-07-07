@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novaris ERP - Super Administrador</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css?v=20260707-admin-saas-v2">
+    <link rel="stylesheet" href="css/components.css?v=20260707-admin-saas-v2">
+    <link rel="stylesheet" href="css/layout.css?v=20260707-admin-saas-v2">
+</head>
+<body class="admin-pro-shell">
+    <div class="app-shell admin-shell">
+        <aside class="sidebar admin-sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-mark">N</span>
+                <div><strong>Novaris ERP</strong><span>Super administrador</span></div>
+            </div>
+            <ul class="sidebar-nav" data-admin-nav="true"></ul>
+        </aside>
+
+        <div class="main-area">
+            <header class="topbar admin-topbar">
+                <a href="/login.html" class="admin-topbar-brand brand-link">
+                    <span class="brand-mark">N</span>
+                    <strong>Novaris ERP</strong>
+                </a>
+                <div class="admin-search">
+                    <span class="admin-search-icon">Q</span>
+                    <input type="search" placeholder="Buscar empresas, usuarios, suscripciones..." aria-label="Buscador global">
+                </div>
+                <div class="topbar-actions admin-topbar-actions">
+                </div>
+            </header>
+
+            <main class="page-content admin-dashboard-page">
+                <div class="admin-main-section-heading">
+                    <div>
+                        <span class="admin-main-section-eyebrow">Contenido principal</span>
+                        <h2>Dashboard del administrador</h2>
+                    </div>
+                    <span class="admin-main-section-badge">Panel</span>
+                </div>
+                <section class="admin-hero">
+                    <div>
+                        <span class="admin-eyebrow">Super administrador SaaS</span>
+                        <h1>Panel administrador de Novaris ERP</h1>
+                        <p>Control centralizado de empresas, usuarios, planes, suscripciones, facturacion SaaS, seguridad y predicciones IA para decisiones ejecutivas.</p>
+                    </div>
+                    <div class="admin-hero-actions">
+                        <a href="#empresas" class="btn btn-primary">Ver empresas</a>
+                        <a href="#pagos" class="btn btn-secondary">Revisar pagos</a>
+                    </div>
+                </section>
+
+                <section class="admin-kpi-grid admin-summary" id="dashboard-summary">
+                    <article class="stat-card admin-kpi"><span class="stat-label">Empresas registradas</span><strong class="stat-value" id="admin-total-companies">0</strong><p>Empresas cliente creadas en Novaris.</p></article>
+                    <article class="stat-card admin-kpi"><span class="stat-label">Empresas activas</span><strong class="stat-value" id="admin-active-companies">0</strong><p>Suscripciones vigentes.</p></article>
+                    <article class="stat-card admin-kpi"><span class="stat-label">Nuevas este mes</span><strong class="stat-value" id="admin-new-companies">0</strong><p>Altas comerciales recientes.</p></article>
+                    <article class="stat-card admin-kpi"><span class="stat-label">Usuarios totales</span><strong class="stat-value" id="admin-total-users">0</strong><p>Usuarios administrados por empresas.</p></article>
+                    <article class="stat-card admin-kpi"><span class="stat-label">Suscripciones activas</span><strong class="stat-value" id="admin-active-subscriptions">0</strong><p>Planes mensuales activos.</p></article>
+                    <article class="stat-card admin-kpi"><span class="stat-label">MRR</span><strong class="stat-value" id="admin-mrr">S/ 0</strong><p>Ingreso mensual recurrente.</p></article>
+                    <article class="stat-card admin-kpi"><span class="stat-label">ARR</span><strong class="stat-value" id="admin-arr">S/ 0</strong><p>Ingreso anual recurrente.</p></article>
+                    <article class="stat-card admin-kpi"><span class="stat-label">Ingresos del mes</span><strong class="stat-value" id="admin-month-income">S/ 0</strong><p>Pagos SaaS cobrados.</p></article>
+                    <article class="stat-card admin-kpi"><span class="stat-label">Pagos pendientes</span><strong class="stat-value" id="admin-pending-payments">0</strong><p>Facturas por cobrar.</p></article>
+                    <article class="stat-card admin-kpi"><span class="stat-label">Churn mensual</span><strong class="stat-value" id="admin-churn">0%</strong><p>Cancelaciones estimadas.</p></article>
+                    <article class="stat-card admin-kpi"><span class="stat-label">Tickets soporte</span><strong class="stat-value" id="admin-support-tickets">0</strong><p>Casos abiertos.</p></article>
+                    <article class="stat-card admin-kpi"><span class="stat-label">Disponibilidad</span><strong class="stat-value" id="admin-uptime">99.98%</strong><p>Estado del sistema SaaS.</p></article>
+                </section>
+
+                <section class="admin-chart-grid admin-detail-section" id="reportes-ejecutivos">
+                    <article class="panel admin-chart-panel">
+                        <div class="panel-header">
+                            <div class="panel-title"><h2>MRR ultimos 12 meses</h2><p>Evolucion de ingresos recurrentes.</p></div>
+                            <span class="badge badge-info" id="admin-growth-badge">SaaS</span>
+                        </div>
+                        <div id="admin-mrr-chart" class="admin-line-chart"></div>
+                    </article>
+                    <article class="panel admin-chart-panel">
+                        <div class="panel-header"><div class="panel-title"><h2>Empresas nuevas vs canceladas</h2><p>Altas y bajas mensuales.</p></div></div>
+                        <div id="admin-company-flow-chart" class="admin-dual-chart"></div>
+                    </article>
+                    <article class="panel admin-chart-panel">
+                        <div class="panel-header"><div class="panel-title"><h2>Crecimiento mensual</h2><p>Incremento porcentual de MRR.</p></div></div>
+                        <div id="admin-growth-chart" class="admin-compact-bars"></div>
+                    </article>
+                    <article class="panel admin-chart-panel">
+                        <div class="panel-header"><div class="panel-title"><h2>Churn mensual</h2><p>Riesgo y cancelaciones.</p></div></div>
+                        <div id="admin-churn-chart" class="admin-compact-bars"></div>
+                    </article>
+                </section>
+
+                <section class="admin-analytics-grid admin-detail-section" id="planes">
+                    <article class="panel admin-chart-panel">
+                        <div class="panel-header"><div class="panel-title"><h2>Distribucion de planes</h2><p>Participacion por plan contratado.</p></div></div>
+                        <div id="admin-plan-distribution" class="admin-donut-layout"></div>
+                    </article>
+                    <article class="panel admin-chart-panel">
+                        <div class="panel-header"><div class="panel-title"><h2>Ingresos por plan</h2><p>MRR aportado por cada plan.</p></div></div>
+                        <div id="admin-plan-revenue" class="admin-list"></div>
+                    </article>
+                </section>
+
+                <section class="admin-analytics-grid admin-detail-section" id="empresas">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title"><h2>Empresas recientes</h2><p>Últimas empresas registradas en la plataforma.</p></div>
+                            <button type="button" class="btn btn-primary">Ver todas</button>
+                        </div>
+                        <div id="admin-companies-table" class="empty-state">Sin empresas registradas.</div>
+                    </article>
+                </section>
+
+                <section class="admin-analytics-grid admin-detail-section" id="usuarios">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title"><h2>Usuarios registrados</h2><p>Actividad de administradores y equipos cliente.</p></div>
+                            <button type="button" class="btn btn-secondary">Ver usuarios</button>
+                        </div>
+                        <div id="admin-users-list" class="admin-list empty-state">Sin datos de usuarios.</div>
+                    </article>
+                </section>
+
+                <section class="admin-analytics-grid admin-detail-section" id="suscripciones">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title"><h2>Suscripciones</h2><p>Resumen de planes y estado de suscripciones activas.</p></div>
+                        </div>
+                        <div class="admin-list">
+                            <div class="admin-list-item"><strong>Suscripciones activas</strong><span id="admin-subscription-summary">Sin datos</span></div>
+                            <div class="admin-list-item"><strong>Planes vigentes</strong><span id="admin-plan-summary">Sin datos</span></div>
+                            <div class="admin-list-item"><strong>Renovaciones</strong><span>Próximas renovaciones en 30 días.</span></div>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="admin-analytics-grid admin-detail-section" id="pagos">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title"><h2>Pagos pendientes</h2><p>Facturas y cobros SaaS.</p></div>
+                        </div>
+                        <div id="admin-pending-payments-table" class="empty-state">Sin pagos pendientes.</div>
+                    </article>
+                </section>
+
+                <section class="admin-analytics-grid admin-detail-section" id="tickets-soporte">
+                    <article class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title"><h2>Tickets de soporte</h2><p>Casos abiertos y respuestas del equipo de soporte SaaS.</p></div>
+                            <button type="button" class="btn btn-secondary">Ver detalles</button>
+                        </div>
+                        <div class="admin-list">
+                            <div class="admin-list-item"><strong>Soporte Premium</strong><span>3 tickets urgentes</span></div>
+                            <div class="admin-list-item"><strong>Respuesta estimada</strong><span>2 horas</span></div>
+                            <div class="admin-list-item"><strong>Prioridad</strong><span>Alta</span></div>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="admin-analytics-grid admin-detail-section" id="alertas-actividad">
+                    <article class="panel" id="alertas-importantes">
+                        <div class="panel-header"><div class="panel-title"><h2>Alertas importantes</h2><p>Riesgos de churn, pagos y operaciones SaaS.</p></div></div>
+                        <div id="admin-important-alerts" class="admin-list"></div>
+                    </article>
+                    <article class="panel" id="actividad-reciente">
+                        <div class="panel-header"><div class="panel-title"><h2>Actividad reciente</h2><p>Eventos y movimientos clave del negocio.</p></div></div>
+                        <div id="admin-recent-activity" class="admin-list"></div>
+                    </article>
+                    <article class="panel" id="centro-ia">
+                        <div class="panel-header"><div class="panel-title"><h2>Centro IA</h2><p>Analiza solo métricas SaaS: empresas, MRR, ARR, churn y pagos.</p></div></div>
+                        <div class="admin-list" id="admin-ai-hub">
+                            <div class="admin-list-item"><strong>Empresas registradas</strong><span>Resumen de clientes SaaS.</span></div>
+                            <div class="admin-list-item"><strong>Sugerencias</strong><span>Retención, upgrades y cobranza inteligente.</span></div>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="admin-analytics-grid admin-detail-section" id="seguridad">
+                    <article class="panel" id="notificaciones">
+                        <div class="panel-header"><div class="panel-title"><h2>Notificaciones</h2><p>Eventos del sistema SaaS.</p></div></div>
+                        <div class="admin-list"><div class="admin-list-item"><strong>Alertas de facturación</strong><span>2 pagos urgentes</span></div><div class="admin-list-item"><strong>Actualizaciones</strong><span>Sin novedades críticas.</span></div></div>
+                    </article>
+                    <article class="panel" id="seguridad-panel">
+                        <div class="panel-header"><div class="panel-title"><h2>Seguridad</h2><p>Estado de seguridad de la plataforma.</p></div></div>
+                        <div id="admin-security-list" class="admin-list"><div class="admin-list-item"><strong>Autenticación</strong><span>2FA activa para admins.</span></div><div class="admin-list-item"><strong>Revisiones</strong><span>Logs recientes disponibles.</span></div></div>
+                    </article>
+                </section>
+
+                <section class="admin-analytics-grid admin-detail-section" id="auditoria">
+                    <article class="panel">
+                        <div class="panel-header"><div class="panel-title"><h2>Auditoría</h2><p>Registros de accesos y cambios.</p></div></div>
+                        <div class="admin-list"><div class="admin-list-item"><strong>Logs</strong><span>Auditoría lista.</span></div><div class="admin-list-item"><strong>Sin incidencias</strong><span>Todo estable.</span></div></div>
+                    </article>
+                </section>
+
+                <section class="admin-analytics-grid admin-detail-section" id="configuracion-saas">
+                    <article class="panel" id="integraciones">
+                        <div class="panel-header"><div class="panel-title"><h2>Integraciones</h2><p>Conexiones externas para la plataforma.</p></div></div>
+                        <div class="admin-list"><div class="admin-list-item"><strong>API</strong><span>Documentación disponible.</span></div></div>
+                    </article>
+                    <article class="panel" id="api">
+                        <div class="panel-header"><div class="panel-title"><h2>API</h2><p>Accede a endpoints y credenciales.</p></div></div>
+                        <div class="admin-list"><div class="admin-list-item"><strong>Tokens</strong><span>Gestión centralizada.</span></div></div>
+                    </article>
+                    <article class="panel" id="configuracion">
+                        <div class="panel-header"><div class="panel-title"><h2>Configuración</h2><p>Ajustes globales de Novaris ERP.</p></div></div>
+                        <div class="admin-list"><div class="admin-list-item"><strong>Preferencias</strong><span>Administración SaaS.</span></div></div>
+                    </article>
+                </section>
+
+                <section class="admin-analytics-grid admin-detail-section" id="centro-ayuda">
+                    <article class="panel">
+                        <div class="panel-header"><div class="panel-title"><h2>Centro de ayuda</h2><p>Guías y soporte para administración.</p></div></div>
+                        <div class="admin-list"><div class="admin-list-item"><strong>Documentación</strong><span>Recursos para admins.</span></div><div class="admin-list-item"><strong>Contacto</strong><span>Soporte premium disponible.</span></div></div>
+                    </article>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="admin-profile-modal">
+        <div class="profile-modal">
+            <div class="profile-modal-header">
+                <h2>Perfil de administrador</h2>
+                <button type="button" class="profile-modal-close" id="close-profile-modal" aria-label="Cerrar modal">×</button>
+            </div>
+            <form id="admin-profile-form" class="profile-form">
+                <div class="profile-grid">
+                    <label><span>Nombre</span><input type="text" name="first_name" id="profile-first-name"></label>
+                    <label><span>Apellido</span><input type="text" name="last_name" id="profile-last-name"></label>
+                    <label><span>Correo</span><input type="email" name="email" id="profile-email" disabled></label>
+                    <label><span>Rol</span><input type="text" name="role" id="profile-role" disabled></label>
+                    <label><span>Contraseña</span><input type="password" name="password" id="profile-password" placeholder="Nueva contraseña"></label>
+                    <label><span>Preferencia de tema</span>
+                        <select name="theme" id="profile-theme">
+                            <option value="light">Claro</option>
+                            <option value="dark">Oscuro</option>
+                        </select>
+                    </label>
+                    <label><span>Notificaciones</span>
+                        <select name="notifications" id="profile-notifications">
+                            <option value="all">Todas</option>
+                            <option value="important">Importantes</option>
+                            <option value="off">Desactivadas</option>
+                        </select>
+                    </label>
+                    <label><span>Idioma</span>
+                        <select name="language" id="profile-language">
+                            <option value="es">Español</option>
+                            <option value="en">English</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="profile-actions">
+                    <button type="button" class="btn btn-secondary" id="cancel-profile">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/auth-guard.js?v=20260630-login-required"></script>
+    <script src="js/nav.js?v=20260707-admin-saas-v2"></script>
+    <script src="js/auth.js?v=20260707-admin-login-v1"></script>
+    <script src="js/admin-dashboard.js?v=20260707-admin-saas-v2"></script>
+</body>
+</html>

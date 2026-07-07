@@ -5,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Novaris ERP - Iniciar sesion</title>
     <link rel="stylesheet" href="css/styles.css?v=20260630-design-v2">
-    <link rel="stylesheet" href="css/components.css?v=20260630-design-v2">
-    <link rel="stylesheet" href="css/layout.css?v=20260630-word-menu-v1">
+    <link rel="stylesheet" href="css/components.css?v=20260707-logo-v1">
+    <link rel="stylesheet" href="css/layout.css?v=20260707-admin-dashboard-v1">
 </head>
 <body>
     <main class="auth-page">
         <aside class="auth-aside">
-            <div class="sidebar-brand">
+            <a href="/login.html" class="sidebar-brand brand-link">
                 <span class="brand-mark">N</span>
                 <div>
                     <strong>Novaris ERP</strong>
                     <span>Plataforma para operaciones inteligentes</span>
                 </div>
-            </div>
+            </a>
             <div class="auth-copy">
                 <h1>Controla inventario, ventas y abastecimiento</h1>
                 <p>Accede a tu entorno empresarial para revisar productos, movimientos, reportes y predicciones de demanda.</p>
@@ -26,7 +26,7 @@
         </aside>
 
         <section class="auth-main">
-            <div class="form-card">
+            <div class="form-card auth-card-wide" id="client-login-panel">
                 <div class="panel-title">
                     <span class="brand-mark">N</span>
                     <h2>Iniciar sesion</h2>
@@ -46,11 +46,35 @@
                     </div>
                 </form>
                 <p class="form-hint">No tienes cuenta? <a href="register.html">Registrate aqui</a></p>
+                <p class="form-hint admin-toggle-text">¿Eres administrador? <a href="#" id="show-admin-login">Inicia sesión aquí</a></p>
+            </div>
+
+            <div class="form-card auth-card-wide auth-admin-hidden" id="admin-login-panel">
+                <div class="panel-title">
+                    <span class="brand-mark">N</span>
+                    <h2>Iniciar sesión como administrador</h2>
+                    <p>Accede al panel SaaS de Novaris ERP.</p>
+                </div>
+                <form id="admin-login-form">
+                    <div class="form-group">
+                        <label for="admin-email">Correo administrador</label>
+                        <input type="email" id="admin-email" name="admin-email" autocomplete="username" placeholder="admin@novaris.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="admin-password">Contraseña</label>
+                        <input type="password" id="admin-password" name="admin-password" autocomplete="current-password" minlength="8" required>
+                    </div>
+                    <div class="form-actions auth-admin-actions">
+                        <a href="register.html" class="btn btn-secondary">Crear admin</a>
+                        <button type="submit" class="btn btn-primary">Entrar como admin</button>
+                    </div>
+                </form>
+                <p class="form-hint">¿No eres administrador? <a href="#" id="back-to-client-login">Volver al inicio de sesión</a></p>
             </div>
         </section>
     </main>
 
     <script src="js/api.js?v=20260630-localhost-api-v3"></script>
-    <script src="js/auth.js?v=20260630-profiles-v2"></script>
+    <script src="js/auth.js?v=20260707-admin-login-v1"></script>
 </body>
 </html>

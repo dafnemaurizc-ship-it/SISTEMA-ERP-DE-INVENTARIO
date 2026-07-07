@@ -11,7 +11,7 @@ class Settings(BaseSettings):
         populate_by_name=True,
     )
 
-    database_url: str = "sqlite:///./biblioapp.db"
+    database_url: str = "postgresql+psycopg://novaris:novaris_dev_password@localhost:5432/novaris_erp"
     jwt_secret_key: str
     jwt_algorithm: str = "HS256"
     jwt_expire_hours: int = 24
