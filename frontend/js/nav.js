@@ -7,7 +7,7 @@
         { href: "inventario.html", label: "Inventario" },
         { href: "compras.html", label: "Compras" },
         { href: "ventas.html", label: "Ventas" },
-        { href: "clientes-proveedores.html", label: "Clientes/Proveedores" },
+        { href: "clientes-proveedores.html", label: "Proveedores" },
         { href: "facturacion.html", label: "Facturacion" },
         { href: "importar-datos.html", label: "Prediccion" },
         { href: "reportes.html", label: "Reportes" },

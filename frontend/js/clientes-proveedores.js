@@ -28,35 +28,25 @@ function appendRelationCell(tr, value) {
 }
 
 function defaultRelations() {
-    const currentUser = typeof getUserData === "function" ? getUserData() : null;
-    const companyName = currentUser?.company_name || currentUser?.nombre;
-    const companyDocument = currentUser?.ruc || "";
-    const companyEmail = currentUser?.email || "";
     return [
-        ...(companyName ? [{
-            tipo: "cliente",
-            nombre: companyName,
-            documento: companyDocument,
-            email: companyEmail,
-            estado: "Activo",
-            created_at: currentUser?.created_at || new Date().toISOString(),
-        }] : []),
         { tipo: "proveedor", nombre: "TechSupply", documento: "20411122233", email: "compras@techsupply.com", estado: "Pendiente" },
-        { tipo: "cliente", nombre: "Sigma Labs", documento: "20622233344", email: "ops@sigma.com", estado: "En revision" },
+        { tipo: "proveedor", nombre: "Distribuidora Norte", documento: "20599887766", email: "ventas@distnorte.pe", estado: "Activo" },
     ];
+}
+
+function supplierRows() {
+    const saved = getRelations().filter((row) => row.tipo === "proveedor");
+    return saved.length ? saved : defaultRelations();
 }
 
 function renderRelations() {
     const tbody = document.getElementById("relations-body");
     if (!tbody) return;
 
-    const saved = getRelations();
-    const rows = saved.length ? saved : defaultRelations();
+    const rows = supplierRows();
     tbody.innerHTML = "";
-    console.debug("renderRelations: rows=", rows.length);
     rows.forEach((row) => {
         const tr = document.createElement("tr");
-        appendRelationCell(tr, row.tipo === "proveedor" ? "Proveedor" : "Cliente");
         appendRelationCell(tr, row.nombre);
         appendRelationCell(tr, row.documento);
         appendRelationCell(tr, row.email);
@@ -74,7 +64,7 @@ function setupRelationForm() {
     form.addEventListener("submit", (event) => {
         event.preventDefault();
         const relation = {
-            tipo: document.getElementById("tipo-relacion").value,
+            tipo: "proveedor",
             nombre: document.getElementById("nombre-relacion").value.trim(),
             documento: document.getElementById("documento-relacion").value.trim(),
             email: document.getElementById("email-relacion").value.trim(),
@@ -82,7 +72,7 @@ function setupRelationForm() {
             created_at: new Date().toISOString(),
         };
         if (!relation.nombre) {
-            alert("Ingresa el nombre del cliente o proveedor.");
+            alert("Ingresa el nombre del proveedor.");
             return;
         }
         const relations = [relation, ...getRelations()].slice(0, 50);

@@ -94,13 +94,13 @@
 }
 
 .supplier-table-wrap {
-    max-height: min(620px, 72vh);
+    max-height: min(520px, 64vh);
     overflow: auto;
     scrollbar-gutter: stable;
 }
 
 .supplier-recommendations-table {
-    min-width: 1080px;
+    min-width: 1180px;
     table-layout: fixed;
 }
 
@@ -112,7 +112,7 @@
 
 .supplier-recommendations-table th:nth-child(1),
 .supplier-recommendations-table td:nth-child(1) {
-    width: 230px;
+    width: 220px;
 }
 
 .supplier-recommendations-table th:nth-child(2),
@@ -126,17 +126,17 @@
 
 .supplier-recommendations-table th:nth-child(5),
 .supplier-recommendations-table td:nth-child(5) {
-    width: 140px;
+    width: 150px;
 }
 
 .supplier-recommendations-table th:nth-child(6),
 .supplier-recommendations-table td:nth-child(6) {
-    width: 260px;
+    width: 300px;
 }
 
 .supplier-recommendations-table th:nth-child(7),
 .supplier-recommendations-table td:nth-child(7) {
-    width: 220px;
+    width: 250px;
 }
 
 .supplier-product-cell h3 {
@@ -166,13 +166,16 @@
 
 .supplier-table-links {
     display: grid;
-    gap: 0.42rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem;
 }
 
 .supplier-table-links .btn {
     width: 100%;
     min-height: 34px;
     padding: 0.42rem 0.55rem;
+    font-size: 0.78rem;
+    white-space: normal;
 }
 
 .btn:disabled {
@@ -622,11 +625,11 @@ tbody tr:hover {
     }
 
     .supplier-table-wrap {
-        max-height: 68vh;
+        max-height: 64vh;
     }
 
     .supplier-recommendations-table {
-        min-width: 980px;
+        min-width: 1120px;
     }
 
     .supplier-recommendations-table th,
@@ -641,6 +644,7 @@ tbody tr:hover {
 
     .supplier-table-links .btn {
         min-height: 38px;
+        font-size: 0.8rem;
     }
 
     .assistant-widget {

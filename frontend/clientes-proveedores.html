@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Novaris ERP - Clientes y Proveedores</title>
+    <title>Novaris ERP - Proveedores</title>
     <link rel="stylesheet" href="css/styles.css?v=20260630-design-v2" />
     <link rel="stylesheet" href="css/components.css?v=20260707-supplier-table-v1" />
     <link rel="stylesheet" href="css/layout.css?v=20260707-logo-v1" />
@@ -15,18 +15,18 @@
                 <span class="brand-mark">N</span>
                 <div>
                     <strong>Novaris ERP</strong>
-                    <span>Clientes y proveedores</span>
+                    <span>Proveedores</span>
                 </div>
             </div>
             <ul class="sidebar-nav"></ul>
-            <div class="sidebar-footer">Modulo de relacion comercial<br/>para clientes y proveedores.</div>
+            <div class="sidebar-footer">Modulo de abastecimiento<br/>y busqueda de proveedores.</div>
         </aside>
 
         <div class="main-area">
             <header class="topbar">
                 <div class="topbar-title">
-                    <h1>Clientes y proveedores</h1>
-                    <p>Administra contactos y encuentra proveedores externos para productos faltantes.</p>
+                    <h1>Proveedores</h1>
+                    <p>Administra proveedores y encuentra opciones externas para productos faltantes.</p>
                 </div>
                 <div class="topbar-actions">
                     <a href="dashboard.html" class="btn btn-secondary">Volver</a>
@@ -37,32 +37,25 @@
                 <section class="panel">
                     <div class="panel-header">
                         <div class="panel-title">
-                            <h2>Alta rapida</h2>
-                            <p>Registra un nuevo cliente o proveedor.</p>
+                            <h2>Alta rapida de proveedor</h2>
+                            <p>Registra proveedores para abastecimiento. Los clientes se guardan desde Facturacion.</p>
                         </div>
                     </div>
                     <form class="filters-grid" id="relation-form">
                         <div class="form-group">
-                            <label for="tipo-relacion">Tipo</label>
-                            <select id="tipo-relacion">
-                                <option value="cliente">Cliente</option>
-                                <option value="proveedor">Proveedor</option>
-                            </select>
+                            <label for="nombre-relacion">Proveedor</label>
+                            <input type="text" id="nombre-relacion" placeholder="Ej. TechSupply Mayorista" />
                         </div>
                         <div class="form-group">
-                            <label for="nombre-relacion">Nombre</label>
-                            <input type="text" id="nombre-relacion" placeholder="Ej. Grupo Sol" />
-                        </div>
-                        <div class="form-group">
-                            <label for="documento-relacion">Documento</label>
-                            <input type="text" id="documento-relacion" placeholder="RUC / DNI" />
+                            <label for="documento-relacion">RUC</label>
+                            <input type="text" id="documento-relacion" placeholder="RUC del proveedor" inputmode="numeric" />
                         </div>
                         <div class="form-group">
                             <label for="email-relacion">Correo</label>
-                            <input type="email" id="email-relacion" placeholder="correo@empresa.com" />
+                            <input type="email" id="email-relacion" placeholder="compras@proveedor.com" />
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Guardar</button>
+                            <button type="submit" class="btn btn-primary">Guardar proveedor</button>
                         </div>
                     </form>
                 </section>
@@ -80,19 +73,18 @@
                 <section class="panel">
                     <div class="panel-header">
                         <div class="panel-title">
-                            <h2>Registros recientes</h2>
-                            <p>Vista resumida de clientes y proveedores.</p>
+                            <h2>Proveedores registrados</h2>
+                            <p>Lista de proveedores guardados para compras y abastecimiento.</p>
                         </div>
                     </div>
                     <div class="table-wrap">
                         <table>
                             <thead>
-                                <tr><th>Tipo</th><th>Nombre</th><th>Documento</th><th>Correo</th><th>Estado</th></tr>
+                                <tr><th>Proveedor</th><th>RUC</th><th>Correo</th><th>Estado</th></tr>
                             </thead>
                             <tbody id="relations-body">
-                                <tr><td>Cliente</td><td>Grupo Sol</td><td>20500000001</td><td>ventas@gruposol.com</td><td><span class="badge badge-success">Activo</span></td></tr>
-                                <tr><td>Proveedor</td><td>TechSupply</td><td>20411122233</td><td>compras@techsupply.com</td><td><span class="badge badge-warning">Pendiente</span></td></tr>
-                                <tr><td>Cliente</td><td>Sigma Labs</td><td>20622233344</td><td>ops@sigma.com</td><td><span class="badge badge-info">En revision</span></td></tr>
+                                <tr><td>TechSupply</td><td>20411122233</td><td>compras@techsupply.com</td><td><span class="badge badge-warning">Pendiente</span></td></tr>
+                                <tr><td>Distribuidora Norte</td><td>20599887766</td><td>ventas@distnorte.pe</td><td><span class="badge badge-success">Activo</span></td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -103,11 +95,11 @@
 
     <script src="js/auth-guard.js?v=20260630-login-required"></script>
     
-    <script src="js/nav.js?v=20260630-word-menu-v1"></script>
+    <script src="js/nav.js?v=20260707-providers-only-v1"></script>
     <script src="js/api.js?v=20260630-localhost-api-v3"></script>
     <script src="js/auth.js?v=20260630-profiles-v2"></script>
     <script src="js/import-store.js?v=20260630-import-aliases-v5"></script>
-    <script src="js/compras-ventas.js?v=20260707-supplier-table-v1"></script>
-    <script src="js/clientes-proveedores.js?v=20260630-local-relations"></script>
+    <script src="js/compras-ventas.js?v=20260707-providers-only-v1"></script>
+    <script src="js/clientes-proveedores.js?v=20260707-providers-only-v1"></script>
 </body>
 </html>
