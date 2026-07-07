@@ -374,23 +374,20 @@ function commerceRenderSupplierRecommendations(container, rows, prediction, empt
         return;
     }
 
-    container.className = "table-wrap supplier-table-wrap";
-    const table = document.createElement("table");
-    table.className = "supplier-recommendations-table";
-    table.innerHTML = `
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Stock</th>
-                <th>Demanda</th>
-                <th>Compra sugerida</th>
-                <th>Metodo</th>
-                <th>Recomendacion ERP</th>
-                <th>Proveedores externos</th>
-            </tr>
-        </thead>
-    `;
-    const tbody = document.createElement("tbody");
+    container.className = "supplier-recommendations";
+    container.setAttribute("role", "table");
+    container.setAttribute("aria-label", "Proveedores recomendados para compras");
+
+    const header = document.createElement("div");
+    header.className = "supplier-recommendations-header";
+    header.setAttribute("role", "row");
+    ["Producto", "Stock", "Demanda", "Compra sugerida", "Metodo", "Recomendacion ERP", "Proveedores externos"].forEach((label) => {
+        const cell = document.createElement("span");
+        cell.setAttribute("role", "columnheader");
+        cell.textContent = label;
+        header.appendChild(cell);
+    });
+    container.appendChild(header);
 
     rows.forEach((row) => {
         const predictedDemand = commercePredictedDemand(row, prediction);
@@ -403,61 +400,72 @@ function commerceRenderSupplierRecommendations(container, rows, prediction, empt
                 ? "Prioridad alta: buscar proveedor con entrega inmediata."
                 : "Comprar para volver al minimo operativo.");
 
-        const tr = document.createElement("tr");
+        const item = document.createElement("article");
+        item.className = "supplier-row";
+        item.setAttribute("role", "row");
 
-        const product = document.createElement("td");
+        const product = document.createElement("div");
         product.className = "supplier-product-cell";
+        product.setAttribute("role", "cell");
+        product.dataset.label = "Producto";
         const name = document.createElement("h3");
         name.textContent = row.producto || "Producto sin nombre";
         const category = document.createElement("p");
         category.textContent = row.categoria || "Sin categoria";
         product.append(name, category);
-        tr.appendChild(product);
+        item.appendChild(product);
 
         [
-            ["Stock actual", commerceFormatNumber(row.stock)],
-            ["Demanda predicha", predictedDemand === null ? "Sin prediccion" : commerceFormatNumber(predictedDemand)],
-            ["Comprar sugerido", recommended === null ? "Sin prediccion" : commerceFormatNumber(recommended)],
-        ].forEach(([, value]) => {
-            const td = document.createElement("td");
+            ["Stock", commerceFormatNumber(row.stock)],
+            ["Demanda", predictedDemand === null ? "Sin prediccion" : commerceFormatNumber(predictedDemand)],
+            ["Compra sugerida", recommended === null ? "Sin prediccion" : commerceFormatNumber(recommended)],
+        ].forEach(([label, value]) => {
+            const td = document.createElement("div");
             td.className = "supplier-number-cell";
+            td.setAttribute("role", "cell");
+            td.dataset.label = label;
             td.textContent = value;
-            tr.appendChild(td);
+            item.appendChild(td);
         });
 
-        const method = document.createElement("td");
+        const method = document.createElement("div");
+        method.className = "supplier-method-cell";
+        method.setAttribute("role", "cell");
+        method.dataset.label = "Metodo";
         const methodBadge = document.createElement("span");
         methodBadge.className = "badge badge-info";
         methodBadge.textContent = commercePredictionLabel(prediction, row);
         method.appendChild(methodBadge);
-        tr.appendChild(method);
+        item.appendChild(method);
 
         const recommendation = document.createElement("p");
-        const recommendationCell = document.createElement("td");
+        const recommendationCell = document.createElement("div");
         recommendationCell.className = "supplier-recommendation-cell";
+        recommendationCell.setAttribute("role", "cell");
+        recommendationCell.dataset.label = "Recomendacion ERP";
         recommendation.textContent = recommendationText;
         recommendationCell.appendChild(recommendation);
-        tr.appendChild(recommendationCell);
+        item.appendChild(recommendationCell);
 
-        const linksCell = document.createElement("td");
+        const linksCell = document.createElement("div");
+        linksCell.className = "supplier-links-cell";
+        linksCell.setAttribute("role", "cell");
+        linksCell.dataset.label = "Proveedores externos";
         const links = document.createElement("div");
-        links.className = "supplier-table-links";
-        commerceSupplierLinks(row).forEach((item) => {
+        links.className = "supplier-links";
+        commerceSupplierLinks(row).forEach((linkItem) => {
             const link = document.createElement("a");
-            link.href = item.url;
+            link.href = linkItem.url;
             link.target = "_blank";
             link.rel = "noopener noreferrer";
             link.className = "btn btn-secondary btn-link-external";
-            link.textContent = item.label;
+            link.textContent = linkItem.label;
             links.appendChild(link);
         });
         linksCell.appendChild(links);
-        tr.appendChild(linksCell);
-        tbody.appendChild(tr);
+        item.appendChild(linksCell);
+        container.appendChild(item);
     });
-
-    table.appendChild(tbody);
-    container.appendChild(table);
 }
 
 async function commerceDataset() {
